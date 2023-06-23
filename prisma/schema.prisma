@@ -6,22 +6,67 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+model Company {
+  id          String       @id @default(uuid())
+  name        String       @db.VarChar(50)
+  users       CompanyUser[]
 }
 
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+model User {
+  id          String       @id @default(uuid())
+  dni         String       @db.VarChar(8)
+  surname1    String       @db.VarChar(50)
+  surname2    String       @db.VarChar(50)
+  full_name   String       @db.VarChar(100)
+  photo_code  String?      @db.VarChar(36)
+  user_roles  UserRole[]
+  companies   CompanyUser[]
+}
+
+model CompanyUser {
+  id          String       @id @default(uuid())
+  user_id     String
+  company_id  String
+  user        User         @relation(fields: [user_id], references: [id])
+  company     Company      @relation(fields: [company_id], references: [id])
+}
+
+model Role {
+  id                String          @id @default(uuid())
+  name              String          @db.VarChar(50)
+  modifiable        Boolean         @db.Boolean
+  user_roles        UserRole[]
+  role_permissions  RolePermission[]
+}
+
+model UserRole {
+  user_role_id      String          @id @default(uuid())
+  user_id           String
+  role_id           String
+  user              User            @relation(fields: [user_id], references: [id])
+  role              Role            @relation(fields: [role_id], references: [id])
+}
+
+model RolePermission {
+  role_permission_id  String        @id @default(uuid())
+  role_id             String        @db.VarChar(36)
+  permission_id       String        @db.VarChar(36)
+  role                Role          @relation(fields: [role_id], references: [id])
+  permission          Permission    @relation(fields: [permission_id], references: [id])
+}
+
+model Permission {
+  id                  String        @id @default(uuid())
+  component_id        String        @db.VarChar(50)
+  available           Boolean       @db.Boolean
+  role_permissions    RolePermission[]
+}
+
+model Component {
+  id                  String        @id @default(uuid())
+  name                String        @db.VarChar(8)
 }
