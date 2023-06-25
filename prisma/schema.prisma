@@ -10,12 +10,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Compañia a la cual se le da el aplicativo
 model Company {
   id          String       @id @default(uuid())
   name        String       @db.VarChar(50)
   users       CompanyUser[]
 }
 
+// Usuario que ingresara a la aplicacion
 model User {
   id          String       @id @default(uuid())
   dni         String       @db.VarChar(8)
@@ -27,6 +29,7 @@ model User {
   companies   CompanyUser[]
 }
 
+// Intermedia entre User y Company
 model CompanyUser {
   id          String       @id @default(uuid())
   user_id     String
@@ -35,6 +38,7 @@ model CompanyUser {
   company     Company      @relation(fields: [company_id], references: [id])
 }
 
+// Roles que se le aplicara al usuario
 model Role {
   id                String          @id @default(uuid())
   name              String          @db.VarChar(50)
@@ -43,6 +47,7 @@ model Role {
   role_permissions  RolePermission[]
 }
 
+// Intermedia entre Roles y Usuario
 model UserRole {
   user_role_id      String          @id @default(uuid())
   user_id           String
@@ -51,6 +56,15 @@ model UserRole {
   role              Role            @relation(fields: [role_id], references: [id])
 }
 
+// Permisos que se le aplicara a los roles
+model Permission {
+  id                  String        @id @default(uuid())
+  component_id        String        @db.VarChar(50)
+  available           Boolean       @db.Boolean
+  role_permissions    RolePermission[]
+}
+
+// Intermedia entre Roles y Permisos
 model RolePermission {
   role_permission_id  String        @id @default(uuid())
   role_id             String        @db.VarChar(36)
@@ -59,14 +73,136 @@ model RolePermission {
   permission          Permission    @relation(fields: [permission_id], references: [id])
 }
 
-model Permission {
-  id                  String        @id @default(uuid())
-  component_id        String        @db.VarChar(50)
-  available           Boolean       @db.Boolean
-  role_permissions    RolePermission[]
-}
-
+// Componentes del aplicativo
 model Component {
   id                  String        @id @default(uuid())
   name                String        @db.VarChar(8)
+}
+
+
+// Tabla de Pantalla "Registro de actividades"
+model Activities {
+  id    String   @id @default(uuid())
+  name  String
+  type  Int
+  ActiviesReport ActiviesReport[]
+}
+model ActiviesReport {
+  id           String   @id @default(uuid())
+  report_id    String
+  activity_id  String
+  hours        Int
+  report       Report @relation(fields: [report_id], references: [id])
+  activity     Activities @relation(fields: [activity_id], references: [id])
+}
+
+// Tabla de Pantalla "Corridas"
+model Run {
+  id                     String    @id @default(uuid())
+  meters_total           Int
+  meters_acum            Int
+  meters_from            Int
+  meters_to              Int
+  length                 Int
+  recuperation_percentage Int
+  terrain_type1          Int
+  terrain_type2          Int
+  terrain_type3          Int
+  observation            String
+  reports                RunReport[]
+}
+model RunReport {
+  id           String   @id @default(uuid())
+  report_id    String
+  run_id       String
+  report       Report   @relation(fields: [report_id], references: [id])
+  run          Run      @relation(fields: [run_id], references: [id])
+}
+
+// Tabla de Pantalla "Fluidos"
+model Fluids {
+  id   String  @id @default(uuid())
+  name String
+  ReportFluids ReportFluids[]
+}
+model ReportFluids {
+  id         String   @id @default(uuid())
+  report_id  String
+  fluid_id   String
+  quantity   Int
+  report     Report   @relation(fields: [report_id], references: [id])
+  fluid      Fluids   @relation(fields: [fluid_id], references: [id])
+}
+model ReportFluidsPack {
+  id        String   @id @default(uuid())
+  report_id String
+  M1        Int
+  M2        Int
+  M3        Int
+  M4        Int
+  PH        Int
+  PPM       Int
+  report    Report   @relation(fields: [report_id], references: [id])
+}
+
+// Tabla para Pantalla "Control de Herramientas"
+model Tools {
+  id             String   @id @default(uuid())
+  name           String
+  line           String
+  serial_number  String
+  brand          String
+  matrix         String
+  ReportTools    ReportTools[]
+}
+model ReportTools {
+  id              String   @id @default(uuid())
+  report_id       String
+  tool_id         String
+  condition       Boolean
+  meters_from     Int
+  drill_bit_change Boolean
+  end_condition   Boolean
+  meters_to       Int
+  change_motive   Int
+  report          Report   @relation(fields: [report_id], references: [id])
+  tool            Tools    @relation(fields: [tool_id], references: [id])
+}
+
+// Tabla para Reportes creados en "Nuevo Parte Diario"
+model Report {
+  id              String           @id @default(uuid())
+  date            DateTime
+  turn            Boolean
+  probe_id        String
+  meters_from     Int
+  meters_to       Int
+  total_meters    Int
+  surplus_meters  Int
+  constant_meters Int
+  probe           Probe            @relation(fields: [probe_id], references: [id])
+  ReportTools     ReportTools[]
+  ReportFluidsPack ReportFluidsPack[]
+  ReportFluids    ReportFluids[]
+  RunReport       RunReport[]
+  ActiviesReport  ActiviesReport[]
+}
+
+// La actividad en la que se generan reportes
+model Probe {
+  id              String    @id @default(uuid())
+  date_ini        DateTime
+  date_fin        DateTime
+  job_type        Boolean
+  level           Int
+  labor           String
+  objective_vein  String
+  objective_prof  Int
+  zone            String
+  azimut_ini      Int
+  incline_ini     Int
+  horometer_ini   Int
+  horometer_fin   Int
+  finalized       Boolean
+  Report          Report[]
 }
