@@ -12,9 +12,10 @@ datasource db {
 
 // Compañia a la cual se le da el aplicativo
 model Company {
-  id          String       @id @default(uuid())
-  name        String       @db.VarChar(50)
-  users       CompanyUser[]
+  id              String       @id @default(uuid())
+  name            String       @db.VarChar(50)
+  users           CompanyUser[]
+  CompanyReport   CompanyReport[]
 }
 
 // Usuario que ingresara a la aplicacion
@@ -82,10 +83,10 @@ model Component {
 
 // Tabla de Pantalla "Registro de actividades"
 model Activities {
-  id    String   @id @default(uuid())
-  name  String
-  type  Int
-  ActiviesReport ActiviesReport[]
+  id              String   @id @default(uuid())
+  name            String
+  type            Int
+  ActiviesReport  ActiviesReport[]
 }
 model ActiviesReport {
   id           String   @id @default(uuid())
@@ -98,18 +99,18 @@ model ActiviesReport {
 
 // Tabla de Pantalla "Corridas"
 model Run {
-  id                     String    @id @default(uuid())
-  meters_total           Int
-  meters_acum            Int
-  meters_from            Int
-  meters_to              Int
-  length                 Int
+  id                      String    @id @default(uuid())
+  meters_total            Int
+  meters_acum             Int
+  meters_from             Int
+  meters_to               Int
+  length                  Int
   recuperation_percentage Int
-  terrain_type1          Int
-  terrain_type2          Int
-  terrain_type3          Int
-  observation            String
-  reports                RunReport[]
+  terrain_type1           Int
+  terrain_type2           Int
+  terrain_type3           Int
+  observation             String
+  reports                 RunReport[]
 }
 model RunReport {
   id           String   @id @default(uuid())
@@ -121,9 +122,9 @@ model RunReport {
 
 // Tabla de Pantalla "Fluidos"
 model Fluids {
-  id   String  @id @default(uuid())
-  name String
-  ReportFluids ReportFluids[]
+  id            String  @id @default(uuid())
+  name          String
+  ReportFluids  ReportFluids[]
 }
 model ReportFluids {
   id         String   @id @default(uuid())
@@ -156,36 +157,44 @@ model Tools {
   ReportTools    ReportTools[]
 }
 model ReportTools {
-  id              String   @id @default(uuid())
-  report_id       String
-  tool_id         String
-  condition       Boolean
-  meters_from     Int
-  drill_bit_change Boolean
-  end_condition   Boolean
-  meters_to       Int
-  change_motive   Int
-  report          Report   @relation(fields: [report_id], references: [id])
-  tool            Tools    @relation(fields: [tool_id], references: [id])
+  id                String   @id @default(uuid())
+  report_id         String
+  tool_id           String
+  condition         Boolean
+  meters_from       Int
+  drill_bit_change  Boolean
+  end_condition     Boolean
+  meters_to         Int
+  change_motive     Int
+  report            Report   @relation(fields: [report_id], references: [id])
+  tool              Tools    @relation(fields: [tool_id], references: [id])
 }
 
 // Tabla para Reportes creados en "Nuevo Parte Diario"
 model Report {
+  id                String           @id @default(uuid())
+  date              DateTime
+  turn              Boolean
+  probe_id          String
+  meters_from       Int
+  meters_to         Int
+  total_meters      Int
+  surplus_meters    Int
+  constant_meters   Int
+  probe             Probe            @relation(fields: [probe_id], references: [id])
+  ReportTools       ReportTools[]
+  ReportFluidsPack  ReportFluidsPack[]
+  ReportFluids      ReportFluids[]
+  RunReport         RunReport[]
+  ActiviesReport    ActiviesReport[]
+  CompanyReport     CompanyReport[]
+}
+model CompanyReport {
   id              String           @id @default(uuid())
-  date            DateTime
-  turn            Boolean
-  probe_id        String
-  meters_from     Int
-  meters_to       Int
-  total_meters    Int
-  surplus_meters  Int
-  constant_meters Int
-  probe           Probe            @relation(fields: [probe_id], references: [id])
-  ReportTools     ReportTools[]
-  ReportFluidsPack ReportFluidsPack[]
-  ReportFluids    ReportFluids[]
-  RunReport       RunReport[]
-  ActiviesReport  ActiviesReport[]
+  company_id      String
+  report_id       String
+  report          Report           @relation(fields: [report_id], references: [id])
+  company         Company          @relation(fields: [company_id], references: [id])
 }
 
 // La actividad en la que se generan reportes
