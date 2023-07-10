@@ -28,7 +28,24 @@ model User {
   photo_code  String?      @db.VarChar(36)
   user_roles  UserRole[]
   companies   CompanyUser[]
+  teams       TeamUser[]
 }
+
+model Team {
+  id    String     @id @default(uuid())
+  name  String
+  users TeamUser[]
+  report Report[]
+}
+
+model TeamUser {
+  id      String     @id @default(uuid())
+  user_id String
+  team_id String
+  user    User       @relation(fields: [user_id], references: [id])
+  team    Team       @relation(fields: [team_id], references: [id])
+}
+
 
 // Intermedia entre User y Company
 model CompanyUser {
@@ -79,7 +96,6 @@ model Component {
   id                  String        @id @default(uuid())
   name                String        @db.VarChar(8)
 }
-
 
 // Tabla de Pantalla "Registro de actividades"
 model Activities {
@@ -174,14 +190,17 @@ model ReportTools {
 model Report {
   id                String           @id @default(uuid())
   date              DateTime
-  turn              Boolean
+  shift             Boolean
   probe_id          String
+  platform          String
+  team_id           String
   meters_from       Int
   meters_to         Int
   total_meters      Int
   surplus_meters    Int
   constant_meters   Int
   probe             Probe            @relation(fields: [probe_id], references: [id])
+  team              Team             @relation(fields: [team_id], references: [id])
   ReportTools       ReportTools[]
   ReportFluidsPack  ReportFluidsPack[]
   ReportFluids      ReportFluids[]

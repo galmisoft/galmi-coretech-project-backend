@@ -1,6 +1,7 @@
 import { JwtAuth } from "../auth/jwtAuth.js";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
+
 export class UserService {
   static async validateUser(user) {
    const result = await prisma.user.findUnique({
