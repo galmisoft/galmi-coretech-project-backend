@@ -18,4 +18,53 @@ export class UserService {
     const decodetoken = JwtAuth.verify(token);
     return decodetoken;
   }
+
+  static async deleteUser(userID) {
+    try {
+      const result = await prisma.user.delete({ where: { id: userId } });
+      return result
+    } catch (error) {
+      console.error('Error deleteUser:', error);
+      throw new Error('An error occurred while deleting the user')
+    }
+  }
+
+  static async createUser(userData) {
+    try {
+      const result = await prisma.user.create({ 
+        data: {
+          dni: userData.dni,
+          username: userData.username,
+          supervisor_id: userData.userID,
+          email: userData.mail,
+          surname1: userData.name,
+          surname2: userData.lastname,
+          full_name: `${userData.name} ${userData.lastname}`,
+      } });
+      return result
+    } catch (error) {
+      console.error('Error createUser:', error);
+      throw new Error('An error occurred while creating the user')
+    }
+  }
+
+  static async updateUser(userData) {
+    try {
+      const result = await prisma.user.update({ 
+        where: { id: userData.id },
+        data: {
+          dni: userData.dni,
+          username: userData.username,
+          supervisor_id: userData.userID,
+          email: userData.mail,
+          surname1: userData.name,
+          surname2: userData.lastname,
+          full_name: `${userData.name} ${userData.lastname}`,
+      } });
+      return result
+    } catch (error) {
+      console.error('Error updateUser:', error);
+      throw new Error('An error occurred while updating the user')
+    }
+  }
 }
