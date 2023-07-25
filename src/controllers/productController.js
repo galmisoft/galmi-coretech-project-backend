@@ -3,7 +3,7 @@ import { ProductsService } from '../services/productsService.js';
 export class ProductController {
   static async listProducts(req, res, next) {
     try {
-      const { companyId } = req.query;
+      const { companyId } = req.body;
       const products = await ProductsService.listProducts(companyId);
       return res.status(200).json({ products });
     } catch (error) {
@@ -13,7 +13,7 @@ export class ProductController {
   }
   static async createProduct(req, res, next) {
     try {
-      const { productModel } = req.query;
+      const productModel = req.body;
       const products = await ProductsService.createProduct(productModel);
       return res.status(200).json({ products });
     } catch (error) {
@@ -23,7 +23,7 @@ export class ProductController {
   }
   static async updateProduct(req, res, next) {
     try {
-      const { productModel } = req.query;
+      const productModel = req.body;
       const products = await ProductsService.updateProduct(productModel);
       return res.status(200).json({ products });
     } catch (error) {
@@ -33,8 +33,8 @@ export class ProductController {
   }
   static async deleteProduct(req, res, next) {
     try {
-      const { productID } = req.query;
-      const products = await ProductsService.deleteProduct(productID);
+      const { id } = req.body;
+      const products = await ProductsService.deleteProduct(id);
       return res.status(200).json({ products });
     } catch (error) {
       console.error(error);
@@ -43,8 +43,8 @@ export class ProductController {
   }
   static async toggleActive(req, res, next) {
     try {
-      const { productID } = req.query;
-      const products = await ProductsService.toggleAvailable(productID);
+      const { id } = req.body;
+      const products = await ProductsService.toggleAvailable(id);
       return res.status(200).json({ products });
     } catch (error) {
       console.error(error);

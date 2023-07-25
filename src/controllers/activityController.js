@@ -3,7 +3,7 @@ import { ActivityService } from '../services/activityService.js';
 export class ActivityController {
   static async listActivies(req, res, next) {
     try {
-      const { activityName } = req.query;
+      const { activityName } = req.body;
       const activities = await ActivityService.listActivies(activityName);
       return res.status(200).json({ activities });
     } catch (error) {
@@ -13,7 +13,7 @@ export class ActivityController {
   }
   static async createActivities(req, res, next) {
     try {
-      const { activityModel } = req.query;
+      const activityModel = req.body;
       const activities = await ActivityService.createActivity(activityModel);
       return res.status(200).json({ activities });
     } catch (error) {
@@ -23,7 +23,7 @@ export class ActivityController {
   }
   static async updateActivities(req, res, next) {
     try {
-      const { activityModel } = req.query;
+      const activityModel = req.body;
       const activities = await ActivityService.updateActivity(activityModel);
       return res.status(200).json({ activities });
     } catch (error) {
@@ -33,8 +33,8 @@ export class ActivityController {
   }
   static async deleteActivities(req, res, next) {
     try {
-      const { activityID } = req.query;
-      const activities = await ActivityService.deleteActivity(activityID);
+      const { id } = req.body;
+      const activities = await ActivityService.deleteActivity(id);
       return res.status(200).json({ activities });
     } catch (error) {
       console.error(error);
@@ -43,8 +43,8 @@ export class ActivityController {
   }
   static async toggleActive(req, res, next) {
     try {
-      const { activityID } = req.query;
-      const toggle = await ActivityService.toggleAvailable(activityID);
+      const { id } = req.body;
+      const toggle = await ActivityService.toggleAvailable(id);
       return res.status(200).json({ toggle });
     } catch (error) {
       console.error(error);

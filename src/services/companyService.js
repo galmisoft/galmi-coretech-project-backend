@@ -5,20 +5,14 @@ export class CompanyService {
   static async listCompanies(companyName) {
     try {
         const listCompanies = prisma.company.findMany({
-            select: {
-                name: true,
-                createdAt: true,
-                contact: true,
-                country: true,
-                status: true
-            },
             where: {
-                name: companyName === undefined ? true : companyName
+                name: { contains: companyName === undefined ? "" : companyName } 
             },
             distinct: ['name']
         })
       return listCompanies;
     } catch (error) {
+      console.log(error)
       throw new Error('Failed to listCompanies');
     }
   }
@@ -28,30 +22,32 @@ export class CompanyService {
         data: {
           name: companyData.name,
           active: companyData.active,
-          country: companyData.country,
+          visible_name: companyData.visible_name,
+          country_id: companyData.country_id,
           division: companyData.division,
-          subdivision: companyData.subdivision,
+          sub_division: companyData.sub_division,
           zone: companyData.zone,
-          subzone: companyData.subzone,
+          sub_zone: companyData.sub_zone,
           canAddFluids: companyData.canAddFluids,
           canAddSteel: companyData.canAddSteel,
           canAddActivities: companyData.canAddActivities,
-          active: companyData.active,
-          CompanyUser: {
-            full_name: companyData.Contact.full_name,
-            email: companyData.Contact.email,
-            phone: companyData.Contact.phone,
-            // Falta acceso a roles para modulos
-          },
+          contact_name: companyData.contact_name,
+          contact_email: companyData.contact_email,
+          contact_phone: companyData.contact_phone,
+          number_users_admin: companyData.number_users_admin,
+          number_users_supervisor: companyData.number_users_supervisor,
+          number_users_leader: companyData.number_users_leader,
+          number_users_perforist: companyData.number_users_perforist,
+          created_At: new Date(),
+          updated_At: new Date()
         }
       });
       return company;
     } catch (error) {
-      console.error('Error creating company:', error);
+      console.log(error)
       throw new Error('An error occurred while creating the company')
     }
   }
-
   static async updateCompany(companyData) {
     try {
       const company = await prisma.company.update({
@@ -59,26 +55,29 @@ export class CompanyService {
         data: {
           name: companyData.name,
           active: companyData.active,
-          country: companyData.country,
+          visible_name: companyData.visible_name,
+          country_id: companyData.country_id,
           division: companyData.division,
-          subdivision: companyData.subdivision,
+          sub_division: companyData.sub_division,
           zone: companyData.zone,
-          subzone: companyData.subzone,
+          sub_zone: companyData.sub_zone,
           canAddFluids: companyData.canAddFluids,
           canAddSteel: companyData.canAddSteel,
           canAddActivities: companyData.canAddActivities,
-          active: companyData.active,
-          CompanyUser: {
-            full_name: companyData.Contact.full_name,
-            email: companyData.Contact.email,
-            phone: companyData.Contact.phone,
-            // Falta acceso a roles para modulos
-          },
+          contact_name: companyData.contact_name,
+          contact_email: companyData.contact_email,
+          contact_phone: companyData.contact_phone,
+          number_users_admin: companyData.number_users_admin,
+          number_users_supervisor: companyData.number_users_supervisor,
+          number_users_leader: companyData.number_users_leader,
+          number_users_perforist: companyData.number_users_perforist,
+          updated_At: new Date()
         }
       });
       return company;
     } catch (error) {
       console.error('Error updating company:', error);
+      console.log(error)
       throw new Error('An error occurred while updating the company');
     }
   }
@@ -90,7 +89,24 @@ export class CompanyService {
       return company;
     } catch (error) {
       console.error('Error deleting company:', error);
+      console.log(error)
       throw new Error('An error occurred while deleting the company');
     }
   }
+  static async createCompanydayPart(companyId, dayPartId) {
+    try {
+      const companydayPart = await prisma.companydayPart.create({
+        data: {
+          company_id: companyId,
+          dayPart_id: dayPartId,
+        },
+      });
+      return companydayPart;
+    } catch (error) {
+      console.log(error)
+      throw new Error(`Error creating companydayPart`);
+    }
+  }
+  
+  
 }

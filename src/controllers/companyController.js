@@ -3,7 +3,7 @@ import { CompanyService } from '../services/companyService.js';
 export class CompanyController {
   static async listCompanies(req, res, next) {
     try {
-      const { CompanyName } = req.query;
+      const { CompanyName } = req.body;
       const Companies = await CompanyService.listCompanies(CompanyName);
       return res.status(200).json({ Companies });
     } catch (error) {
@@ -13,7 +13,7 @@ export class CompanyController {
   }
   static async createCompany(req, res, next) {
     try {
-      const { CompanyModel } = req.query;
+      const CompanyModel = req.body;
       const Companies = await CompanyService.createCompany(CompanyModel);
       return res.status(200).json({ Companies });
     } catch (error) {
@@ -23,7 +23,7 @@ export class CompanyController {
   }
   static async updateCompany(req, res, next) {
     try {
-      const { CompanyModel } = req.query;
+      const CompanyModel = req.body;
       const Companies = await CompanyService.updateCompany(CompanyModel);
       return res.status(200).json({ Companies });
     } catch (error) {
@@ -33,8 +33,8 @@ export class CompanyController {
   }
   static async deleteCompany(req, res, next) {
     try {
-      const { CompanyID } = req.query;
-      const Companies = await CompanyService.deleteCompany(CompanyID);
+      const { id } = req.body;
+      const Companies = await CompanyService.deleteCompany(id);
       return res.status(200).json({ Companies });
     } catch (error) {
       console.error(error);

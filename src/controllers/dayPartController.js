@@ -22,8 +22,8 @@ export class DayPartController {
   }
   static async createDayParts(req, res, next) {
     try {
-      const { dayPartsModel } = req.query;
-      const dayParts = await DayPartService.createDayParts(dayPartsModel)
+      const { dayPartModel } = req.body;
+      const dayParts = await DayPartService.createDayParts(dayPartModel)
       return res.status(200).json({ dayParts });
     } catch (err) { 
       console.log(err)

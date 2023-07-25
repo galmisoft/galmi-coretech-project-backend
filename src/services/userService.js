@@ -19,9 +19,9 @@ export class UserService {
     return decodetoken;
   }
 
-  static async deleteUser(userID) {
+  static async deleteUser(id) {
     try {
-      const result = await prisma.user.delete({ where: { id: userId } });
+      const result = await prisma.user.delete({ where: { id: id } });
       return result
     } catch (error) {
       console.error('Error deleteUser:', error);
@@ -29,18 +29,50 @@ export class UserService {
     }
   }
 
+  static async listUsers(companyID, username) {
+    try {
+      const result = prisma.User.findMany({
+          where: {
+              companyUser: { 
+                id: { contains: companyID === undefined ? "" : companyID }
+              },
+              name: { contains: username === undefined ? "" : username } 
+          },
+          distinct: ['username']
+      })
+      return result
+    } catch (error) {
+      console.error('Error listUsers:', error);
+      throw new Error('An error occurred while listing Users')
+    }
+  }
+
   static async createUser(userData) {
     try {
       const result = await prisma.user.create({ 
         data: {
+          dni_type: userData.dni_type,
           dni: userData.dni,
           username: userData.username,
-          supervisor_id: userData.userID,
-          email: userData.mail,
-          surname1: userData.name,
-          surname2: userData.lastname,
-          full_name: `${userData.name} ${userData.lastname}`,
-      } });
+          user_type: userData.user_type,
+          reports_to: userData.reports_to,
+          name: userData.name,
+          lastname: userData.lastname,
+          email: userData.email,
+          status: userData.status,
+          phone: userData.phone,
+          photo_code: userData.photo_code,
+          active: userData.active,
+          created_At: new Date(),
+          updated_At: new Date(),
+      }});
+
+      const result2 = await prisma.companyUser.create({
+        data: {
+          company_id: userData.company_id,
+          user_id: result.Users.id
+        }
+      })
       return result
     } catch (error) {
       console.error('Error createUser:', error);
@@ -53,13 +85,20 @@ export class UserService {
       const result = await prisma.user.update({ 
         where: { id: userData.id },
         data: {
+          dni_type: userData.dni_type,
           dni: userData.dni,
           username: userData.username,
-          supervisor_id: userData.userID,
-          email: userData.mail,
-          surname1: userData.name,
-          surname2: userData.lastname,
-          full_name: `${userData.name} ${userData.lastname}`,
+          user_type: userData.user_type,
+          reports_to: userData.reports_to,
+          name: userData.name,
+          lastname: userData.lastname,
+          email: userData.email,
+          status: userData.status,
+          phone: userData.phone,
+          photo_code: userData.photo_code,
+          active: userData.active,
+          created_At: new Date(),
+          updated_At: new Date(),
       } });
       return result
     } catch (error) {

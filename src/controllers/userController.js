@@ -11,11 +11,20 @@ export class UserController {
     }
     return res.status(200).json({ email, token });
   }
-
+  static async listUser(req, res, next) {
+    try {
+      const { username } = req.body;
+      const Users = await UserService.listUsers(username);
+      return res.status(200).json({ Users });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  }
   static async createUser(req, res, next) {
     try {
-      const { UserModel } = req.query;
-      const Users = await UserService.createUser({ userData });
+      const UserModel = req.body;
+      const Users = await UserService.createUser(UserModel);
       return res.status(200).json({ Users });
     } catch (error) {
       console.error(error);
@@ -24,8 +33,8 @@ export class UserController {
   }
   static async updateUser(req, res, next) {
     try {
-      const { UserModel } = req.query;
-      const Users = await UserService.updateUser({ userData });
+      const UserModel = req.body;
+      const Users = await UserService.updateUser(UserModel);
       return res.status(200).json({ Users });
     } catch (error) {
       console.error(error);
@@ -34,8 +43,8 @@ export class UserController {
   }
   static async deleteUser(req, res, next) {
     try {
-      const { UserID } = req.query;
-      const Users = await UserService.deleteUser({ UserID });
+      const { id } = req.body;
+      const Users = await UserService.deleteUser(id);
       return res.status(200).json({ Users });
     } catch (error) {
       console.error(error);

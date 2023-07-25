@@ -1,9 +1,10 @@
-import ClientService from '../services/clientService';
+import { ClientService } from '../services/clientService.js';
 
 export class ClientController {
   static async listClients(req, res, next) {
     try {
-      const clients = await ClientService.listClients();
+      const { companyID, name } = req.body;
+      const clients = await ClientService.listClients(companyID, name);
       return res.status(200).json({ clients });
     } catch (error) {
       console.error(error);
@@ -24,9 +25,8 @@ export class ClientController {
 
   static async updateClient(req, res, next) {
     try {
-      const clientId = req.params.id;
       const clientData = req.body;
-      const client = await ClientService.updateClient(clientId, clientData);
+      const client = await ClientService.updateClient(clientData);
       return res.status(200).json({ client });
     } catch (error) {
       console.error(error);
@@ -36,8 +36,8 @@ export class ClientController {
 
   static async deleteClient(req, res, next) {
     try {
-      const clientId = req.params.id;
-      const client = await ClientService.deleteClient(clientId);
+      const { id } = req.body
+      const client = await ClientService.deleteClient(id);
       return res.status(200).json({ client });
     } catch (error) {
       console.error(error);

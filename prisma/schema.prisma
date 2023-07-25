@@ -30,8 +30,10 @@ model Client {
   comercial_name String
   country_id     Int
   active         Boolean
+  company_id     String
   created_At     DateTime      @default(now())
   updated_At     DateTime      @updatedAt
+  Company        Company       @relation(fields: [company_id], references: [id])
   Country        Country       @relation(fields: [country_id], references: [id])
   Project        Project[]
   Equipment      Equipment[]
@@ -45,8 +47,8 @@ model Project {
   name                  String
   zone                  String
   location              String
-  projected_cost_tools  String
-  projected_cost_fluids String
+  projected_cost_tools  Float
+  projected_cost_fluids Float
   active                Boolean
   created_At            DateTime         @default(now())
   updated_At            DateTime         @updatedAt
@@ -83,6 +85,7 @@ model Company {
   CompanydayPart          CompanydayPart[]
   CompanyProject          CompanyProject[]
   CompanyUser             CompanyUser[]
+  Client                  Client[]
 }
 
 model CompanyModules {
@@ -117,9 +120,9 @@ model Equipment {
   internal_code String
   mine_code     String
   brand         String
-  cfm           String
-  rpm           String
-  preasure      String
+  cfm           Float
+  rpm           Float
+  preasure      Float
   status        String
   created_At    DateTime      @default(now())
   updated_At    DateTime      @updatedAt
@@ -287,10 +290,10 @@ model Activities {
   active            Boolean
   created_At        DateTime            @default(now())
   updated_At        DateTime            @updatedAt
-  dayPartActivities dayPartActivities[]
+  DayPartActivities DayPartActivities[]
 }
 
-model dayPartActivities {
+model DayPartActivities {
   id                   String                 @id @default(uuid())
   dayPart_id           String
   activity_id          String
@@ -310,7 +313,7 @@ model testAndMeassurements {
   company_name       String
   magnetic_intensity Int
   efective           Boolean
-  DayPartActivities  dayPartActivities @relation(fields: [activityDayPart_id], references: [id])
+  DayPartActivities  DayPartActivities @relation(fields: [activityDayPart_id], references: [id])
 }
 
 model Run {
@@ -399,27 +402,27 @@ model DayPart {
   id                String              @id @default(uuid())
   date              DateTime
   shift             Boolean
+  status            Int
   probe_id          String
   team_id           String
-  meters_from       Int
-  meters_to         Int
-  surplus_meters    Int
-  constant_meters   Int
-  M1                Int
-  M2                Int
-  M3                Int
-  M4                Int
-  PH                Int
-  PPM               Int
+  meters_from       Float
+  meters_to         Float
+  surplus_meters    Float
+  constant_meters   Float
+  M1                Float
+  M2                Float
+  M3                Float
+  M4                Float
+  PH                Float
+  PPM               Float
   created_At        DateTime            @default(now())
   updated_At        DateTime            @updatedAt
   Probe             Probe               @relation(fields: [probe_id], references: [id])
   Team              Team                @relation(fields: [team_id], references: [id])
   DayPartRun        DayPartRun[]
   DayPartProducts   DayPartProducts[]
-  DayPartFluids     DayPartFluids[]
   CompanydayPart    CompanydayPart[]
-  dayPartActivities dayPartActivities[]
+  DayPartActivities DayPartActivities[]
 }
 
 model DayPartRun {
@@ -447,9 +450,7 @@ model DayPartProducts {
 
 model DayPartFluids {
   id               String          @id @default(uuid())
-  dayPartFluids_id String
+  dayPartProducts_id String
   quantity         Int
-  DayPartProducts  DayPartProducts @relation(fields: [dayPartFluids_id], references: [id])
-  DayPart          DayPart?        @relation(fields: [dayPartId], references: [id])
-  dayPartId        String?
+  DayPartProducts  DayPartProducts @relation(fields: [dayPartProducts_id], references: [id])
 }
