@@ -1,10 +1,10 @@
-import { DayPartService } from '../services/dayPartService.js';
+import { DayPartService } from '../../../services/admin/modules/dayPartService.js'
 
 export class DayPartController {
   static async listDayParts(req, res, next) {
     try {
       const { fecha, equipo, turno, estado } = req.query;
-      const listdayParts = await DayPartService.listDayParts({ fecha, equipo, turno, estado });
+      const listdayParts = await DayPartService.listDayParts(fecha, equipo, turno, estado);
       return res.status(200).json({ listdayParts });
     } catch (error) {
       console.error(error);

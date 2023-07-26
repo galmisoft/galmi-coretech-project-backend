@@ -1,4 +1,4 @@
-import { AssignationService } from '../services/assignationService.js';
+import { AssignationService } from '../../services/admin/assignationService.js';
 
 export class AssignationController {
   static async listAssignation(req, res, next) {

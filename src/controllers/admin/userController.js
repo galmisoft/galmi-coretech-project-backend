@@ -1,4 +1,4 @@
-import { UserService } from '../services/userService.js';
+import { UserService } from '../../services/admin/userService.js';
 export class UserController {
   static async validateUser(req, res , next) {
     const { email, password } = req.body;

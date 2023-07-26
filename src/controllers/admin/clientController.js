@@ -1,4 +1,4 @@
-import { ClientService } from '../services/clientService.js';
+import { ClientService } from '../../services/admin/clientService.js';
 
 export class ClientController {
   static async listClients(req, res, next) {

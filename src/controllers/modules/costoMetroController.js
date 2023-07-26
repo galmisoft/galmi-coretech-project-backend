@@ -1,4 +1,4 @@
-import { CostoMetroService } from '../services/costoMetroService.js';
+import { CostoMetroService } from '../../../services/admin/modules/costoMetroService.js'
 
 export class CostoMetroController {
   static async listCostoMetro(req, res, next) {

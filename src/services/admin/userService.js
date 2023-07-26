@@ -33,8 +33,10 @@ export class UserService {
     try {
       const result = prisma.User.findMany({
           where: {
-              companyUser: { 
-                id: { contains: companyID === undefined ? "" : companyID }
+              CompanyUser: { 
+                every: {
+                  company_id: { contains: companyID === undefined ? "" : companyID }
+                }
               },
               name: { contains: username === undefined ? "" : username } 
           },

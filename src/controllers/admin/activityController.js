@@ -1,4 +1,4 @@
-import { ActivityService } from '../services/activityService.js';
+import { ActivityService } from '../../services/admin/activityService.js';
 
 export class ActivityController {
   static async listActivies(req, res, next) {

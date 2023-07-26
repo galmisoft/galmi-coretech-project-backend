@@ -2,13 +2,15 @@ import { Router} from "express";
 import { UserController } from "../controllers/userController.js";
 import { ClientController } from "../controllers/clientController.js";
 import { DayPartController } from "../controllers/dayPartController.js";
-import { CostoMetroController } from "../controllers/costoMetroController.js"
+import { CostoMetroController } from "../controllers/modules/costoMetroController.js"
 import { CompanyController } from "../controllers/companyController.js"
 import { ProductController } from "../controllers/productController.js";
 import { ActivityController } from "../controllers/activityController.js";
 import { ProjectController } from "../controllers/projectController.js";
 import { EquipmentController } from "../controllers/equipmentController.js";
 import { AssignationController } from "../controllers/assignationController.js";
+import { ItemController } from "../controllers/itemController.js";
+import { PersonController } from "../controllers/personController.js";
 
 const router = Router();
 
@@ -62,16 +64,33 @@ router.post('/admin/assignation/create', AssignationController.createAssignation
 router.post('/admin/assignation/update', AssignationController.updateAssignation)
 router.post('/admin/assignation/delete', AssignationController.deleteAssignation)
 // Products
-// router.post('/admin/product', ProductController.listProducts)
-// router.post('/admin/product/create', ProductController.createProduct)
-// router.post('/admin/product/update', ProductController.updateProduct)
-// router.post('/admin/product/delete', ProductController.deleteProduct)
-// router.post('/admin/product/toggle', ProductController.toggleActive)
+router.post('/admin/product', ProductController.listProducts)
+router.post('/admin/product/create', ProductController.createProduct)
+router.post('/admin/product/update', ProductController.updateProduct)
+router.post('/admin/product/delete', ProductController.deleteProduct)
+router.post('/admin/product/toggle', ProductController.toggleActive)
+// Items
+router.post('/admin/items', ItemController.listItems)
+router.post('/admin/items/create', ItemController.createItem)
+router.post('/admin/items/update', ItemController.updateItem)
+router.post('/admin/items/delete', ItemController.deleteItem)
 // Activity
 router.post('/admin/activity', ActivityController.listActivies)
 router.post('/admin/activity/create', ActivityController.createActivities)
 router.post('/admin/activity/update', ActivityController.updateActivities)
 router.post('/admin/activity/delete', ActivityController.deleteActivities)
 router.post('/admin/activity/toggle', ActivityController.toggleActive)
+// Person
+router.post('/admin/person', PersonController.listPersons)
+router.post('/admin/person/create', PersonController.createPerson)
+router.post('/admin/person/update', PersonController.updatePerson)
+router.post('/admin/person/delete', PersonController.deletePerson)
+router.post('/admin/person/toggle', PersonController.toggleActive)
+// Person
+router.post('/admin/email', EmailController.listEmails)
+router.post('/admin/email/create', EmailController.createEmails)
+router.post('/admin/email/update', EmailController.updateEmails)
+router.post('/admin/email/delete', EmailController.deleteEmails)
+router.post('/admin/email/toggle', EmailController.toggleActive)
 
 export default router;

@@ -1,4 +1,4 @@
-import { CompanyService } from '../services/companyService.js';
+import { CompanyService } from '../../services/admin/companyService.js';
 
 export class CompanyController {
   static async listCompanies(req, res, next) {
