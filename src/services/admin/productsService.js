@@ -7,9 +7,23 @@ export class ProductsService {
       const product = await prisma.product.findMany({
         where: {
           name: { contains: productName === undefined ? "" : productName },
-          type: { contains: productType === undefined ? "" : productType },
+          type: { equals: productType === undefined ? 0 : productType },
           company_id: { contains: companyId === undefined ? "" : companyId }
         },
+        include: {
+          ProductType: {
+            select: {
+              id: true,
+              category_name: true
+            }
+          },
+          Meassure: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
+        }
       });
       return product;
     } catch (error) {

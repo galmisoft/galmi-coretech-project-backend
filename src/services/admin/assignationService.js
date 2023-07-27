@@ -11,7 +11,33 @@ export class AssignationService {
                 { company_id: { contains: companyID === undefined ? "" : companyID } },
                 { comercial_name: { contains: clientName === undefined ? "" : clientName } }
             ],
-        }
+          }
+        },
+        include: {
+          Client: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          Project: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          Equipment: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          User: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
         }
       });
       return Assignations;

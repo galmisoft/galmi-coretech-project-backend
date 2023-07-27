@@ -27,6 +27,7 @@ model Modules {
 
 model Client {
   id             String        @id @default(uuid())
+  name           String?
   comercial_name String
   country_id     Int
   active         Boolean
@@ -87,6 +88,8 @@ model Company {
   CompanyUser             CompanyUser[]
   Client                  Client[]
   Product                 Product[]
+  Person                  Person[]
+  email                   email[]
 }
 
 model CompanyModules {
@@ -161,11 +164,13 @@ model Person {
   dni         String
   position_id Int
   picture     String
+  company_id  String
   active      Boolean
   created_At  DateTime @default(now())
   updated_At  DateTime @updatedAt
   DniType     DniType  @relation(fields: [dni_type], references: [id])
   Position    Position @relation(fields: [position_id], references: [id])
+  Company     Company  @relation(fields: [company_id], references: [id])
 }
 
 model Position {
@@ -187,9 +192,11 @@ model email {
   CC         String
   CCO        String
   active     Boolean
+  company_id String
   created_At DateTime @default(now())
   updated_At DateTime @updatedAt
   mailType   mailType @relation(fields: [mail_type], references: [id])
+  Company    Company  @relation(fields: [company_id], references: [id])
 }
 
 model User {
@@ -288,13 +295,20 @@ model Permission {
   RolePermission RolePermission[]
 }
 
+model ActivityType {
+  id Int @id
+  name String
+  Activities Activities[]
+}
+
 model Activities {
   id                String              @id @default(uuid())
   name              String
-  type              Int
+  type_id           Int                 @default(0)
   active            Boolean
   created_At        DateTime            @default(now())
   updated_At        DateTime            @updatedAt
+  ActivityType      ActivityType        @relation(fields: [type_id], references: [id])
   DayPartActivities DayPartActivities[]
 }
 
@@ -391,6 +405,7 @@ model Items {
   unit_price    Float
   client_id     String
   project_id    String
+  // Item parte diario  String
   created_At    DateTime @default(now())
   updated_At    DateTime @updatedAt
   Product       Product  @relation(fields: [product_id], references: [id])

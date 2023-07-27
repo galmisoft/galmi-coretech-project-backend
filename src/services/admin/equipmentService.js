@@ -7,11 +7,19 @@ export class EquipmentService {
       const Equipments = await prisma.Equipment.findMany({
         where: {
           Client: { 
-            AND: [
-                { company_id: { contains: companyID === undefined ? "" : companyID } },
-                { comercial_name: { contains: clientName === undefined ? "" : clientName } }
-            ],
-        }
+              AND: [
+                  { company_id: { contains: companyID === undefined ? "" : companyID } },
+                  { comercial_name: { contains: clientName === undefined ? "" : clientName } }
+              ],
+          },
+        },
+        include: {
+          Client: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
         }
       });
       return Equipments;

@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export class EmailsService { 
+export class EmailService { 
   static async listEmails(companyId, mailTo) {
     try {
       const Email = await prisma.email.findMany({

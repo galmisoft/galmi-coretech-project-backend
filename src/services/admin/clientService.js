@@ -10,6 +10,14 @@ export class ClientService {
             { comercial_name: { contains: clientName === undefined ? "" : clientName } }, 
             { company_id: { contains: companyID === undefined ? "" : companyID } },
           ]
+        },
+        include: {
+          Country: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
         }
       });
       return clients;

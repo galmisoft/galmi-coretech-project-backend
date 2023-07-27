@@ -9,6 +9,20 @@ export class PersonsService {
           name: { contains: PersonName === undefined ? "" : PersonName },
           company_id: { contains: companyId === undefined ? "" : companyId }
         },
+        include: {
+          DniType: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          Position: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
+        }
       });
       return Person;
     } catch (error) {

@@ -7,13 +7,28 @@ export class ItemsService {
       const Item = await prisma.Items.findMany({
         where: {
           Product: {
-            every: {
-              name: { contains: ItemName === undefined ? "" : ItemName },
-              type: { contains: ItemType === undefined ? "" : ItemType },
-              company_id: { contains: companyId === undefined ? "" : companyId }
+            AND: [
+                {name: { contains: ItemName === undefined ? "" : ItemName }, },
+                {type: { equals: ItemType === undefined ? 0 : ItemType }, },
+                {company_id: { contains: companyId === undefined ? "" : companyId } }
+              ]
             }
-          }
         },
+        include: {
+          Product: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          Line: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          // FALTA MMGVO
+        }
       });
       return Item;
     } catch (error) {

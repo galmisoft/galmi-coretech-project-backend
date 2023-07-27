@@ -1,4 +1,4 @@
-import { DayPartService } from '../../../services/admin/modules/dayPartService.js'
+import { DayPartService } from '../../services/modules/dayPartService.js'
 
 export class DayPartController {
   static async listDayParts(req, res, next) {

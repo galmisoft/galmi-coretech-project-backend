@@ -5,7 +5,8 @@ export class ActivityService {
   static async listActivies(activityName) {
     try {
         const listActivites = await prisma.Activities.findMany({
-        where: { name: { contains: activityName === undefined ? "true" : activityName } }
+        where: { name: { contains: activityName === undefined ? "true" : activityName } },
+        include: { ActivityType: { select: { id: true, name: true } } }
       });
       return listActivites;
     } catch (error) {
