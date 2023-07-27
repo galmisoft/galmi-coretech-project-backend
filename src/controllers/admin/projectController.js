@@ -1,4 +1,4 @@
-import { ProjectService } from '../services/projectService.js';
+import { ProjectService } from '../../services/admin/projectService.js';
 
 export class ProjectController {
   static async listProject(req, res, next) {

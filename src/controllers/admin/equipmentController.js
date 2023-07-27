@@ -1,4 +1,4 @@
-import { EquipmentService } from '../services/equipmentService.js';
+import { EquipmentService } from '../../services/admin/equipmentService.js';
 
 export class EquipmentController {
   static async listEquipment(req, res, next) {

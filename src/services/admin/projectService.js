@@ -10,6 +10,14 @@ export class ProjectService {
             { name: { contains: projectName === undefined ? "" : projectName } }, 
             { Client: { company_id: { contains: companyID === undefined ? "" : companyID } } },
           ]
+        },
+        include: {
+          Client: { 
+            select: { 
+              id: true, 
+              name: true 
+            } 
+          },
         }
       });
       return Projects;

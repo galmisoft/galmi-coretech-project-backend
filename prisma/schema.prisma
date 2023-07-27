@@ -27,6 +27,7 @@ model Modules {
 
 model Client {
   id             String        @id @default(uuid())
+  name           String?
   comercial_name String
   country_id     Int
   active         Boolean
@@ -86,6 +87,9 @@ model Company {
   CompanyProject          CompanyProject[]
   CompanyUser             CompanyUser[]
   Client                  Client[]
+  Product                 Product[]
+  Person                  Person[]
+  email                   email[]
 }
 
 model CompanyModules {
@@ -153,14 +157,20 @@ model DniType {
 
 model Person {
   id          String   @id @default(uuid())
-  lastname    String
+  name        String
+  lastname1   String
+  lastname2   String
   dni_type    Int
   dni         String
   position_id Int
+  picture     String
+  company_id  String
+  active      Boolean
   created_At  DateTime @default(now())
   updated_At  DateTime @updatedAt
   DniType     DniType  @relation(fields: [dni_type], references: [id])
   Position    Position @relation(fields: [position_id], references: [id])
+  Company     Company  @relation(fields: [company_id], references: [id])
 }
 
 model Position {
@@ -182,9 +192,11 @@ model email {
   CC         String
   CCO        String
   active     Boolean
+  company_id String
   created_At DateTime @default(now())
   updated_At DateTime @updatedAt
   mailType   mailType @relation(fields: [mail_type], references: [id])
+  Company    Company  @relation(fields: [company_id], references: [id])
 }
 
 model User {
@@ -283,13 +295,20 @@ model Permission {
   RolePermission RolePermission[]
 }
 
+model ActivityType {
+  id Int @id
+  name String
+  Activities Activities[]
+}
+
 model Activities {
   id                String              @id @default(uuid())
   name              String
-  type              Int
+  type_id           Int                 @default(0)
   active            Boolean
   created_At        DateTime            @default(now())
   updated_At        DateTime            @updatedAt
+  ActivityType      ActivityType        @relation(fields: [type_id], references: [id])
   DayPartActivities DayPartActivities[]
 }
 
@@ -316,6 +335,11 @@ model testAndMeassurements {
   DayPartActivities  DayPartActivities @relation(fields: [activityDayPart_id], references: [id])
 }
 
+model TerrainType {
+  id Int @id
+  terrain_name String
+}
+
 model Run {
   id                      String       @id @default(uuid())
   meters_from             Int
@@ -339,18 +363,30 @@ model Line {
   Items      Items[]
 }
 
+model Meassure {
+  id            Int                @id @default(autoincrement())
+  name          String
+  Product       Product[]
+}
+
 model Product {
   id              String            @id @default(uuid())
   type            Int
   name            String
   SKU             String
+  company_id      String
+  meassure_id     Int
+  description     String?
   brand           String
   line_id         Int
   serial_number   String
   created_At      DateTime          @default(now())
   updated_At      DateTime          @updatedAt
+  active          Boolean           @default(true)
   ProductType     ProductType       @relation(fields: [type], references: [id])
   Line            Line              @relation(fields: [line_id], references: [id])
+  Company         Company           @relation(fields: [company_id], references: [id])
+  Meassure        Meassure          @relation(fields: [meassure_id], references: [id])
   Items           Items[]
   DayPartProducts DayPartProducts[]
 }
@@ -369,6 +405,7 @@ model Items {
   unit_price    Float
   client_id     String
   project_id    String
+  // Item parte diario  String
   created_At    DateTime @default(now())
   updated_At    DateTime @updatedAt
   Product       Product  @relation(fields: [product_id], references: [id])
@@ -402,7 +439,7 @@ model DayPart {
   id                String              @id @default(uuid())
   date              DateTime
   shift             Boolean
-  status            Int
+  status            Int                 @default(0)
   probe_id          String
   team_id           String
   meters_from       Float
@@ -437,20 +474,13 @@ model DayPartProducts {
   id               String          @id @default(uuid())
   dayPart_id       String
   product_id       String
-  condition        Boolean
-  meters_from      Int
-  drill_bit_change Boolean
-  end_condition    Boolean
-  meters_to        Int
-  change_motive    Int
+  quantity         Int?
+  condition        Boolean?
+  meters_from      Int?
+  drill_bit_change Boolean?
+  end_condition    Boolean?
+  meters_to        Int?
+  change_motive    Int?
   DayPart          DayPart         @relation(fields: [dayPart_id], references: [id])
   Product          Product         @relation(fields: [product_id], references: [id])
-  DayPartFluids    DayPartFluids[]
-}
-
-model DayPartFluids {
-  id               String          @id @default(uuid())
-  dayPartProducts_id String
-  quantity         Int
-  DayPartProducts  DayPartProducts @relation(fields: [dayPartProducts_id], references: [id])
 }

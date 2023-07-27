@@ -1,17 +1,50 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export class ProductsService {
-  static async createProduct(data) {
+export class ProductsService { 
+  static async listProducts(companyId, productType, productName) {
+    try {
+      const product = await prisma.product.findMany({
+        where: {
+          name: { contains: productName === undefined ? "" : productName },
+          type: { equals: productType === undefined ? 0 : productType },
+          company_id: { contains: companyId === undefined ? "" : companyId }
+        },
+        include: {
+          ProductType: {
+            select: {
+              id: true,
+              category_name: true
+            }
+          },
+          Meassure: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
+        }
+      });
+      return product;
+    } catch (error) {
+      console.error('Error fetching product:', error);
+      throw new Error('Failed to listProducts');
+    }
+  }
+  static async createProduct(productModel) {
     try {
       const newProduct = await prisma.product.create({
         data: {
-          type: data.type,
-          name: data.name,
-          SKU: data.SKU,
-          brand: data.brand,
-          line_id: data.line_id,
-          serial_number: data.serial_number,
+          type: productModel.type,
+          name: productModel.name,
+          SKU: productModel.SKU,
+          company_id: productModel.company_id,
+          meassure_id: productModel.meassure_id,
+          description: productModel.description,
+          brand: productModel.brand,
+          line_id: productModel.line_id,
+          serial_number: productModel.serial_number,
+          active: productModel.active,
           created_At: new Date(),
           updated_At: new Date(),
         },
@@ -21,22 +54,7 @@ export class ProductsService {
       console.error('Error creating product:', error);
       throw new Error('Failed to createProduct');
     }
-  }
-  
-  static async listProducts(sku) {
-    try {
-      const product = await prisma.product.findMany({
-        where: {
-          SKU: { contains: sku === undefined ? "" : sku } 
-        },
-      });
-      return product;
-    } catch (error) {
-      console.error('Error fetching product:', error);
-      throw new Error('Failed to listProducts');
-    }
-  }
-  
+  }  
   static async updateProduct(data) {
     try {
       const updatedProduct = await prisma.product.update({
@@ -63,7 +81,6 @@ export class ProductsService {
   static async deleteProduct(productId) {
     try {
       const deletedProduct = await prisma.product.delete({ where: { id: productId } });
-      console.log('Product deleted:', deletedProduct);
       return deletedProduct;
     } catch (error) {
       console.error('Error deleting product:', error);

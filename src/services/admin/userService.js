@@ -1,4 +1,4 @@
-import { JwtAuth } from "../auth/jwtAuth.js";
+import { JwtAuth } from "../../auth/jwtAuth.js";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
@@ -31,12 +31,22 @@ export class UserService {
 
   static async listUsers(companyID, username) {
     try {
-      const result = prisma.User.findMany({
+      const result = await prisma.User.findMany({
           where: {
-              companyUser: { 
-                id: { contains: companyID === undefined ? "" : companyID }
+              CompanyUser: { 
+                every: {
+                  company_id: { contains: companyID === undefined ? "" : companyID }
+                }
               },
               name: { contains: username === undefined ? "" : username } 
+          },
+          include: {
+              UserType: {
+                select: {
+                  id: true,
+                  name: true,
+                }
+              }
           },
           distinct: ['username']
       })

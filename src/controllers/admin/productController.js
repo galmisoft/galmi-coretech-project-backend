@@ -1,10 +1,10 @@
-import { ProductsService } from '../services/productsService.js';
+import { ProductsService } from '../../services/admin/productsService.js';
 
 export class ProductController {
   static async listProducts(req, res, next) {
     try {
-      const { companyId } = req.body;
-      const products = await ProductsService.listProducts(companyId);
+      const { companyId, productName } = req.body;
+      const products = await ProductsService.listProducts(companyId, productName);
       return res.status(200).json({ products });
     } catch (error) {
       console.error(error);
