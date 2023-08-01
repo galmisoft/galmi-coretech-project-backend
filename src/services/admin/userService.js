@@ -61,18 +61,13 @@ export class UserService {
     try {
       const result = await prisma.user.create({ 
         data: {
-          dni_type: userData.dni_type,
-          dni: userData.dni,
           username: userData.username,
           user_type: userData.user_type,
+          active: userData.active,
           reports_to: userData.reports_to,
-          name: userData.name,
+          names: userData.names,
           lastname: userData.lastname,
           email: userData.email,
-          status: userData.status,
-          phone: userData.phone,
-          photo_code: userData.photo_code,
-          active: userData.active,
           created_At: new Date(),
           updated_At: new Date(),
       }});
@@ -95,19 +90,13 @@ export class UserService {
       const result = await prisma.user.update({ 
         where: { id: userData.id },
         data: {
-          dni_type: userData.dni_type,
-          dni: userData.dni,
           username: userData.username,
           user_type: userData.user_type,
+          active: userData.active,
           reports_to: userData.reports_to,
-          name: userData.name,
+          names: userData.names,
           lastname: userData.lastname,
           email: userData.email,
-          status: userData.status,
-          phone: userData.phone,
-          photo_code: userData.photo_code,
-          active: userData.active,
-          created_At: new Date(),
           updated_At: new Date(),
       } });
       return result

@@ -8,7 +8,7 @@ export class ClientController {
       return res.status(200).json({ clients });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
 
@@ -19,7 +19,7 @@ export class ClientController {
       return res.status(201).json({ client });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
 
@@ -30,7 +30,7 @@ export class ClientController {
       return res.status(200).json({ client });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
 
@@ -41,7 +41,7 @@ export class ClientController {
       return res.status(200).json({ client });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
 }

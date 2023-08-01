@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 export class ProductsService { 
   static async listProducts(companyId, productType, productName) {
     try {
-      const product = await prisma.product.findMany({
+      const product = await prisma.Product.findMany({
         where: {
           name: { contains: productName === undefined ? "" : productName },
           type: { equals: productType === undefined ? 0 : productType },
@@ -33,7 +33,7 @@ export class ProductsService {
   }
   static async createProduct(productModel) {
     try {
-      const newProduct = await prisma.product.create({
+      const newProduct = await prisma.Product.create({
         data: {
           type: productModel.type,
           name: productModel.name,
@@ -57,7 +57,7 @@ export class ProductsService {
   }  
   static async updateProduct(data) {
     try {
-      const updatedProduct = await prisma.product.update({
+      const updatedProduct = await prisma.Product.update({
         where: {
           id: data.id,
         },
@@ -80,7 +80,7 @@ export class ProductsService {
   
   static async deleteProduct(productId) {
     try {
-      const deletedProduct = await prisma.product.delete({ where: { id: productId } });
+      const deletedProduct = await prisma.Product.delete({ where: { id: productId } });
       return deletedProduct;
     } catch (error) {
       console.error('Error deleting product:', error);
@@ -90,11 +90,11 @@ export class ProductsService {
 
   static async toggleAvailable(productId) {
     try {
-      const product = await prisma.product.findUnique({
+      const product = await prisma.Product.findUnique({
         where: { id: productId }
       });
 
-      const toggle = await prisma.product.update({
+      const toggle = await prisma.Product.update({
         where: { id: productId }, data: { active: !product.active },
       });
       return toggle;

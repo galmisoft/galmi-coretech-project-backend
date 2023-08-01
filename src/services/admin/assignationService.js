@@ -23,7 +23,8 @@ export class AssignationService {
           Project: {
             select: {
               id: true,
-              name: true
+              name: true,
+              active: true
             }
           },
           Equipment: {

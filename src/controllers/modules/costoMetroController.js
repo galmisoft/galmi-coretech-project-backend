@@ -8,7 +8,7 @@ export class CostoMetroController {
       return res.status(200).json({ tools });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
   static async downloadCostoMetro(req, res, next) {
@@ -19,7 +19,7 @@ export class CostoMetroController {
       return res.status(200).json({ tools });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
 }

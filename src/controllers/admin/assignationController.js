@@ -8,7 +8,7 @@ export class AssignationController {
       return res.status(200).json({ Assignations });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
   static async createAssignation(req, res, next) {
@@ -18,7 +18,7 @@ export class AssignationController {
       return res.status(200).json({ Assignations });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
   static async updateAssignation(req, res, next) {
@@ -28,7 +28,7 @@ export class AssignationController {
       return res.status(200).json({ Assignations });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
   static async deleteAssignation(req, res, next) {
@@ -38,7 +38,7 @@ export class AssignationController {
       return res.status(200).json({ Assignations });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
 }

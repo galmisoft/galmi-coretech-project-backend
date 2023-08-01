@@ -8,7 +8,7 @@ export class EmailController {
       return res.status(200).json({ Emails });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
   static async createEmail(req, res, next) {
@@ -18,7 +18,7 @@ export class EmailController {
       return res.status(200).json({ Emails });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
   static async updateEmail(req, res, next) {
@@ -28,7 +28,7 @@ export class EmailController {
       return res.status(200).json({ Emails });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
   static async deleteEmail(req, res, next) {
@@ -38,7 +38,7 @@ export class EmailController {
       return res.status(200).json({ Emails });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
 }

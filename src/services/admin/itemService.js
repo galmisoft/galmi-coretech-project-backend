@@ -27,7 +27,12 @@ export class ItemsService {
               name: true
             }
           },
-          // FALTA MMGVO
+          DayPartProducts: {
+            select: {
+              id: true,
+              serial_number: true
+            }
+          }
         }
       });
       return Item;
@@ -46,6 +51,7 @@ export class ItemsService {
           unit_price: ItemModel.company_id,
           client_id: ItemModel.meassure_id,
           project_id: ItemModel.description,
+          dayPartProdayPartProducts_id: ItemModel.dayPartProducts_id,
           created_At: new Date(),
           updated_At: new Date(),
         },
@@ -69,7 +75,7 @@ export class ItemsService {
           unit_price: ItemModel.company_id,
           client_id: ItemModel.meassure_id,
           project_id: ItemModel.description,
-          created_At: new Date(),
+          dayPartProdayPartProducts_id: ItemModel.dayPartProducts_id,
           updated_At: new Date(),
         },
       });

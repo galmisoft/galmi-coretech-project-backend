@@ -8,7 +8,7 @@ export class ProductController {
       return res.status(200).json({ products });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
   static async createProduct(req, res, next) {
@@ -18,7 +18,7 @@ export class ProductController {
       return res.status(200).json({ products });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
   static async updateProduct(req, res, next) {
@@ -28,7 +28,7 @@ export class ProductController {
       return res.status(200).json({ products });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
   static async deleteProduct(req, res, next) {
@@ -38,7 +38,7 @@ export class ProductController {
       return res.status(200).json({ products });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
   static async toggleActive(req, res, next) {
@@ -48,7 +48,7 @@ export class ProductController {
       return res.status(200).json({ products });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
 }

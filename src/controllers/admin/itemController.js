@@ -8,7 +8,7 @@ export class ItemController {
       return res.status(200).json({ Items });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
   static async createItem(req, res, next) {
@@ -18,7 +18,7 @@ export class ItemController {
       return res.status(200).json({ Items });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
   static async updateItem(req, res, next) {
@@ -28,7 +28,7 @@ export class ItemController {
       return res.status(200).json({ Items });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
   static async deleteItem(req, res, next) {
@@ -38,7 +38,7 @@ export class ItemController {
       return res.status(200).json({ Items });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
 }
