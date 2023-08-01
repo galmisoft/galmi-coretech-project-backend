@@ -46,10 +46,10 @@ model Project {
   id                    String           @id @default(uuid())
   client_id             String
   name                  String
-  zone                  String
-  location              String
-  projected_cost_tools  Float
-  projected_cost_fluids Float
+  zone                  String?
+  location              String?
+  projected_cost_tools  Float?
+  projected_cost_fluids Float?
   active                Boolean
   created_At            DateTime         @default(now())
   updated_At            DateTime         @updatedAt
@@ -123,11 +123,11 @@ model Equipment {
   client_id     String
   internal_code String
   mine_code     String
-  brand         String
-  cfm           Float
-  rpm           Float
-  preasure      Float
-  status        String
+  brand         String?
+  cfm           Float?
+  rpm           Float?
+  preasure      Float?
+  status        String?
   created_At    DateTime      @default(now())
   updated_At    DateTime      @updatedAt
   Client        Client        @relation(fields: [client_id], references: [id])
@@ -205,9 +205,9 @@ model User {
   user_type   Int
   active      Boolean
   reports_to  String
-  names       String
-  lastname    String
-  email       String
+  names       String?
+  lastname    String?
+  email       String?
   created_At  DateTime      @default(now())
   updated_At  DateTime      @updatedAt
   UserType    UserType      @relation(fields: [user_type], references: [id])
@@ -339,12 +339,12 @@ model Run {
   meters_from             Int
   meters_to               Int
   length                  Int
-  recuperation_percentage Int
+  recuperation_percentage Int?
   terrain_type1           Int
-  terrain_type2           Int
-  terrain_type3           Int
-  observation             String
-  picture                 String
+  terrain_type2           Int?
+  terrain_type3           Int?
+  observation             String?
+  picture                 String?
   DayPartRun              DayPartRun[]
 }
 
@@ -365,17 +365,17 @@ model Meassure {
 
 model Product {
   id            String      @id @default(uuid())
-  type          Int
+  type_id       Int
   company_id    String
   meassure_id   Int
   description   String?
   brand         String
   serial_number String
-  presentation  String
+  presentation  String?
   created_At    DateTime    @default(now())
   updated_At    DateTime    @updatedAt
   active        Boolean     @default(true)
-  ProductType   ProductType @relation(fields: [type], references: [id])
+  ProductType   ProductType @relation(fields: [type_id], references: [id])
   Company       Company     @relation(fields: [company_id], references: [id])
   Meassure      Meassure    @relation(fields: [meassure_id], references: [id])
   Items         Items[]
@@ -385,6 +385,7 @@ model ProductType {
   id            Int       @id
   category_name String
   Product       Product[]
+  DayPartProducts DayPartProducts[]
 }
 
 model Items {
@@ -409,19 +410,20 @@ model Items {
 model Probe {
   id             String    @id @default(uuid())
   date_ini       DateTime
-  date_fin       DateTime
+  azimut_ini     Int?
+  incline_ini    Int?
   job_type       Boolean
-  level          Int
-  labor          String
-  objective_vein String
-  objective_prof Int
-  zone           String
-  platform       String
-  azimut_ini     Int
-  incline_ini    Int
+  objective_prof Int?
+  platform       String?
+  level          Int?
+  labor          String?
+  objective_vein String?
+  zone           String?
   horometer_ini  Int
   horometer_fin  Int
   finalized      Boolean
+  date_fin       DateTime?
+
   created_At     DateTime  @default(now())
   updated_At     DateTime  @updatedAt
   DayPart        DayPart[]
@@ -438,12 +440,12 @@ model DayPart {
   meters_to         Float
   surplus_meters    Float
   constant_meters   Float
-  M1                Float
-  M2                Float
-  M3                Float
-  M4                Float
-  PH                Float
-  PPM               Float
+  M1                Float?
+  M2                Float?
+  M3                Float?
+  M4                Float?
+  PH                Float?
+  PPM               Float?
   created_At        DateTime            @default(now())
   updated_At        DateTime            @updatedAt
   Probe             Probe               @relation(fields: [probe_id], references: [id])
@@ -465,18 +467,22 @@ model DayPartRun {
 model DayPartProducts {
   id               String   @id @default(uuid())
   dayPart_id       String
-  line_id          Int
-  serial_number    String
-  brand            String
-  matrix           String
-  product_id       String
+  type_id          Int
+
+  name             String
   quantity         Int?
+
+  line_id          Int      @default(0)
+  serial_number    String?
+  brand            String?
+  matrix           String?
   condition        Boolean?
   meters_from      Int?
   drill_bit_change Boolean?
   end_condition    Boolean?
   meters_to        Int?
   change_motive    Int?
+  ProductType      ProductType @relation(fields: [type_id], references: [id])
   DayPart          DayPart  @relation(fields: [dayPart_id], references: [id])
   Line             Line     @relation(fields: [line_id], references: [id])
   Items            Items[]

@@ -34,7 +34,7 @@ export class PersonsService {
     try {
       const newPerson = await prisma.Person.create({
         data: {
-          name: PersonModel.name,
+          complete_name: PersonModel.name,
           lastname1: PersonModel.lastname1,
           lastname2: PersonModel.lastname2,
           dni_type: PersonModel.dni_type,
@@ -59,7 +59,7 @@ export class PersonsService {
           id: PersonModel.id,
         },
         data: {
-            name: PersonModel.name,
+            complete_name: PersonModel.name,
             lastname1: PersonModel.lastname1,
             lastname2: PersonModel.lastname2,
             dni_type: PersonModel.dni_type,
@@ -67,7 +67,6 @@ export class PersonsService {
             position_id: PersonModel.position_id,
             picture: PersonModel.picture,
             active: PersonModel.active,
-            created_At: new Date(),
             updated_At: new Date(),
           },
       });

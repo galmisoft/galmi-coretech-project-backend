@@ -45,7 +45,6 @@ export class DayPartService {
     try {
       const newRuns = await prisma.Run.createMany({
         data: dayPartModel.dayPartRun.map((run) => ({
-            id: run.run_id, 
             meters_from: run.meters_from, 
             meters_to: run.meters_to,
             length: run.length,
@@ -90,21 +89,34 @@ export class DayPartService {
           data: dayPartModel.dayPartActivities.map((activity) => ({
             dayPart_id: dayParts.id,
             activity_id: activity.id,
-            hours: activity.hours
+            hours: activity.hours,
+            testAndMeassurements: activity.testAndMeassurements || null
           }))
         });
         const dayPartFluids = await prisma.DayPartProducts.createMany({
-          data: dayPartModel.dayPartFluids.map((fluids) => ({
+          data: dayPartModel.dayPartFluids.map((fluid) => ({
             dayPart_id: dayParts.id,
-            activity_id: fluids.id,
-            hours: fluids.hours
+            type_id: 3,
+
+            name: fluid.name,
+            quantity: fluid.quantity
           }))
         });
         const DayPartProducts = await prisma.DayPartProducts.createMany({
           data: dayPartModel.DayPartProducts.map((product) => ({
             dayPart_id: dayParts.id,
-            activity_id: product.id,
-            hours: product.hours
+            type_id: 1,
+
+            line_id: product.id,
+            serial_number: product.serial_number,
+            brand: product.brand,
+            matrix: product.matrix,
+            condition: product.condition,
+            meters_from: product.meters_from,
+            drill_bit_change: product.drill_bit_change,
+            end_condition: product.end_condition,
+            meters_to: product.meters_to,
+            change_motive: product.change_motive
           }))
         });
 
