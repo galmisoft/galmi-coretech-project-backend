@@ -229,12 +229,17 @@ export class ComboService {
 
   static async listProductSerialNumbers() {
     try{
-      const result = await prisma.product.findMany({
+      const result = await prisma.DayPartProducts.findMany({
         select: {
           id: true,
           name: true,
           serial_number: true,
         },
+        where: {
+          Items: {
+            none: {}
+          }
+        }
     });
     return result
     } catch(error){

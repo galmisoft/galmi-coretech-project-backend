@@ -8,7 +8,7 @@ export class DayPartController {
       return res.status(200).json({ listdayParts });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
   static async dayPartData(req, res, next){
@@ -17,7 +17,7 @@ export class DayPartController {
       return res.status(200).json({ dayPartData });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
   static async createDayParts(req, res, next) {
@@ -27,7 +27,7 @@ export class DayPartController {
       return res.status(200).json({ dayParts });
     } catch (err) { 
       console.log(err)
-      return res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error', details: error.message })
     }
   }
 }
