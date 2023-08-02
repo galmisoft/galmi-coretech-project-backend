@@ -155,22 +155,24 @@ model DniType {
 }
 
 model Person {
-  id          String   @id @default(uuid())
+  id            String   @id @default(uuid())
   complete_name String
-  lastname1   String
-  lastname2   String
-  dni_type    Int
-  dni         String
-  position_id Int
-  picture     String
-  active      Boolean
+  lastname1     String
+  lastname2     String
+  dni_type      Int      @default(0)
+  dni           String
+  position_id   Int
+  picture       String
+  active        Boolean  @default(true)
+  company_id    String
 
-  company_id  String
   created_At  DateTime @default(now())
   updated_At  DateTime @updatedAt
   DniType     DniType  @relation(fields: [dni_type], references: [id])
   Position    Position @relation(fields: [position_id], references: [id])
   Company     Company  @relation(fields: [company_id], references: [id])
+
+  DayPartPerson DayPartPerson[]
 }
 
 model Position {
@@ -372,6 +374,7 @@ model Product {
   brand         String
   serial_number String
   presentation  String?
+
   created_At    DateTime    @default(now())
   updated_At    DateTime    @updatedAt
   active        Boolean     @default(true)
@@ -397,6 +400,7 @@ model Items {
   client_id          String
   project_id         String
   dayPartProducts_id String
+
   created_At         DateTime @default(now())
   updated_At         DateTime @updatedAt
 
@@ -454,6 +458,16 @@ model DayPart {
   DayPartProducts   DayPartProducts[]
   CompanydayPart    CompanydayPart[]
   DayPartActivities DayPartActivities[]
+  DayPartPerson     DayPartPerson[]
+}
+
+model DayPartPerson {
+  id         String  @id @default(uuid())
+  dayPart_id String
+  person_id  String
+
+  DayPart    DayPart @relation(fields: [dayPart_id], references: [id])
+  Person     Person @relation(fields: [person_id], references: [id])
 }
 
 model DayPartRun {
@@ -482,6 +496,7 @@ model DayPartProducts {
   end_condition    Boolean?
   meters_to        Int?
   change_motive    Int?
+
   ProductType      ProductType @relation(fields: [type_id], references: [id])
   DayPart          DayPart  @relation(fields: [dayPart_id], references: [id])
   Line             Line     @relation(fields: [line_id], references: [id])

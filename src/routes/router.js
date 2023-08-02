@@ -24,9 +24,9 @@ const router = Router();
 // // INICIO
 
 // // DAY PART
-// router.post('/dayPart', DayPartController.listDayParts)
-// router.post('/dayPart/form', DayPartController.dayPartData)
-// router.post('/dayPart/create', DayPartController.createDayParts)
+router.post('/dayPart', DayPartController.listDayParts)
+router.post('/dayPart/form', DayPartController.dayPartData)
+router.post('/dayPart/create', DayPartController.createDayParts)
 
 // // COSTO X METRO
 // router.post('/costoMetro', CostoMetroController.listCostoMetro)
