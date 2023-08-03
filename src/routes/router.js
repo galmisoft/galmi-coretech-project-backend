@@ -24,9 +24,9 @@ const router = Router();
 // // INICIO
 
 // // DAY PART
-// router.post('/dayPart', DayPartController.listDayParts)
-// router.post('/dayPart/form', DayPartController.dayPartData)
-// router.post('/dayPart/create', DayPartController.createDayParts)
+router.post('/dayPart', DayPartController.listDayParts)
+router.post('/dayPart/form', DayPartController.dayPartData)
+router.post('/dayPart/create', DayPartController.createDayParts)
 
 // // COSTO X METRO
 // router.post('/costoMetro', CostoMetroController.listCostoMetro)
@@ -106,7 +106,7 @@ router.post('/combo/clients', ComboController.listClients)
 router.post('/combo/projects', ComboController.listProjects)
 router.post('/combo/teams', ComboController.listTeams)
 router.post('/combo/users', ComboController.listUsers)
-router.post('/combo/productTypes', ComboController.listProductTypes)
+router.post('/combo/productTypes', ComboController.listProductTypes) 
 router.post('/combo/measures', ComboController.listMeasures)
 router.post('/combo/products', ComboController.listProducts)
 router.post('/combo/lines', ComboController.listLines)

@@ -22,11 +22,11 @@ export class DayPartController {
   }
   static async createDayParts(req, res, next) {
     try {
-      const { dayPartModel } = req.body;
+      const dayPartModel = req.body;
       const dayParts = await DayPartService.createDayParts(dayPartModel)
       return res.status(200).json({ dayParts });
-    } catch (err) { 
-      console.log(err)
+    } catch (error) { 
+      console.log(error)
       return res.status(500).json({ message: 'Internal server error', details: error.message })
     }
   }

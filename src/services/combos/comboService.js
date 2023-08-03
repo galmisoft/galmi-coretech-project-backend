@@ -157,7 +157,7 @@ export class ComboService {
       const result = await prisma.user.findMany({
         select: {
           id: true,
-          name: true,
+          names: true,
         },
       });
       return result
@@ -202,7 +202,7 @@ export class ComboService {
       const result = await prisma.product.findMany({
         select: {
           id: true,
-          name: true,
+          description: true,
         },
       });
       return result
