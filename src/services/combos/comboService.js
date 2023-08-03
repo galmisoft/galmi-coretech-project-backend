@@ -7,7 +7,7 @@ export class ComboService {
       const result = await prisma.probe.findMany({
         select: {
           id: true,
-          zone: true
+          probe_number: true
         },
       });
       return result
@@ -232,7 +232,6 @@ export class ComboService {
       const result = await prisma.DayPartProducts.findMany({
         select: {
           id: true,
-          name: true,
           serial_number: true,
         },
         where: {

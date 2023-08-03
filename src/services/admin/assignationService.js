@@ -36,7 +36,7 @@ export class AssignationService {
           User: {
             select: {
               id: true,
-              name: true
+              names: true
             }
           },
         }
