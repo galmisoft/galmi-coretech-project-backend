@@ -42,6 +42,7 @@ export class DayPartService {
       if ( dayPartModel.probe_id === null ){
         const newProbe = await prisma.probe.create({
           data: {
+            probe_number: dayPartModel.probe_number,
             date_ini: dayPartModel.probe.date_ini,
             azimut_ini: dayPartModel.probe.azimut_ini,
             incline_ini: dayPartModel.probe.incline_ini,
@@ -126,11 +127,10 @@ export class DayPartService {
 
       console.log('Creating Fluids for ', dayParts.id)
       dayPartModel.dayPartFluids.forEach( async fluid => {
-        const createddayPartFluids = await prisma.DayPartProducts.create({
+        const createddayPartFluids = await prisma.DayPartFluids.create({
           data: {
             dayPart_id: dayParts.id,
-            type_id: 3,
-            name: fluid.name,
+            fluid_id: fluid.id,
             quantity: fluid.quantity
           }
         });
@@ -142,7 +142,6 @@ export class DayPartService {
           data: {
             dayPart_id: dayParts.id,
             type_id: 1,
-            name: product.serial_number,
             line_id: product.line_id,
             serial_number: product.serial_number,
             brand: product.brand,
