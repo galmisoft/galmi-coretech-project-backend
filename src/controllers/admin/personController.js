@@ -3,8 +3,8 @@ import { PersonsService } from '../../services/admin/personService.js';
 export class PersonController {
   static async listPersons(req, res, next) {
     try {
-      const { companyId, PersonName } = req.body;
-      const Persons = await PersonsService.listPersons(companyId, PersonName);
+      const { companyId } = req.body;
+      const Persons = await PersonsService.listPersons(companyId);
       return res.status(200).json({ Persons });
     } catch (error) {
       console.error(error);

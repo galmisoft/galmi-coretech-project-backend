@@ -1,6 +1,6 @@
 import { UserService } from '../../services/admin/userService.js';
 export class UserController {
-  static async validateUser(req, res , next) {
+  static async validateUser(req, res, next) {
     const { email, password } = req.body;
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
@@ -13,8 +13,8 @@ export class UserController {
   }
   static async listUser(req, res, next) {
     try {
-      const { username } = req.body;
-      const Users = await UserService.listUsers(username);
+      const { companyID } = req.body;
+      const Users = await UserService.listUsers(companyID);
       return res.status(200).json({ Users });
     } catch (error) {
       console.error(error);

@@ -1,12 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export class PersonsService { 
-  static async listPersons(companyId, PersonName) {
+export class PersonsService {
+  static async listPersons(companyId) {
     try {
       const Person = await prisma.Person.findMany({
         where: {
-          name: { contains: PersonName === undefined ? "" : PersonName },
           company_id: { contains: companyId === undefined ? "" : companyId }
         },
         include: {
@@ -42,6 +41,7 @@ export class PersonsService {
           position_id: PersonModel.position_id,
           picture: PersonModel.picture,
           active: PersonModel.active,
+          company_id: PersonModel.company_id,
           created_At: new Date(),
           updated_At: new Date(),
         },
@@ -51,7 +51,7 @@ export class PersonsService {
       console.error('Error creating Person:', error);
       throw new Error('Failed to createPerson');
     }
-  }  
+  }
   static async updatePerson(PersonModel) {
     try {
       const updatedPerson = await prisma.Person.update({
@@ -59,16 +59,16 @@ export class PersonsService {
           id: PersonModel.id,
         },
         data: {
-            complete_name: PersonModel.name,
-            lastname1: PersonModel.lastname1,
-            lastname2: PersonModel.lastname2,
-            dni_type: PersonModel.dni_type,
-            dni: PersonModel.dni,
-            position_id: PersonModel.position_id,
-            picture: PersonModel.picture,
-            active: PersonModel.active,
-            updated_At: new Date(),
-          },
+          complete_name: PersonModel.name,
+          lastname1: PersonModel.lastname1,
+          lastname2: PersonModel.lastname2,
+          dni_type: PersonModel.dni_type,
+          dni: PersonModel.dni,
+          position_id: PersonModel.position_id,
+          picture: PersonModel.picture,
+          active: PersonModel.active,
+          updated_At: new Date(),
+        },
       });
       return updatedPerson;
     } catch (error) {
@@ -76,7 +76,7 @@ export class PersonsService {
       throw new Error('Failed to updatePerson');
     }
   }
-  
+
   static async deletePerson(PersonId) {
     try {
       const deletedPerson = await prisma.Person.delete({ where: { id: PersonId } });

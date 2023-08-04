@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 export class UserService {
   static async validateUser(user) {
-   const result = await prisma.user.findUnique({
+    const result = await prisma.user.findUnique({
       where: {
         email: user.email,
       },
@@ -29,26 +29,26 @@ export class UserService {
     }
   }
 
-  static async listUsers(companyID, username) {
+  static async listUsers(companyID) {
     try {
       const result = await prisma.User.findMany({
-          where: {
-              CompanyUser: { 
-                every: {
-                  company_id: { contains: companyID === undefined ? "" : companyID }
-                }
-              },
-              name: { contains: username === undefined ? "" : username } 
+        where: {
+          CompanyUser: {
+            every: {
+              company_id: { contains: companyID === undefined ? "" : companyID }
+            }
           },
-          include: {
-              UserType: {
-                select: {
-                  id: true,
-                  name: true,
-                }
-              }
-          },
-          distinct: ['username']
+          name: { contains: username === undefined ? "" : username }
+        },
+        include: {
+          UserType: {
+            select: {
+              id: true,
+              name: true,
+            }
+          }
+        },
+        distinct: ['username']
       })
       return result
     } catch (error) {
@@ -59,7 +59,7 @@ export class UserService {
 
   static async createUser(userData) {
     try {
-      const result = await prisma.user.create({ 
+      const result = await prisma.user.create({
         data: {
           username: userData.username,
           user_type: userData.user_type,
@@ -70,7 +70,8 @@ export class UserService {
           email: userData.email,
           created_At: new Date(),
           updated_At: new Date(),
-      }});
+        }
+      });
 
       const result2 = await prisma.companyUser.create({
         data: {
@@ -87,7 +88,7 @@ export class UserService {
 
   static async updateUser(userData) {
     try {
-      const result = await prisma.user.update({ 
+      const result = await prisma.user.update({
         where: { id: userData.id },
         data: {
           username: userData.username,
@@ -98,7 +99,8 @@ export class UserService {
           lastname: userData.lastname,
           email: userData.email,
           updated_At: new Date(),
-      } });
+        }
+      });
       return result
     } catch (error) {
       console.error('Error updateUser:', error);
