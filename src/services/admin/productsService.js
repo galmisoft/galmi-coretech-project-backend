@@ -1,13 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export class ProductsService { 
-  static async listProducts(companyId, productType, productName) {
+export class ProductsService {
+  static async listProducts(companyId, productType) {
     try {
       const product = await prisma.Product.findMany({
         where: {
-          name: { contains: productName === undefined ? "" : productName },
-          type: { equals: productType === undefined ? 0 : productType },
+          type_id: { equals: productType === undefined ? 0 : productType },
           company_id: { contains: companyId === undefined ? "" : companyId }
         },
         include: {
@@ -54,7 +53,7 @@ export class ProductsService {
       console.error('Error creating product:', error);
       throw new Error('Failed to createProduct');
     }
-  }  
+  }
   static async updateProduct(data) {
     try {
       const updatedProduct = await prisma.Product.update({
@@ -62,13 +61,13 @@ export class ProductsService {
           id: data.id,
         },
         data: {
-            type: data.type,
-            name: data.name,
-            SKU: data.SKU,
-            brand: data.brand,
-            line_id: data.line_id,
-            serial_number: data.serial_number,
-            updated_At: new Date(),
+          type: data.type,
+          name: data.name,
+          SKU: data.SKU,
+          brand: data.brand,
+          line_id: data.line_id,
+          serial_number: data.serial_number,
+          updated_At: new Date(),
         },
       });
       return updatedProduct;
@@ -77,7 +76,7 @@ export class ProductsService {
       throw new Error('Failed to updateProduct');
     }
   }
-  
+
   static async deleteProduct(productId) {
     try {
       const deletedProduct = await prisma.Product.delete({ where: { id: productId } });
