@@ -38,7 +38,7 @@ export class UserService {
                   company_id: { contains: companyID === undefined ? "" : companyID }
                 }
               },
-              name: { contains: username === undefined ? "" : username } 
+              names: { contains: username === undefined ? "" : username } 
           },
           include: {
               UserType: {
