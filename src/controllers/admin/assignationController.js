@@ -3,8 +3,8 @@ import { AssignationService } from '../../services/admin/assignationService.js';
 export class AssignationController {
   static async listAssignation(req, res, next) {
     try {
-      const { companyID, clientName } = req.body;
-      const Assignations = await AssignationService.listAssignations(companyID, clientName);
+      const { defaultCompanyID, companyID } = req.body;
+      const Assignations = await AssignationService.listAssignations(defaultCompanyID, companyID);
       return res.status(200).json({ Assignations });
     } catch (error) {
       console.error(error);

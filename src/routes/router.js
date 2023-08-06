@@ -13,17 +13,12 @@ import { ItemController } from "../controllers/admin/itemController.js";
 import { PersonController } from "../controllers/admin/personController.js";
 import { EmailController } from "../controllers/admin/emailController.js";
 import { ComboController } from "../controllers/combos/comboController.js";
+import { AuthController } from "../controllers/admin/authController.js";
 
 const router = Router();
 
 
-// VIEWS
-// LOGIN
-// router.post('/sigin', UserController.validateUser);
-
-// // INICIO
-
-// // DAY PART
+router.post('/sigin', AuthController.login);
 router.post('/dayPart', DayPartController.listDayParts)
 router.post('/dayPart/form', DayPartController.dayPartData)
 router.post('/dayPart/create', DayPartController.createDayParts)

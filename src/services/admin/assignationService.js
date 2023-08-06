@@ -2,15 +2,15 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class AssignationService {
-  static async listAssignations(companyID, clientName) {
+  static async listAssignations(defaultCompanyID, companyID) {
     try {
       const Assignations = await prisma.Assignation.findMany({
         where: {
           Client: { 
-            AND: [
-                { company_id: { contains: companyID === undefined ? "" : companyID } },
-                { comercial_name: { contains: clientName === undefined ? "" : clientName } }
-            ],
+            OR: [
+              { company_id: companyID } ,
+              { company_id: defaultCompanyID },
+            ], 
           }
         },
         include: {

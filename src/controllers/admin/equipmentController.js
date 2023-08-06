@@ -3,8 +3,8 @@ import { EquipmentService } from '../../services/admin/equipmentService.js';
 export class EquipmentController {
   static async listEquipment(req, res, next) {
     try {
-      const { companyID, clientName } = req.body;
-      const Equipments = await EquipmentService.listEquipments(companyID, clientName);
+      const { defaultCompanyID, companyID } = req.body;
+      const Equipments = await EquipmentService.listEquipments(defaultCompanyID, companyID);
       return res.status(200).json({ Equipments });
     } catch (error) {
       console.error(error);
