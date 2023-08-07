@@ -2,45 +2,47 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class ItemsService { 
-  static async listItems(companyId, ItemType, ItemName) {
+  static async listItems(defaultCompanyID, companyID) {
     try {
       const Item = await prisma.Items.findMany({
         where: {
-          Product: {
-            AND: [
-                {name: { contains: ItemName === undefined ? "" : ItemName }, },
-                {type: { equals: ItemType === undefined ? 0 : ItemType }, },
-                {company_id: { contains: companyId === undefined ? "" : companyId } }
-              ]
-            }
+          AND: [
+            {
+              OR: [
+                { Product: { company_id: defaultCompanyID } },
+                { Product: { company_id: companyID } },
+              ],
+            } 
+          ]
         },
         include: {
           Product: {
             select: {
               id: true,
-              name: true
-            }
+              description: true,
+            },
           },
           Line: {
             select: {
               id: true,
-              name: true
-            }
+              name: true,
+            },
           },
           DayPartProducts: {
             select: {
               id: true,
-              serial_number: true
-            }
-          }
-        }
+              serial_number: true,
+            },
+          },
+        },
       });
       return Item;
     } catch (error) {
       console.error('Error fetching Item:', error);
       throw new Error('Failed to listItems');
     }
-  }
+}
+
   static async createItem(ItemModel) {
     try {
       const newItem = await prisma.Items.create({

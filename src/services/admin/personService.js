@@ -2,33 +2,37 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class PersonsService {
-  static async listPersons(companyId) {
+  static async listPersons(defaultCompanyID, companyID) {
     try {
       const Person = await prisma.Person.findMany({
         where: {
-          company_id: { contains: companyId === undefined ? "" : companyId }
+          OR: [
+            { company_id: companyID } ,
+            { company_id: defaultCompanyID },
+          ],
         },
         include: {
           DniType: {
             select: {
               id: true,
-              name: true
-            }
+              name: true,
+            },
           },
           Position: {
             select: {
               id: true,
-              name: true
-            }
-          }
-        }
+              name: true,
+            },
+          },
+        },
       });
+      
       return Person;
     } catch (error) {
       console.error('Error fetching Person:', error);
       throw new Error('Failed to listPersons');
     }
-  }
+  }  
   static async createPerson(PersonModel) {
     try {
       const newPerson = await prisma.Person.create({

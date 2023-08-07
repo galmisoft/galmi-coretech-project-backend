@@ -1,16 +1,46 @@
 import { JwtAuth } from "../../auth/jwtAuth.js";
 import { PrismaClient } from "@prisma/client";
+import md5 from 'md5';
 const prisma = new PrismaClient();
 
 export class UserService {
-  static async validateUser(user) {
-    const result = await prisma.user.findUnique({
-      where: {
-        email: user.email,
-      },
-    })
-    if (result) return JwtAuth.sign(user);
-    return false;
+  static async validateUser(username, password) {
+    try {
+      const hashedPassword = md5(password)
+      const result = await prisma.user.findMany({
+        where: {
+          AND: [
+            { password: hashedPassword },
+            { OR: [
+              { username: username },
+              { email: username }
+            ]}
+          ]        
+        },
+        include: {
+          CompanyUser: {
+            select: {
+              id: true,
+              Company: {
+                select: {
+                  name: true,
+                  name: true,
+                  visible_name: true
+                }
+              }
+            }
+          }
+        }
+      })
+      if (result) {
+        console.log(JSON.stringify({ result }))
+        return JwtAuth.sign(JSON.stringify({ result }));
+      }
+      return false;
+    } catch(error) {
+      console.log(error)
+      throw new Error('An error occurred while login')
+    }
   }
 
   static validateToken(req) {
@@ -29,16 +59,30 @@ export class UserService {
     }
   }
 
-  static async listUsers(companyID) {
+  static async listUsers(defaultCompanyID, companyID) {
     try {
+      if (defaultCompanyID === undefined) {
+        throw new Error('Se requiere variable defaultCompanyID');
+      }
+  
       const result = await prisma.User.findMany({
+        select: {
+          id: true,
+          username: true,
+          user_type: true,
+          active: true,
+          reports_to: true,
+          names: true,
+          lastname: true,
+          email: true,
+          created_At: true,
+          updated_At: true
+        },
         where: {
-          CompanyUser: {
-            every: {
-              company_id: { contains: companyID === undefined ? "" : companyID }
-            }
-          },
-          name: { contains: username === undefined ? "" : username }
+          OR: [
+            { CompanyUser: { some: { company_id: defaultCompanyID }, } },
+            { CompanyUser: { some: { company_id: companyID }, } }
+          ], 
         },
         include: {
           UserType: {
@@ -49,19 +93,21 @@ export class UserService {
           }
         },
         distinct: ['username']
-      })
-      return result
+      });
+  
+      return result;
     } catch (error) {
       console.error('Error listUsers:', error);
-      throw new Error('An error occurred while listing Users')
+      throw new Error('An error occurred while listing Users');
     }
   }
-
   static async createUser(userData) {
     try {
+      const hashedPassword = md5(userData.password)
       const result = await prisma.user.create({
         data: {
           username: userData.username,
+          password: hashedPassword,
           user_type: userData.user_type,
           active: userData.active,
           reports_to: userData.reports_to,

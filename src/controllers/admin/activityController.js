@@ -3,8 +3,8 @@ import { ActivityService } from '../../services/admin/activityService.js';
 export class ActivityController {
   static async listActivies(req, res, next) {
     try {
-      const { activityName } = req.body;
-      const activities = await ActivityService.listActivies(activityName);
+      const { defaultCompanyID, companyID } = req.body;
+      const activities = await ActivityService.listActivies(defaultCompanyID, companyID);
       return res.status(200).json({ activities });
     } catch (error) {
       console.error(error);

@@ -3,8 +3,8 @@ import { ProductsService } from '../../services/admin/productsService.js';
 export class ProductController {
   static async listProducts(req, res, next) {
     try {
-      const { companyId, productType } = req.body;
-      const products = await ProductsService.listProducts(companyId, productType);
+      const { defaultCompanyID, companyID } = req.body;
+      const products = await ProductsService.listProducts(defaultCompanyID, companyID);
       return res.status(200).json({ products });
     } catch (error) {
       console.error(error);

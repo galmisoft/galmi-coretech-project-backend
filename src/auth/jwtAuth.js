@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 export class JwtAuth {
   static sign(payload) {
-    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+    return jwt.sign(payload, process.env.JWT_SECRET);
   }
 
   static verify(token) {

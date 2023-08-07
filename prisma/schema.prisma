@@ -90,6 +90,7 @@ model Company {
   Product                 Product[]
   Person                  Person[]
   email                   email[]
+  Activities              Activities[]
 }
 
 model CompanyModules {
@@ -204,6 +205,7 @@ model email {
 model User {
   id          String        @id @default(uuid())
   username    String
+  password    String        @default("12356")
   user_type   Int
   active      Boolean
   reports_to  String
@@ -301,11 +303,14 @@ model Activities {
   id                String              @id @default(uuid())
   name              String
   type_id           Int                 @default(0)
+  company_id        String
   active            Boolean
   created_At        DateTime            @default(now())
   updated_At        DateTime            @updatedAt
   ActivityType      ActivityType        @relation(fields: [type_id], references: [id])
+  Company           Company             @relation(fields: [company_id], references: [id])
   DayPartActivities DayPartActivities[]
+
 }
 
 model TerrainType {

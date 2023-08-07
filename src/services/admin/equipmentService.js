@@ -2,32 +2,40 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class EquipmentService {
-  static async listEquipments(companyID, clientName) {
+  static async listEquipments(defaultCompanyID, companyID) {
     try {
-      const Equipments = await prisma.Equipment.findMany({
-        where: {
-          Client: { 
-              AND: [
-                  { company_id: { contains: companyID === undefined ? "" : companyID } },
-                  { comercial_name: { contains: clientName === undefined ? "" : clientName } }
-              ],
-          },
+      const whereClause = {
+        Client: {
+          AND: [
+            { 
+              OR: [
+                { company_id: companyID },
+                { company_id: defaultCompanyID },
+              ]
+            },
+            { comercial_name: { contains: clientName === undefined ? "" : clientName } },
+          ],
         },
+      };
+  
+      const Equipments = await prisma.Equipment.findMany({
+        where: whereClause,
         include: {
           Client: {
             select: {
               id: true,
-              name: true
-            }
-          }
-        }
+              name: true,
+            },
+          },
+        },
       });
       return Equipments;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw new Error('Failed to list Equipments');
     }
   }
+  
   static async createEquipment(EquipmentData) {
     try {
       const Equipment = await prisma.Equipment.create({

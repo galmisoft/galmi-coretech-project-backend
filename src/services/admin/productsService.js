@@ -2,34 +2,39 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class ProductsService {
-  static async listProducts(companyId, productType) {
+  static async listProducts(defaultCompanyID, companyID) {
     try {
-      const product = await prisma.Product.findMany({
-        where: {
-          type_id: { equals: productType === undefined ? 1 : productType },
-          company_id: { contains: companyId === undefined ? "" : companyId }
-        },
+      const whereClause = {
+        OR: [
+          { company_id: companyID } ,
+          { company_id: defaultCompanyID },
+        ], 
+      };  
+      const products = await prisma.Product.findMany({
+        where: whereClause,
         include: {
           ProductType: {
             select: {
               id: true,
-              category_name: true
-            }
+              category_name: true,
+            },
           },
           Meassure: {
             select: {
               id: true,
-              name: true
-            }
-          }
-        }
+              name: true,
+            },
+          },
+        },
       });
-      return product;
+  
+      return products;
     } catch (error) {
       console.error('Error fetching product:', error);
       throw new Error('Failed to listProducts');
     }
   }
+  
   static async createProduct(productModel) {
     try {
       const newProduct = await prisma.Product.create({
