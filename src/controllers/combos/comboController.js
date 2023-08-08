@@ -82,9 +82,9 @@ export class ComboController {
             return res.status(500).json({ message: 'Internal server error', details: error.message });
         }
     }
-    static async listTeams(req, res, next) {
+    static async listEquipment(req, res, next) {
         try {
-            const result = await ComboService.listTeams();
+            const result = await ComboService.listEquipment();
             return res.status(200).json({ Teams: result});
         } catch(error) {
             console.error(error);

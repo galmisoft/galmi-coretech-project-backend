@@ -14,6 +14,7 @@ import { PersonController } from "../controllers/admin/personController.js";
 import { EmailController } from "../controllers/admin/emailController.js";
 import { ComboController } from "../controllers/combos/comboController.js";
 import { AuthController } from "../controllers/admin/authController.js";
+import { ProbeController } from "../controllers/admin/probeController.js";
 
 const router = Router();
 
@@ -88,6 +89,8 @@ router.post('/admin/email', EmailController.listEmail)
 router.post('/admin/email/create', EmailController.createEmail)
 router.post('/admin/email/update', EmailController.updateEmail)
 router.post('/admin/email/delete', EmailController.deleteEmail)
+// Probe
+router.post('/admin/probe', ProbeController.findProbe)
 
 // COMBOS
 router.post('/combo/probes', ComboController.listProbes)
@@ -99,7 +102,7 @@ router.post('/combo/modules', ComboController.listModules)
 router.post('/combo/countries', ComboController.listCountries)
 router.post('/combo/clients', ComboController.listClients)
 router.post('/combo/projects', ComboController.listProjects)
-router.post('/combo/teams', ComboController.listTeams)
+router.post('/combo/equipment', ComboController.listEquipment)
 router.post('/combo/users', ComboController.listUsers)
 router.post('/combo/productTypes', ComboController.listProductTypes) 
 router.post('/combo/measures', ComboController.listMeasures)
