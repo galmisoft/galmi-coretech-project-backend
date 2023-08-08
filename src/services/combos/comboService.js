@@ -137,9 +137,9 @@ export class ComboService {
     }
   }
 
-  static async listTeams() {
+  static async listEquipment() {
     try{
-      const result = await prisma.team.findMany({
+      const result = await prisma.equipment.findMany({
         select: {
           id: true,
           name: true,

@@ -13,7 +13,6 @@ export class EquipmentService {
                 { company_id: defaultCompanyID },
               ]
             },
-            { comercial_name: { contains: clientName === undefined ? "" : clientName } },
           ],
         },
       };

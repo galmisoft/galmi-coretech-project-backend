@@ -22,12 +22,6 @@ export class ItemsService {
               description: true,
             },
           },
-          Line: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
           DayPartProducts: {
             select: {
               id: true,

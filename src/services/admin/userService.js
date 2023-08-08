@@ -76,21 +76,19 @@ export class UserService {
           lastname: true,
           email: true,
           created_At: true,
-          updated_At: true
-        },
-        where: {
-          OR: [
-            { CompanyUser: { some: { company_id: defaultCompanyID }, } },
-            { CompanyUser: { some: { company_id: companyID }, } }
-          ], 
-        },
-        include: {
+          updated_At: true,
           UserType: {
             select: {
               id: true,
               name: true,
             }
           }
+        },
+        where: {
+          OR: [
+            { CompanyUser: { some: { company_id: defaultCompanyID }, } },
+            { CompanyUser: { some: { company_id: companyID }, } }
+          ], 
         },
         distinct: ['username']
       });

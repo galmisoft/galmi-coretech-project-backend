@@ -6,18 +6,28 @@ export class DayPartService {
     try {
       const query = await prisma.DayPart.findMany({
         select: {
+          id: true,
           date: date !== undefined ? Date(date) : true,
           Team: { select: { name: team !== undefined ? team : true, }, },
           shift: shift !== undefined ? shift : true,
           status: status !== undefined ? Number(status) : true,
+          Probe: {
+            select: {
+              id: true,
+              probe_number: true
+            }
+          }
         }
       });
       const listDayPart = query.map((dayPart) => ({
+        id: dayPart.id,
         date: dayPart.date,
         name: dayPart.Team.name,
         shift: dayPart.shift === true ? 'Día' : 'Noche',
         status: dayPart.status,
+        Probe: dayPart.Probe
       }));
+      console.log(listDayPart)
       return listDayPart
     } catch (error) {
       console.log(error)
@@ -98,6 +108,7 @@ export class DayPartService {
             M4: dayPartModel.m4,
             PH: dayPartModel.ph,
             PPM: dayPartModel.ppm,
+            fluid_return: dayPartModel.fluid_return,
             created_At: new Date(),
             updated_At: new Date(),
           }
