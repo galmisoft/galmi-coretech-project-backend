@@ -2,14 +2,17 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class ProductsService {
-  static async listProducts(defaultCompanyID, companyID) {
+  static async listProducts(defaultCompanyID, companyID, productType) {
     try {
       const whereClause = {
-        OR: [
-          { company_id: companyID } ,
-          { company_id: defaultCompanyID },
-        ], 
-      };  
+        AND: {
+          OR: [
+            { company_id: companyID },
+            { company_id: defaultCompanyID },
+          ],
+          type_id: productType,
+        }
+      };
       const products = await prisma.Product.findMany({
         where: whereClause,
         include: {
@@ -27,14 +30,14 @@ export class ProductsService {
           },
         },
       });
-  
+
       return products;
     } catch (error) {
       console.error('Error fetching product:', error);
       throw new Error('Failed to listProducts');
     }
   }
-  
+
   static async createProduct(productModel) {
     try {
       const newProduct = await prisma.Product.create({

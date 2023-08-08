@@ -9,9 +9,9 @@ export class ClientService {
           AND: [
             {
               OR: [
-                { company_id: companyID } ,
+                { company_id: companyID },
                 { company_id: defaultCompanyID },
-              ], 
+              ],
             },
           ],
         },
@@ -30,11 +30,12 @@ export class ClientService {
       throw new Error('Failed to list clients');
     }
   }
-  
+
   static async createClient(clientData) {
     try {
       const client = await prisma.client.create({
         data: {
+          name: clientData.name,
           comercial_name: clientData.comercial_name,
           country_id: clientData.country_id,
           company_id: clientData.company_id,
