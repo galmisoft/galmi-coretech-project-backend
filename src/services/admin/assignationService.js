@@ -33,7 +33,7 @@ export class AssignationService {
           Equipment: {
             select: {
               id: true,
-              name: true
+              internal_code: true
             }
           },
           User: {
