@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 export class ComboService {
   static async listProbes() {
-    try{
+    try {
       const result = await prisma.probe.findMany({
         select: {
           id: true,
@@ -11,14 +11,14 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listProbes')
     }
   }
 
   static async listTerrainTypes() {
-    try{
+    try {
       const result = await prisma.terrainType.findMany({
         select: {
           id: true,
@@ -26,14 +26,14 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listTerrainTypes')
     }
   }
 
   static async listPositions() {
-    try{
+    try {
       const result = await prisma.position.findMany({
         select: {
           id: true,
@@ -41,14 +41,14 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listPositions')
     }
   }
 
   static async listCompanies() {
-    try{
+    try {
       const result = await prisma.company.findMany({
         select: {
           id: true,
@@ -56,14 +56,14 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listCompanies')
     }
   }
 
   static async listUsersEmails() {
-    try{
+    try {
       const result = await prisma.user.findMany({
         select: {
           id: true,
@@ -71,14 +71,14 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listUsersEmails')
     }
   }
 
   static async listModules() {
-    try{
+    try {
       const result = await prisma.modules.findMany({
         select: {
           id: true,
@@ -86,14 +86,14 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listModules')
     }
   }
 
   static async listCountries() {
-    try{
+    try {
       const result = await prisma.country.findMany({
         select: {
           id: true,
@@ -101,14 +101,14 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listCountries')
     }
   }
 
   static async listClients() {
-    try{
+    try {
       const result = await prisma.client.findMany({
         select: {
           id: true,
@@ -116,14 +116,14 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listClients')
     }
   }
 
   static async listProjects() {
-    try{
+    try {
       const result = await prisma.project.findMany({
         select: {
           id: true,
@@ -131,29 +131,29 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listProjects')
     }
   }
 
   static async listEquipment() {
-    try{
+    try {
       const result = await prisma.equipment.findMany({
         select: {
           id: true,
-          name: true,
+          internal_code: true,
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listTeams')
     }
   }
 
   static async listUsers() {
-    try{
+    try {
       const result = await prisma.user.findMany({
         select: {
           id: true,
@@ -161,14 +161,14 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listUsers')
     }
   }
 
   static async listProductTypes() {
-    try{
+    try {
       const result = await prisma.productType.findMany({
         select: {
           id: true,
@@ -176,14 +176,14 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listProductTypes')
     }
   }
 
   static async listMeasures() {
-    try{
+    try {
       const result = await prisma.meassure.findMany({
         select: {
           id: true,
@@ -191,14 +191,14 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listMeasures')
     }
   }
 
   static async listProducts() {
-    try{
+    try {
       const result = await prisma.product.findMany({
         select: {
           id: true,
@@ -206,14 +206,14 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listProducts')
     }
   }
 
   static async listLines() {
-    try{
+    try {
       const result = await prisma.line.findMany({
         select: {
           id: true,
@@ -221,14 +221,14 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listLines')
     }
   }
 
   static async listProductSerialNumbers() {
-    try{
+    try {
       const result = await prisma.DayPartProducts.findMany({
         select: {
           id: true,
@@ -239,16 +239,16 @@ export class ComboService {
             none: {}
           }
         }
-    });
-    return result
-    } catch(error){
+      });
+      return result
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listProductSerialNumbers')
     }
   }
 
   static async listActivityTypes() {
-    try{
+    try {
       const result = await prisma.activityType.findMany({
         select: {
           id: true,
@@ -256,14 +256,14 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listActivityTypes')
     }
   }
 
   static async listDocumentTypes() {
-    try{
+    try {
       const result = await prisma.dniType.findMany({
         select: {
           id: true,
@@ -271,14 +271,14 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listDocumentTypes')
     }
   }
 
   static async listMailTypes() {
-    try{
+    try {
       const result = await prisma.mailType.findMany({
         select: {
           id: true,
@@ -286,7 +286,7 @@ export class ComboService {
         },
       });
       return result
-    } catch(error){
+    } catch (error) {
       console.log(error)
       throw new Error('An error occurred in listMailTypes')
     }
