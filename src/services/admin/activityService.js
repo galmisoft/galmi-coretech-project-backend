@@ -34,6 +34,8 @@ export class ActivityService {
         data: {
           name: activityModel.name,
           type_id: activityModel.type_id,
+          company_id: activityModel.company_id,
+          chargeable: activityModel.chargeable,
           active: activityModel.active,
           created_At: new Date(),
           updated_At: new Date()
@@ -53,6 +55,8 @@ export class ActivityService {
         data: {
           name: activityModel.name,
           type_id: activityModel.type_id,
+          company_id: activityModel.company_id,
+          chargeable: activityModel.chargeable,
           active: activityModel.active,
           updated_At: new Date()
         }

@@ -21,7 +21,7 @@ const router = Router();
 
 router.post('/sigin', AuthController.login);
 router.post('/dayPart', DayPartController.listDayParts)
-router.post('/dayPart/form', DayPartController.dayPartData)
+router.post('/dayPart/get', DayPartController.getDayPart)
 router.post('/dayPart/create', DayPartController.createDayParts)
 
 // // COSTO X METRO

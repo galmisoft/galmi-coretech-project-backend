@@ -34,15 +34,135 @@ export class DayPartService {
       throw new Error('Failed to list day parts');
     }
   }
-  static async dayPartData() {
+  static async getDayPart(dayPartID) {
     try {
-      const tools = await prisma.tools.findMany({ select: { name: true } });
-      const fluids = await prisma.fluids.findMany({ select: { name: true } });
-      const activities = await prisma.activities.findMany({ select: { name: true } });
-      const users = await prisma.user.findMany({ select: { dni: true, full_name: true } });
-
-      res.json({ tools, fluids, activities, users });
+      console.log('getDayPart', dayPartID)
+      const query = await prisma.DayPart.findUnique({
+        where: {
+          id: dayPartID
+        },
+        include: {
+          Probe: {
+            select: {
+              id: true,
+              probe_number: true,
+              date_ini: true,
+              azimut_ini: true,
+              incline_ini: true,
+              job_type: true,
+              objective_prof: true,
+              platform: true,
+              level: true,
+              labor: true,
+              objective_vein: true,
+              zone: true,
+              horometer_ini: true,
+              horometer_fin: true,
+              finalized: true,
+              date_fin: true,
+            }
+          },
+          DayPartActivities: {
+            select: {
+              id: true,
+              activity_id: true,
+              hours: true,
+              Activities: {
+                select: {
+                  id: true,
+                  name: true,
+                }
+              }
+            }
+          },
+          DayPartRun: {
+              select: {
+                id: true,
+                run_id: true,
+                Run: {
+                  select: {
+                    id: true,
+                    meters_from: true,
+                    meters_to: true,
+                    length: true,
+                    recuperation_percentage: true,
+                    terrain_type1: true,
+                    terrain_type2: true,
+                    terrain_type3: true,
+                    observation: true,
+                    picture: true
+                  }
+                }
+              }
+          },
+          DayPartProducts: {
+            select: {
+              id: true,
+              line: true,
+              serial_number: true,
+              brand: true,
+              matrix: true,
+              condition: true,
+              meters_from: true,
+              meters_to: true,
+              drill_bit_change: true,
+              end_condition: true,
+              change_motive: true
+            }
+          },
+          DayPartFluids: {
+            select: {
+              id: true,
+              fluid_id: true,
+              quantity: true,
+              Product: {
+                select: {
+                  id: true,
+                  name: true,
+                  meassure_id: true,
+                  description: true,
+                  brand: true,
+                  serial_number: true,
+                  presentation: true,
+                  Meassure: {
+                    select: {
+                      id: true,
+                      name: true,
+                    }
+                  }
+                }
+              }
+            }
+          },
+          DayPartPerson: {
+            select: {
+              id: true,
+              person_id: true,
+              Person:{
+                select: {
+                  id: true,
+                  complete_name: true,
+                  lastname1: true,
+                  lastname2: true,
+                  dni_type: true,
+                  dni: true,
+                  position_id: true,
+                  picture: true,
+                  Position: {
+                    select: {
+                      id: true,
+                      name: true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      });
+      return query
     } catch (error) {
+      console.log(error)
       throw new Error('Failed to list day parts');
     }
   }
