@@ -74,9 +74,7 @@ export class UserService {
           reports_to: true,
           names: true,
           lastname: true,
-          email: true,
           created_At: true,
-          updated_At: true,
           UserType: {
             select: {
               id: true,
