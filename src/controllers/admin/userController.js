@@ -10,10 +10,30 @@ export class UserController {
       return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
+  static async listUserContratos(req, res, next) {
+    try {
+      const { defaultCompanyID, companyID } = req.body;
+      const Users = await UserService.listUsersContratos(defaultCompanyID, companyID);
+      return res.status(200).json({ Users });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
+    }
+  }
   static async createUser(req, res, next) {
     try {
       const UserModel = req.body;
       const Users = await UserService.createUser(UserModel);
+      return res.status(200).json({ Users });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
+    }
+  }
+  static async createUserContratos(req, res, next) {
+    try {
+      const UserModel = req.body;
+      const Users = await UserService.createUserContratos(UserModel);
       return res.status(200).json({ Users });
     } catch (error) {
       console.error(error);

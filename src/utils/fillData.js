@@ -4,8 +4,8 @@ const prisma = new PrismaClient();
 
 async function getCountries() {
     try {
-        const response = await axios.get('https://restcountries.com/v3.1/all?fields=name')
-        const countries = response.data.map(element => element.name.common);
+        const response = await axios.get('https://restcountries.com/v3.1/all?fields=translations')
+        const countries = response.data.map(element => element.translations.spa.common);
         console.log(countries.length)
         return countries;
     } catch (error) {
@@ -13,30 +13,28 @@ async function getCountries() {
         return [];
     }
 }
+async function insertCountries(countries) {
+    const prisma = new PrismaClient();
+    try {
+      for (const countryName of countries) {
+        const country = await prisma.country.create({
+          data: {
+            name: countryName,
+          },
+        });
+        console.log(`Inserted country: ${country.name}`);
+      }
+    } catch (error) {
+      console.error('Error inserting countries:', error);
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
 
 async function fillData() {
     // Data
     const countriesList = await getCountries(); 
-    try {
-        // Filling
-        
-        const existingColumnValues = await prisma.country.findMany({
-            select: {
-              name: true,
-            },
-          });
-        const existingValuesSet = new Set(existingColumnValues.map((item) => item.name));
-        const uniqueDataArray = countriesList.filter((item) => !existingValuesSet.has(item.name));
-        const countries1 = await Promise.all(
-            uniqueDataArray.map((name) => prisma.country.create({ data: { name } }))
-        );
-
-
-    } catch (error) {
-        console.error('Error adding data:', error);
-    } finally {
-        await prisma.$disconnect();
-    }
+    insertCountries(countriesList)
 }
 
 fillData()

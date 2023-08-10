@@ -97,7 +97,85 @@ export class UserService {
       throw new Error('An error occurred while listing Users');
     }
   }
+  static async listUsersContratos(defaultCompanyID, companyID) {
+    try {
+      if (defaultCompanyID === undefined) {
+        throw new Error('Se requiere variable defaultCompanyID');
+      }
+  
+      const result = await prisma.User.findMany({
+        select: {
+          id: true,
+          username: true,
+          user_type: true,
+          active: true,
+          reports_to: true,
+          names: true,
+          lastname: true,
+          created_At: true,
+          UserType: {
+            select: {
+              id: true,
+              name: true,
+            }
+          }
+        },
+        where: {
+          OR: [
+            { CompanyUser: { some: { company_id: defaultCompanyID }, } },
+            { CompanyUser: { some: { company_id: companyID }, } }
+          ], 
+        },
+        distinct: ['username']
+      });
+      const mappedResult = result.map((user) => ({
+        id: user.id,
+        username: user.username,
+        user_type: user.user_type,
+        full_name: user.names + ' ' + user.lastname,
+        reports_to: user.reports_to,
+        created_At: user.created_At,
+        active: user.active,
+        UserType: user.UserType
+      }));
+      return mappedResult;
+    } catch (error) {
+      console.error('Error listUsers:', error);
+      throw new Error('An error occurred while listing Users');
+    }
+  }
+  
   static async createUser(userData) {
+    try {
+      const hashedPassword = md5(userData.password)
+      const result = await prisma.user.create({
+        data: {
+          username: userData.username,
+          password: hashedPassword,
+          active: userData.active,
+          user_type: userData.user_type,
+          reports_to: userData.reports_to,
+          names: userData.names,
+          lastname: userData.lastname,
+          status: userData.status,
+          email: userData.email,
+          created_At: new Date(),
+          updated_At: new Date(),
+        }
+      });
+      const result2 = await prisma.companyUser.create({
+        data: {
+          company_id: userData.company_id,
+          user_id: result.Users.id
+        }
+      })
+      return result
+    } catch (error) {
+      console.error('Error createUser:', error);
+      throw new Error('An error occurred while creating the user')
+    }
+  }
+  static async createUserContratos(userData) {
     try {
       const hashedPassword = md5(userData.password)
       const result = await prisma.user.create({
@@ -107,14 +185,13 @@ export class UserService {
           user_type: userData.user_type,
           active: userData.active,
           reports_to: userData.reports_to,
-          names: userData.names,
+          names: userData.names, 
           lastname: userData.lastname,
           email: userData.email,
           created_At: new Date(),
           updated_At: new Date(),
         }
       });
-
       const result2 = await prisma.companyUser.create({
         data: {
           company_id: userData.company_id,

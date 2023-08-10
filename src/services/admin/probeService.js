@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 export class ProbeService {
   static async findProbe(probeID) {
     try {
-      const Probe = await prisma.Probe.findMany({
+      const Probe = await prisma.Probe.findUnique({
         where: { id: probeID },
         include: {
             DayPart: {
@@ -19,14 +19,20 @@ export class ProbeService {
                             drill_bit_change: true,
                             meters_from: true,
                             meters_to: true,
-                            change_motive: true
+                            change_motive: true,
+                            ProductType: {
+                              select: {
+                                id: true,
+                                category_name: true
+                              }
+                            }
                         }
                     }    
                 }
             }
         }
       });
-      return Probe[0];
+      return Probe;
     } catch (error) {
       console.log(error);
       throw new Error('Failed to list Projects');
