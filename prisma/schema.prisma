@@ -192,8 +192,8 @@ model email {
   id         String   @id @default(uuid())
   mail_type  Int
   mail_to    String
-  CC         String
-  CCO        String
+  CC         String?
+  CCO        String?
   active     Boolean
   company_id String
   created_At DateTime @default(now())
@@ -205,13 +205,14 @@ model email {
 model User {
   id          String        @id @default(uuid())
   username    String
-  password    String        @default("12356")
+  password    String
   user_type   Int
   active      Boolean
   reports_to  String
   names       String?
   lastname    String?
   email       String?
+  status      String?
   created_At  DateTime      @default(now())
   updated_At  DateTime      @updatedAt
   UserType    UserType      @relation(fields: [user_type], references: [id])
