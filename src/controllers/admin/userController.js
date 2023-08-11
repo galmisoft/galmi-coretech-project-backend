@@ -50,6 +50,16 @@ export class UserController {
       return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
+  static async updateUserContratos(req, res, next) {
+    try {
+      const UserModel = req.body;
+      const Users = await UserService.updateUserContratos(UserModel);
+      return res.status(200).json({ Users });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
+    }
+  }
   static async deleteUser(req, res, next) {
     try {
       const { id } = req.body;

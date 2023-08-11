@@ -43,7 +43,7 @@ export class ProductsService {
       const newProduct = await prisma.Product.create({
         data: {
           type: productModel.type,
-          name: productModel.name,
+          name: productModel.description,
           SKU: productModel.SKU,
           company_id: productModel.company_id,
           meassure_id: productModel.meassure_id,
@@ -51,6 +51,7 @@ export class ProductsService {
           brand: productModel.brand,
           line_id: productModel.line_id,
           serial_number: productModel.serial_number,
+          presentation: productModel.presentation,
           active: productModel.active,
           created_At: new Date(),
           updated_At: new Date(),
@@ -78,6 +79,7 @@ export class ProductsService {
           brand: productModel.brand,
           line_id: productModel.line_id,
           serial_number: productModel.serial_number,
+          presentation: productModel.presentation,
           active: productModel.active,
           updated_At: new Date(),
         },

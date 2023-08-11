@@ -99,6 +99,9 @@ export class ComboService {
           id: true,
           name: true,
         },
+        orderBy: {
+          name: 'asc'
+        },
       });
       return result
     } catch (error) {
