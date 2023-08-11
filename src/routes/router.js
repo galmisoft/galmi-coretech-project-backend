@@ -24,11 +24,6 @@ router.post('/dayPart', DayPartController.listDayParts)
 router.post('/dayPart/get', DayPartController.getDayPart)
 router.post('/dayPart/create', DayPartController.createDayParts)
 
-// // COSTO X METRO
-// router.post('/costoMetro', CostoMetroController.listCostoMetro)
-// router.post('/costoMetro/download', CostoMetroController.downloadCostoMetro)
-
-
 /**** ADMIN *****/
 // FALTA PATALLA RESUMEN
 // Company (Contrata de Coretech)
@@ -36,13 +31,15 @@ router.post('/admin/company', CompanyController.listCompanies)
 router.post('/admin/company/create', CompanyController.createCompany)
 router.post('/admin/company/update', CompanyController.updateCompany)
 router.post('/admin/company/delete', CompanyController.deleteCompany)
+router.post('/admin/companyContrato', CompanyController.listCompanyContratos)
 // User (Usuarios de Companies)
 router.post('/admin/user', UserController.listUser)
-router.post('/admin/user/contrato', UserController.listUserContratos)
 router.post('/admin/user/create', UserController.createUser)
-router.post('/admin/user/create/contrato', UserController.createUserContratos)
 router.post('/admin/user/update', UserController.updateUser)
 router.post('/admin/user/delete', UserController.deleteUser)
+router.post('/admin/userContrato', UserController.listUserContratos)
+router.post('/admin/userContrato/create', UserController.createUserContratos)
+router.post('/admin/userContrato/update', UserController.createUserContratos)
 // Clients
 router.post('/admin/client', ClientController.listClients)
 router.post('/admin/client/create', ClientController.createClient)

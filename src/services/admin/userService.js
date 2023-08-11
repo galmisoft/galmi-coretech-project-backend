@@ -20,12 +20,28 @@ export class UserService {
         include: {
           CompanyUser: {
             select: {
-              id: true,
               Company: {
                 select: {
-                  name: true,
+                  id: true,
                   name: true,
                   visible_name: true
+                }
+              }
+            }
+          },
+          Assignation: {
+            select: {
+              Client: {
+                select: {
+                  id: true,
+                  name: true,
+                  comercial_name: true
+                }
+              },
+              Project: {
+                select: {
+                  id: true,
+                  name: true
                 }
               }
             }
@@ -36,7 +52,6 @@ export class UserService {
         console.log(JSON.stringify({ result }))
         return JwtAuth.sign(JSON.stringify({ result }));
       }
-      return false;
     } catch(error) {
       console.log(error)
       throw new Error('An error occurred while login')
@@ -70,6 +85,7 @@ export class UserService {
           id: true,
           username: true,
           user_type: true,
+          email: true,
           active: true,
           reports_to: true,
           names: true,
@@ -108,6 +124,7 @@ export class UserService {
           id: true,
           username: true,
           user_type: true,
+          email: true,
           active: true,
           reports_to: true,
           names: true,
@@ -128,17 +145,7 @@ export class UserService {
         },
         distinct: ['username']
       });
-      const mappedResult = result.map((user) => ({
-        id: user.id,
-        username: user.username,
-        user_type: user.user_type,
-        full_name: user.names + ' ' + user.lastname,
-        reports_to: user.reports_to,
-        created_At: user.created_At,
-        active: user.active,
-        UserType: user.UserType
-      }));
-      return mappedResult;
+      return result;
     } catch (error) {
       console.error('Error listUsers:', error);
       throw new Error('An error occurred while listing Users');
@@ -207,19 +214,95 @@ export class UserService {
 
   static async updateUser(userData) {
     try {
-      const result = await prisma.user.update({
-        where: { id: userData.id },
-        data: {
-          username: userData.username,
-          user_type: userData.user_type,
-          active: userData.active,
-          reports_to: userData.reports_to,
-          names: userData.names,
-          lastname: userData.lastname,
-          email: userData.email,
-          updated_At: new Date(),
-        }
-      });
+      if(userData.password == undefined || userData.password == null ){
+        const result = await prisma.user.update({
+          where: { id: userData.id },
+          data: {
+            username: userData.username,
+            user_type: userData.user_type,
+            active: userData.active,
+            reports_to: userData.reports_to,
+            names: userData.names,
+            lastname: userData.lastname,
+            email: userData.email,
+            updated_At: new Date(),
+          }
+        });
+      }
+      else {
+        const hashedPassword = md5(userData.password)
+        const result = await prisma.user.update({
+          where: { id: userData.id },
+          data: {
+            username: userData.username,
+            password: hashedPassword,
+            user_type: userData.user_type,
+            active: userData.active,
+            reports_to: userData.reports_to,
+            names: userData.names,
+            lastname: userData.lastname,
+            email: userData.email,
+            updated_At: new Date(),
+          }
+        });
+      }
+      return result
+    } catch (error) {
+      console.error('Error updateUser:', error);
+      throw new Error('An error occurred while updating the user')
+    }
+  }
+
+  static async updateUserContratos(userData) {
+    try {
+      if(userData.password == undefined || userData.password == null ){
+        const result = await prisma.user.update({
+          where: { id: userData.id },
+          data: {
+            username: userData.username,
+            user_type: userData.user_type,
+            active: userData.active,
+            reports_to: userData.reports_to,
+            names: userData.names,
+            lastname: userData.lastname,
+            email: userData.email,
+            updated_At: new Date(),
+          }
+        });
+        const result2 = await prisma.companyUser.update({
+          where: {
+            user_id: result.Users.id
+          },
+          data: {
+            company_id: userData.company_id
+          }
+        });  
+      }
+      else {
+        const hashedPassword = md5(userData.password)
+        const result = await prisma.user.update({
+          where: { id: userData.id },
+          data: {
+            username: userData.username,
+            password: hashedPassword,
+            user_type: userData.user_type,
+            active: userData.active,
+            reports_to: userData.reports_to,
+            names: userData.names,
+            lastname: userData.lastname,
+            email: userData.email,
+            updated_At: new Date(),
+          }
+        });
+        const result2 = await prisma.companyUser.update({
+          where: {
+            user_id: result.Users.id
+          },
+          data: {
+            company_id: userData.company_id
+          }
+        });        
+      }
       return result
     } catch (error) {
       console.error('Error updateUser:', error);

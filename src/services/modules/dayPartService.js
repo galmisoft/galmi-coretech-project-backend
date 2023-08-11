@@ -157,6 +157,18 @@ export class DayPartService {
                 }
               }
             }
+          },
+          DayPartTest: {
+            select: {
+              id: true,
+              depth: true,
+              azimut: true,
+              inclination: true,
+              supervisor_name: true,
+              company_name: true,
+              magnetic_intensity: true,
+              efective: true
+            }
           }
         }
       });
@@ -245,24 +257,39 @@ export class DayPartService {
       });
 
       console.log('Creating Activities for ', dayParts.id)
-      dayPartModel.dayPartActivities.forEach( async activity => {
+      dayPartModel.DayPartActivities.forEach( async activity => {
         const createdDayPartActivities = await prisma.dayPartActivities.create({
           data: {
             dayPart_id: dayParts.id,
             activity_id: activity.id,
-            hours: activity.hours,
-            testAndMeassurements: activity.testAndMeassurements
+            hours: activity.hours
           }
         });
       });
 
       console.log('Creating Fluids for ', dayParts.id)
-      dayPartModel.dayPartFluids.forEach( async fluid => {
+      dayPartModel.DayPartFluids.forEach( async fluid => {
         const createddayPartFluids = await prisma.DayPartFluids.create({
           data: {
             dayPart_id: dayParts.id,
             fluid_id: fluid.id,
             quantity: fluid.quantity
+          }
+        });
+      });
+
+      console.log('Creating DayPartTest for ', dayParts.id)
+      dayPartModel.DayPartTest.forEach( async test => {
+        const DayPartTest = await prisma.DayPartTest.create({
+          data: {
+            dayPart_id: dayParts.id,
+            depth: test.depth,
+            azimut: test.azimut,
+            inclination: test.azimut,
+            supervisor_name: test.supervisor_name,
+            company_name: test.company_name,
+            magnetic_intensity: test.magnetic_intensity,
+            efective: test.active
           }
         });
       });
@@ -288,7 +315,7 @@ export class DayPartService {
       });
 
       console.log('Creating Persons for ', dayParts.id)
-      dayPartModel.dayPartPerson.forEach( async personData => {
+      dayPartModel.DayPartPerson.forEach( async personData => {
 
         const checkPerson = await prisma.person.findFirst({
           where: {

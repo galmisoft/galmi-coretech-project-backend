@@ -63,6 +63,9 @@ model Company {
   id                      String           @id @default(uuid())
   name                    String
   visible_name            String
+  visible_icon            Bytes?
+  visible_logo1           Bytes?
+  visible_logo2           Bytes?
   country_id              Int
   division                String
   sub_division            String
@@ -163,7 +166,7 @@ model Person {
   dni_type      Int      @default(0)
   dni           String
   position_id   Int
-  picture       String?
+  picture       Bytes?
   active        Boolean  @default(true)
   company_id    String
 
@@ -371,7 +374,7 @@ model ProductType {
 model Items {
   id                 String   @id @default(uuid())
   product_id         String
-  line               String?
+  line_id            Int
   serial_number      String
   unit_price         Float
   client_id          String
@@ -385,6 +388,7 @@ model Items {
   DayPartProducts DayPartProducts @relation(fields: [project_id], references: [id])
   Client          Client          @relation(fields: [client_id], references: [id])
   Project         Project         @relation(fields: [project_id], references: [id])
+  Line            Line            @relation(fields: [line_id], references: [id])
 }
 
 model Probe {
@@ -438,6 +442,7 @@ model DayPart {
   DayPartActivities DayPartActivities[]
   DayPartPerson     DayPartPerson[]
   DayPartFluids     DayPartFluids[]
+  DayPartTest       DayPartTest[]
 }
 
 model DayPartPerson {
@@ -484,20 +489,19 @@ model DayPartActivities {
   hours                Int
   DayPart              DayPart                @relation(fields: [dayPart_id], references: [id])
   Activities           Activities             @relation(fields: [activity_id], references: [id])
-  testAndMeassurements testAndMeassurements[]
 }
 
-model testAndMeassurements {
-  id                   String            @id @default(uuid())
-  dayPartActivities_id String
-  depth                Int
-  azimut               Int
-  inclination          Int
-  supervisor_name      String
-  company_name         String
-  magnetic_intensity   Int
-  efective             Boolean
-  DayPartActivities    DayPartActivities @relation(fields: [dayPartActivities_id], references: [id])
+model DayPartTest {
+  id                    String            @id @default(uuid())
+  dayPart_id            String
+  depth                 Int
+  azimut                Int
+  inclination           Int
+  supervisor_name       String
+  company_name          String
+  magnetic_intensity    Int
+  efective              Boolean
+  DayPart               DayPart @relation(fields: [dayPart_id], references: [id])
 }
 
 model DayPartFluids {
@@ -513,4 +517,6 @@ model DayPartFluids {
 model Line {
   id Int @id @default(autoincrement())
   name String
+
+  Items Items[]
 }
