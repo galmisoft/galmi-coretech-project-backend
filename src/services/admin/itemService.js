@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class ItemsService { 
-  static async listItems(defaultCompanyID, companyID) {
+  static async listItems(defaultCompanyID, companyID, productTypeID) {
     try {
       const Item = await prisma.Items.findMany({
         where: {
@@ -12,6 +12,9 @@ export class ItemsService {
                 { Product: { company_id: defaultCompanyID } },
                 { Product: { company_id: companyID } },
               ],
+            },
+            { 
+              Product: { type_id: productTypeID }
             } 
           ]
         },
@@ -41,13 +44,13 @@ export class ItemsService {
     try {
       const newItem = await prisma.Items.create({
         data: {
-          product_id: ItemModel.type,
-          line_id: ItemModel.name,
-          serial_number: ItemModel.SKU,
-          unit_price: ItemModel.company_id,
-          client_id: ItemModel.meassure_id,
-          project_id: ItemModel.description,
-          dayPartProdayPartProducts_id: ItemModel.dayPartProducts_id,
+          product_id: ItemModel.product_id,
+          line_id: ItemModel.line_id,
+          serial_number: ItemModel.serial_number,
+          unit_price: ItemModel.unit_price,
+          client_id: ItemModel.client_id,
+          project_id: ItemModel.project_id,
+          dayPartProducts_id: ItemModel.dayPartProducts_id,
           created_At: new Date(),
           updated_At: new Date(),
         },
@@ -65,13 +68,13 @@ export class ItemsService {
           id: ItemModel.id,
         },
         data: {
-          product_id: ItemModel.type,
-          line_id: ItemModel.name,
-          serial_number: ItemModel.SKU,
-          unit_price: ItemModel.company_id,
-          client_id: ItemModel.meassure_id,
-          project_id: ItemModel.description,
-          dayPartProdayPartProducts_id: ItemModel.dayPartProducts_id,
+          product_id: ItemModel.product_id,
+          line_id: ItemModel.line_id,
+          serial_number: ItemModel.serial_number,
+          unit_price: ItemModel.unit_price,
+          client_id: ItemModel.client_id,
+          project_id: ItemModel.project_id,
+          dayPartProducts_id: ItemModel.dayPartProducts_id,
           updated_At: new Date(),
         },
       });

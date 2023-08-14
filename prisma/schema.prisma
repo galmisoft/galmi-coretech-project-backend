@@ -385,7 +385,7 @@ model Items {
   updated_At         DateTime @updatedAt
 
   Product         Product         @relation(fields: [product_id], references: [id])
-  DayPartProducts DayPartProducts @relation(fields: [project_id], references: [id])
+  DayPartProducts DayPartProducts @relation(fields: [dayPartProducts_id], references: [id])
   Client          Client          @relation(fields: [client_id], references: [id])
   Project         Project         @relation(fields: [project_id], references: [id])
   Line            Line            @relation(fields: [line_id], references: [id])
