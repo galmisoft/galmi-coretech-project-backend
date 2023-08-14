@@ -115,7 +115,7 @@ export class ComboService {
       const result = await prisma.client.findMany({
         select: {
           id: true,
-          comercial_name: true,
+          name: true,
         },
       });
       return result
