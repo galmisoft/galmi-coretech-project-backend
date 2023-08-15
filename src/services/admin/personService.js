@@ -7,7 +7,7 @@ export class PersonsService {
       const Person = await prisma.Person.findMany({
         where: {
           OR: [
-            { company_id: companyID } ,
+            { company_id: companyID },
             { company_id: defaultCompanyID },
           ],
         },
@@ -26,25 +26,25 @@ export class PersonsService {
           },
         },
       });
-      
+
       return Person;
     } catch (error) {
       console.error('Error fetching Person:', error);
       throw new Error('Failed to listPersons');
     }
-  }  
-  static async createPerson(PersonModel) {
+  }
+  static async createPerson(PersonModel, picture) {
     try {
       const newPerson = await prisma.Person.create({
         data: {
           complete_name: PersonModel.name,
           lastname1: PersonModel.lastname1,
           lastname2: PersonModel.lastname2,
-          dni_type: PersonModel.dni_type,
+          dni_type: Number(PersonModel.dni_type),
           dni: PersonModel.dni,
-          position_id: PersonModel.position_id,
-          picture: PersonModel.picture,
-          active: PersonModel.active,
+          position_id: Number(PersonModel.position_id),
+          picture: Buffer.from(picture[0].filename),
+          active: Boolean(PersonModel.active),
           company_id: PersonModel.company_id,
           created_At: new Date(),
           updated_At: new Date(),
@@ -56,7 +56,7 @@ export class PersonsService {
       throw new Error('Failed to createPerson');
     }
   }
-  static async updatePerson(PersonModel) {
+  static async updatePerson(PersonModel, picture) {
     try {
       const updatedPerson = await prisma.Person.update({
         where: {
@@ -66,11 +66,11 @@ export class PersonsService {
           complete_name: PersonModel.name,
           lastname1: PersonModel.lastname1,
           lastname2: PersonModel.lastname2,
-          dni_type: PersonModel.dni_type,
+          dni_type: Number(PersonModel.dni_type),
           dni: PersonModel.dni,
-          position_id: PersonModel.position_id,
-          picture: PersonModel.picture,
-          active: PersonModel.active,
+          position_id: Number(PersonModel.position_id),
+          picture: Buffer.from(picture[0].filename),
+          active: Boolean(PersonModel.active),
           updated_At: new Date(),
         },
       });

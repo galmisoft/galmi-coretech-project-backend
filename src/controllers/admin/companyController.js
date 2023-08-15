@@ -51,4 +51,16 @@ export class CompanyController {
       return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
+
+  static async updateCompanyContratos(req, res, next) {
+    try {
+      const { visible_icon, visible_logo1, visible_logo2 } = req.files
+      const CompanyModel = req.body;
+      const Companies = await CompanyService.updateCompanyContratos(CompanyModel, visible_icon, visible_logo1, visible_logo2);
+      return res.status(200).json({ Companies });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
+    }
+  }
 }
