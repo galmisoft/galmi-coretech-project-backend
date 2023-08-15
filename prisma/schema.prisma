@@ -351,7 +351,6 @@ model Product {
   meassure_id   Int
   description   String?
   brand         String
-  serial_number String
   presentation  String?
 
   created_At    DateTime    @default(now())
@@ -379,16 +378,24 @@ model Items {
   unit_price         Float
   client_id          String
   project_id         String
-  dayPartProducts_id String
 
   created_At         DateTime @default(now())
   updated_At         DateTime @updatedAt
 
   Product         Product         @relation(fields: [product_id], references: [id])
-  DayPartProducts DayPartProducts @relation(fields: [dayPartProducts_id], references: [id])
   Client          Client          @relation(fields: [client_id], references: [id])
   Project         Project         @relation(fields: [project_id], references: [id])
   Line            Line            @relation(fields: [line_id], references: [id])
+  ItemDayPartProduct ItemDayPartProduct[]
+}
+
+model ItemDayPartProduct {
+  itemId            String
+  dayPartProductId  String
+  item              Items @relation(fields: [itemId], references: [id])
+  dayPartProduct    DayPartProducts @relation(fields: [dayPartProductId], references: [id])
+
+  @@id([itemId, dayPartProductId])
 }
 
 model Probe {
@@ -479,7 +486,7 @@ model DayPartProducts {
 
   ProductType      ProductType @relation(fields: [type_id], references: [id])
   DayPart          DayPart  @relation(fields: [dayPart_id], references: [id])
-  Items            Items[]
+  ItemDayPartProduct ItemDayPartProduct[]
 }
 
 model DayPartActivities {
