@@ -44,9 +44,9 @@ export class CompanyService {
         },
         data: {
           visible_name: companyModel.visible_name,
-          visible_icon: Buffer.from(visible_icon[0].filename),
-          visible_logo1: Buffer.from(visible_logo1[0].filename),
-          visible_logo2: Buffer.from(visible_logo2[0].filename)
+          visible_icon: visible_icon ? visible_icon[0].buffer : null,
+          visible_logo1: visible_logo1 ? visible_logo1[0].buffer : null,
+          visible_logo2: visible_logo2 ? visible_logo2[0].buffer : null
         }
       })
       return listCompanies;

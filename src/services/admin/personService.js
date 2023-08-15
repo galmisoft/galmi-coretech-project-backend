@@ -43,7 +43,7 @@ export class PersonsService {
           dni_type: Number(PersonModel.dni_type),
           dni: PersonModel.dni,
           position_id: Number(PersonModel.position_id),
-          picture: Buffer.from(picture[0].filename),
+          picture: picture ? picture[0].buffer : null,
           active: Boolean(PersonModel.active),
           company_id: PersonModel.company_id,
           created_At: new Date(),
@@ -58,6 +58,7 @@ export class PersonsService {
   }
   static async updatePerson(PersonModel, picture) {
     try {
+      console.log(picture)
       const updatedPerson = await prisma.Person.update({
         where: {
           id: PersonModel.id,
@@ -69,7 +70,7 @@ export class PersonsService {
           dni_type: Number(PersonModel.dni_type),
           dni: PersonModel.dni,
           position_id: Number(PersonModel.position_id),
-          picture: Buffer.from(picture[0].filename),
+          picture: picture ? picture[0].buffer : null,
           active: Boolean(PersonModel.active),
           updated_At: new Date(),
         },
