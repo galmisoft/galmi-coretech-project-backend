@@ -2,30 +2,35 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class ProjectService {
-  static async listProjects(companyID, projectName) {
+  static async listProjects(defaultCompanyID, companyID) {
     try {
       const Projects = await prisma.Project.findMany({
         where: {
           AND: [
-            { name: { contains: projectName === undefined ? "" : projectName } }, 
-            { Client: { company_id: { contains: companyID === undefined ? "" : companyID } } },
-          ]
+            {
+              OR: [
+                { Client: { company_id: defaultCompanyID } },
+                { Client: { company_id: companyID } },
+              ],
+            },
+          ],
         },
         include: {
-          Client: { 
-            select: { 
-              id: true, 
-              name: true 
-            } 
+          Client: {
+            select: {
+              id: true,
+              name: true,
+            },
           },
-        }
+        },
       });
       return Projects;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw new Error('Failed to list Projects');
     }
   }
+  
   static async createProject(ProjectData) {
     try {
       const Project = await prisma.Project.create({

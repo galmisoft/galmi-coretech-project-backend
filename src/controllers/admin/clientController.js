@@ -3,8 +3,8 @@ import { ClientService } from '../../services/admin/clientService.js';
 export class ClientController {
   static async listClients(req, res, next) {
     try {
-      const { companyID, name } = req.body;
-      const clients = await ClientService.listClients(companyID, name);
+      const { defaultCompanyID, companyID } = req.body;
+      const clients = await ClientService.listClients(defaultCompanyID, companyID);
       return res.status(200).json({ clients });
     } catch (error) {
       console.error(error);

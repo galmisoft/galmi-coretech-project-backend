@@ -1,47 +1,51 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export class PersonsService { 
-  static async listPersons(companyId, PersonName) {
+export class PersonsService {
+  static async listPersons(defaultCompanyID, companyID) {
     try {
       const Person = await prisma.Person.findMany({
         where: {
-          name: { contains: PersonName === undefined ? "" : PersonName },
-          company_id: { contains: companyId === undefined ? "" : companyId }
+          OR: [
+            { company_id: companyID },
+            { company_id: defaultCompanyID },
+          ],
         },
         include: {
           DniType: {
             select: {
               id: true,
-              name: true
-            }
+              name: true,
+            },
           },
           Position: {
             select: {
               id: true,
-              name: true
-            }
-          }
-        }
+              name: true,
+            },
+          },
+        },
       });
+
       return Person;
     } catch (error) {
       console.error('Error fetching Person:', error);
       throw new Error('Failed to listPersons');
     }
   }
-  static async createPerson(PersonModel) {
+  static async createPerson(PersonModel, picture) {
     try {
       const newPerson = await prisma.Person.create({
         data: {
           complete_name: PersonModel.name,
           lastname1: PersonModel.lastname1,
           lastname2: PersonModel.lastname2,
-          dni_type: PersonModel.dni_type,
+          dni_type: Number(PersonModel.dni_type),
           dni: PersonModel.dni,
-          position_id: PersonModel.position_id,
-          picture: PersonModel.picture,
-          active: PersonModel.active,
+          position_id: Number(PersonModel.position_id),
+          picture: Buffer.from(picture[0].filename),
+          active: Boolean(PersonModel.active),
+          company_id: PersonModel.company_id,
           created_At: new Date(),
           updated_At: new Date(),
         },
@@ -51,24 +55,24 @@ export class PersonsService {
       console.error('Error creating Person:', error);
       throw new Error('Failed to createPerson');
     }
-  }  
-  static async updatePerson(PersonModel) {
+  }
+  static async updatePerson(PersonModel, picture) {
     try {
       const updatedPerson = await prisma.Person.update({
         where: {
           id: PersonModel.id,
         },
         data: {
-            complete_name: PersonModel.name,
-            lastname1: PersonModel.lastname1,
-            lastname2: PersonModel.lastname2,
-            dni_type: PersonModel.dni_type,
-            dni: PersonModel.dni,
-            position_id: PersonModel.position_id,
-            picture: PersonModel.picture,
-            active: PersonModel.active,
-            updated_At: new Date(),
-          },
+          complete_name: PersonModel.name,
+          lastname1: PersonModel.lastname1,
+          lastname2: PersonModel.lastname2,
+          dni_type: Number(PersonModel.dni_type),
+          dni: PersonModel.dni,
+          position_id: Number(PersonModel.position_id),
+          picture: Buffer.from(picture[0].filename),
+          active: Boolean(PersonModel.active),
+          updated_At: new Date(),
+        },
       });
       return updatedPerson;
     } catch (error) {
@@ -76,7 +80,7 @@ export class PersonsService {
       throw new Error('Failed to updatePerson');
     }
   }
-  
+
   static async deletePerson(PersonId) {
     try {
       const deletedPerson = await prisma.Person.delete({ where: { id: PersonId } });

@@ -3,8 +3,8 @@ import { ProjectService } from '../../services/admin/projectService.js';
 export class ProjectController {
   static async listProject(req, res, next) {
     try {
-      const { companyID, projectName } = req.body;
-      const Projects = await ProjectService.listProjects(companyID, projectName);
+      const { defaultCompanyID, companyID } = req.body;
+      const Projects = await ProjectService.listProjects(defaultCompanyID, companyID);
       return res.status(200).json({ Projects });
     } catch (error) {
       console.error(error);

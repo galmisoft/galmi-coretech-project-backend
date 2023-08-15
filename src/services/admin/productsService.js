@@ -1,42 +1,49 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export class ProductsService { 
-  static async listProducts(companyId, productType, productName) {
+export class ProductsService {
+  static async listProducts(defaultCompanyID, companyID, productType) {
     try {
-      const product = await prisma.Product.findMany({
-        where: {
-          name: { contains: productName === undefined ? "" : productName },
-          type: { equals: productType === undefined ? 0 : productType },
-          company_id: { contains: companyId === undefined ? "" : companyId }
-        },
+      const whereClause = {
+        AND: {
+          OR: [
+            { company_id: companyID },
+            { company_id: defaultCompanyID },
+          ],
+          type_id: productType,
+        }
+      };
+      const products = await prisma.Product.findMany({
+        where: whereClause,
         include: {
           ProductType: {
             select: {
               id: true,
-              category_name: true
-            }
+              category_name: true,
+            },
           },
           Meassure: {
             select: {
               id: true,
-              name: true
-            }
-          }
-        }
+              name: true,
+            },
+          },
+        },
       });
-      return product;
+
+      return products;
     } catch (error) {
       console.error('Error fetching product:', error);
       throw new Error('Failed to listProducts');
     }
   }
+
   static async createProduct(productModel) {
     try {
       const newProduct = await prisma.Product.create({
         data: {
           type: productModel.type,
-          name: productModel.name,
+          name: productModel.description,
           SKU: productModel.SKU,
           company_id: productModel.company_id,
           meassure_id: productModel.meassure_id,
@@ -44,6 +51,7 @@ export class ProductsService {
           brand: productModel.brand,
           line_id: productModel.line_id,
           serial_number: productModel.serial_number,
+          presentation: productModel.presentation,
           active: productModel.active,
           created_At: new Date(),
           updated_At: new Date(),
@@ -54,7 +62,7 @@ export class ProductsService {
       console.error('Error creating product:', error);
       throw new Error('Failed to createProduct');
     }
-  }  
+  }
   static async updateProduct(data) {
     try {
       const updatedProduct = await prisma.Product.update({
@@ -62,13 +70,18 @@ export class ProductsService {
           id: data.id,
         },
         data: {
-            type: data.type,
-            name: data.name,
-            SKU: data.SKU,
-            brand: data.brand,
-            line_id: data.line_id,
-            serial_number: data.serial_number,
-            updated_At: new Date(),
+          type: productModel.type,
+          name: productModel.name,
+          SKU: productModel.SKU,
+          company_id: productModel.company_id,
+          meassure_id: productModel.meassure_id,
+          description: productModel.description,
+          brand: productModel.brand,
+          line_id: productModel.line_id,
+          serial_number: productModel.serial_number,
+          presentation: productModel.presentation,
+          active: productModel.active,
+          updated_At: new Date(),
         },
       });
       return updatedProduct;
@@ -77,7 +90,7 @@ export class ProductsService {
       throw new Error('Failed to updateProduct');
     }
   }
-  
+
   static async deleteProduct(productId) {
     try {
       const deletedProduct = await prisma.Product.delete({ where: { id: productId } });

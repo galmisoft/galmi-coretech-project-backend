@@ -2,10 +2,25 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class ActivityService {
-  static async listActivies(activityName) {
+  static async listActivies(defaultCompanyID, companyID) {
     try {
+        if(defaultCompanyID === undefined){
+          throw new Error('Se requiere variable defaultCompanyID');
+        }
+
+        const whereClause = 
+        {
+          AND: [
+            {
+              OR: [
+                { company_id: companyID } ,
+                { company_id: defaultCompanyID },
+              ], 
+            }
+          ]
+        }
         const listActivites = await prisma.Activities.findMany({
-        where: { name: { contains: activityName === undefined ? "true" : activityName } },
+        where: whereClause,
         include: { ActivityType: { select: { id: true, name: true } } }
       });
       return listActivites;
@@ -18,7 +33,9 @@ export class ActivityService {
       const activity = await prisma.activities.create({
         data: {
           name: activityModel.name,
-          type: activityModel.type,
+          type_id: activityModel.type_id,
+          company_id: activityModel.company_id,
+          chargeable: activityModel.chargeable,
           active: activityModel.active,
           created_At: new Date(),
           updated_At: new Date()
@@ -37,7 +54,9 @@ export class ActivityService {
         where: { id: activityModel.id },
         data: {
           name: activityModel.name,
-          type: activityModel.type,
+          type_id: activityModel.type_id,
+          company_id: activityModel.company_id,
+          chargeable: activityModel.chargeable,
           active: activityModel.active,
           updated_At: new Date()
         }

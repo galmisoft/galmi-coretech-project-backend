@@ -3,9 +3,10 @@ import { AssignationService } from '../../services/admin/assignationService.js';
 export class AssignationController {
   static async listAssignation(req, res, next) {
     try {
-      const { companyID, clientName } = req.body;
-      const Assignations = await AssignationService.listAssignations(companyID, clientName);
-      return res.status(200).json({ Assignations });
+      const { defaultCompanyID, companyID, activeProject } = req.body;
+      const Assignations = await AssignationService.listAssignations(defaultCompanyID, companyID, activeProject);
+      const response = Assignations.map(({ Equipment, ...e }) => ({ ...e, Equipment: { id: Equipment.id, name: Equipment.internal_code } }));
+      return res.status(200).json({ Assignations: response });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: 'Internal server error', details: error.message });

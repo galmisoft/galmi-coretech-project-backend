@@ -2,14 +2,18 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class ClientService {
-  static async listClients(companyID, clientName) {
+  static async listClients(defaultCompanyID, companyID) {
     try {
       const clients = await prisma.client.findMany({
         where: {
           AND: [
-            { comercial_name: { contains: clientName === undefined ? "" : clientName } }, 
-            { company_id: { contains: companyID === undefined ? "" : companyID } },
-          ]
+            {
+              OR: [
+                { company_id: companyID },
+                { company_id: defaultCompanyID },
+              ],
+            },
+          ],
         },
         include: {
           Country: {
@@ -22,14 +26,16 @@ export class ClientService {
       });
       return clients;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw new Error('Failed to list clients');
     }
   }
+
   static async createClient(clientData) {
     try {
       const client = await prisma.client.create({
         data: {
+          name: clientData.name,
           comercial_name: clientData.comercial_name,
           country_id: clientData.country_id,
           company_id: clientData.company_id,

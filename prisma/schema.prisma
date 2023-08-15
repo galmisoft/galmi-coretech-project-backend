@@ -63,6 +63,9 @@ model Company {
   id                      String           @id @default(uuid())
   name                    String
   visible_name            String
+  visible_icon            Bytes?
+  visible_logo1           Bytes?
+  visible_logo2           Bytes?
   country_id              Int
   division                String
   sub_division            String
@@ -90,6 +93,7 @@ model Company {
   Product                 Product[]
   Person                  Person[]
   email                   email[]
+  Activities              Activities[]
 }
 
 model CompanyModules {
@@ -157,12 +161,12 @@ model DniType {
 model Person {
   id            String   @id @default(uuid())
   complete_name String
-  lastname1     String
-  lastname2     String
+  lastname1     String?
+  lastname2     String?
   dni_type      Int      @default(0)
   dni           String
   position_id   Int
-  picture       String
+  picture       Bytes?
   active        Boolean  @default(true)
   company_id    String
 
@@ -191,8 +195,8 @@ model email {
   id         String   @id @default(uuid())
   mail_type  Int
   mail_to    String
-  CC         String
-  CCO        String
+  CC         String?
+  CCO        String?
   active     Boolean
   company_id String
   created_At DateTime @default(now())
@@ -204,12 +208,14 @@ model email {
 model User {
   id          String        @id @default(uuid())
   username    String
+  password    String
   user_type   Int
   active      Boolean
   reports_to  String
   names       String?
   lastname    String?
   email       String?
+  status      String?
   created_At  DateTime      @default(now())
   updated_At  DateTime      @updatedAt
   UserType    UserType      @relation(fields: [user_type], references: [id])
@@ -301,34 +307,15 @@ model Activities {
   id                String              @id @default(uuid())
   name              String
   type_id           Int                 @default(0)
+  company_id        String
+  chargeable        Boolean             @default(true)
   active            Boolean
   created_At        DateTime            @default(now())
   updated_At        DateTime            @updatedAt
   ActivityType      ActivityType        @relation(fields: [type_id], references: [id])
+  Company           Company             @relation(fields: [company_id], references: [id])
   DayPartActivities DayPartActivities[]
-}
 
-model DayPartActivities {
-  id                   String                 @id @default(uuid())
-  dayPart_id           String
-  activity_id          String
-  hours                Int
-  DayPart              DayPart                @relation(fields: [dayPart_id], references: [id])
-  Activities           Activities             @relation(fields: [activity_id], references: [id])
-  testAndMeassurements testAndMeassurements[]
-}
-
-model testAndMeassurements {
-  id                   String            @id @default(uuid())
-  dayPartActivities_id String
-  depth                Int
-  azimut               Int
-  inclination          Int
-  supervisor_name      String
-  company_name         String
-  magnetic_intensity   Int
-  efective             Boolean
-  DayPartActivities    DayPartActivities @relation(fields: [dayPartActivities_id], references: [id])
 }
 
 model TerrainType {
@@ -346,17 +333,8 @@ model Run {
   terrain_type2           Int?
   terrain_type3           Int?
   observation             String?
-  picture                 String?
+  picture                 Bytes?
   DayPartRun              DayPartRun[]
-}
-
-model Line {
-  id              Int               @id @default(autoincrement())
-  name            String
-  created_At      DateTime          @default(now())
-  updated_At      DateTime          @updatedAt
-  DayPartProducts DayPartProducts[]
-  Items           Items[]
 }
 
 model Meassure {
@@ -367,6 +345,7 @@ model Meassure {
 
 model Product {
   id            String      @id @default(uuid())
+  name          String?
   type_id       Int
   company_id    String
   meassure_id   Int
@@ -382,6 +361,7 @@ model Product {
   Company       Company     @relation(fields: [company_id], references: [id])
   Meassure      Meassure    @relation(fields: [meassure_id], references: [id])
   Items         Items[]
+  DayPartFluids DayPartFluids[]
 }
 
 model ProductType {
@@ -405,21 +385,22 @@ model Items {
   updated_At         DateTime @updatedAt
 
   Product         Product         @relation(fields: [product_id], references: [id])
-  DayPartProducts DayPartProducts @relation(fields: [project_id], references: [id])
-  Line            Line            @relation(fields: [line_id], references: [id])
+  DayPartProducts DayPartProducts @relation(fields: [dayPartProducts_id], references: [id])
   Client          Client          @relation(fields: [client_id], references: [id])
   Project         Project         @relation(fields: [project_id], references: [id])
+  Line            Line            @relation(fields: [line_id], references: [id])
 }
 
 model Probe {
   id             String    @id @default(uuid())
+  probe_number   String?
   date_ini       DateTime
   azimut_ini     Int?
   incline_ini    Int?
-  job_type       Boolean
+  job_type       String?
   objective_prof Int?
   platform       String?
-  level          Int?
+  level          String?
   labor          String?
   objective_vein String?
   zone           String?
@@ -436,7 +417,7 @@ model Probe {
 model DayPart {
   id                String              @id @default(uuid())
   date              DateTime
-  shift             Boolean
+  shift             Int                 @default(0)
   status            Int                 @default(0)
   probe_id          String
   team_id           String
@@ -450,6 +431,7 @@ model DayPart {
   M4                Float?
   PH                Float?
   PPM               Float?
+  fluid_return      Boolean             @default(true)
   created_At        DateTime            @default(now())
   updated_At        DateTime            @updatedAt
   Probe             Probe               @relation(fields: [probe_id], references: [id])
@@ -459,6 +441,8 @@ model DayPart {
   CompanydayPart    CompanydayPart[]
   DayPartActivities DayPartActivities[]
   DayPartPerson     DayPartPerson[]
+  DayPartFluids     DayPartFluids[]
+  DayPartTest       DayPartTest[]
 }
 
 model DayPartPerson {
@@ -482,11 +466,7 @@ model DayPartProducts {
   id               String   @id @default(uuid())
   dayPart_id       String
   type_id          Int
-
-  name             String
-  quantity         Int?
-
-  line_id          Int      @default(0)
+  line             String?          
   serial_number    String?
   brand            String?
   matrix           String?
@@ -495,10 +475,48 @@ model DayPartProducts {
   drill_bit_change Boolean?
   end_condition    Boolean?
   meters_to        Int?
-  change_motive    Int?
+  change_motive    Int?      @default(0) 
 
   ProductType      ProductType @relation(fields: [type_id], references: [id])
   DayPart          DayPart  @relation(fields: [dayPart_id], references: [id])
-  Line             Line     @relation(fields: [line_id], references: [id])
   Items            Items[]
+}
+
+model DayPartActivities {
+  id                   String                 @id @default(uuid())
+  dayPart_id           String
+  activity_id          String
+  hours                Int
+  DayPart              DayPart                @relation(fields: [dayPart_id], references: [id])
+  Activities           Activities             @relation(fields: [activity_id], references: [id])
+}
+
+model DayPartTest {
+  id                    String            @id @default(uuid())
+  dayPart_id            String
+  depth                 Int
+  azimut                Int
+  inclination           Int
+  supervisor_name       String
+  company_name          String
+  magnetic_intensity    Int
+  efective              Boolean
+  DayPart               DayPart @relation(fields: [dayPart_id], references: [id])
+}
+
+model DayPartFluids {
+  id                   String                 @id @default(uuid())
+  dayPart_id           String
+  fluid_id             String
+  quantity             Int
+
+  DayPart              DayPart                @relation(fields: [dayPart_id], references: [id])
+  Product              Product                @relation(fields: [fluid_id], references: [id])
+}
+
+model Line {
+  id Int @id @default(autoincrement())
+  name String
+
+  Items Items[]
 }

@@ -1,4 +1,4 @@
-import { Router} from "express";
+import { Router } from "express";
 import { UserController } from "../controllers/admin/userController.js";
 import { ClientController } from "../controllers/admin/clientController.js";
 import { DayPartController } from "../controllers/modules/dayPartController.js";
@@ -13,25 +13,19 @@ import { ItemController } from "../controllers/admin/itemController.js";
 import { PersonController } from "../controllers/admin/personController.js";
 import { EmailController } from "../controllers/admin/emailController.js";
 import { ComboController } from "../controllers/combos/comboController.js";
+import { AuthController } from "../controllers/admin/authController.js";
+import { ProbeController } from "../controllers/admin/probeController.js";
+import multer from 'multer'
+
+const upload = multer({ dest: 'uploads/' })
 
 const router = Router();
 
 
-// VIEWS
-// LOGIN
-// router.post('/sigin', UserController.validateUser);
-
-// // INICIO
-
-// // DAY PART
+router.post('/sigin', AuthController.login);
 router.post('/dayPart', DayPartController.listDayParts)
-router.post('/dayPart/form', DayPartController.dayPartData)
+router.post('/dayPart/get', DayPartController.getDayPart)
 router.post('/dayPart/create', DayPartController.createDayParts)
-
-// // COSTO X METRO
-// router.post('/costoMetro', CostoMetroController.listCostoMetro)
-// router.post('/costoMetro/download', CostoMetroController.downloadCostoMetro)
-
 
 /**** ADMIN *****/
 // FALTA PATALLA RESUMEN
@@ -40,11 +34,16 @@ router.post('/admin/company', CompanyController.listCompanies)
 router.post('/admin/company/create', CompanyController.createCompany)
 router.post('/admin/company/update', CompanyController.updateCompany)
 router.post('/admin/company/delete', CompanyController.deleteCompany)
+router.post('/admin/companyContrato', CompanyController.listCompanyContratos)
+router.post('/admin/companyContrato/update', upload.fields([{ name: 'visible_icon' }, { name: 'visible_logo1' }, { name: 'visible_logo2' }]), CompanyController.updateCompanyContratos)
 // User (Usuarios de Companies)
 router.post('/admin/user', UserController.listUser)
 router.post('/admin/user/create', UserController.createUser)
 router.post('/admin/user/update', UserController.updateUser)
 router.post('/admin/user/delete', UserController.deleteUser)
+router.post('/admin/userContrato', UserController.listUserContratos)
+router.post('/admin/userContrato/create', UserController.createUserContratos)
+router.post('/admin/userContrato/update', UserController.createUserContratos)
 // Clients
 router.post('/admin/client', ClientController.listClients)
 router.post('/admin/client/create', ClientController.createClient)
@@ -84,8 +83,8 @@ router.post('/admin/activity/delete', ActivityController.deleteActivities)
 router.post('/admin/activity/toggle', ActivityController.toggleActive)
 // Person
 router.post('/admin/person', PersonController.listPersons)
-router.post('/admin/person/create', PersonController.createPerson)
-router.post('/admin/person/update', PersonController.updatePerson)
+router.post('/admin/person/create', upload.fields([{ name: 'picture' }]), PersonController.createPerson)
+router.post('/admin/person/update', upload.fields([{ name: 'picture' }]), PersonController.updatePerson)
 router.post('/admin/person/delete', PersonController.deletePerson)
 router.post('/admin/person/toggle', PersonController.toggleActive)
 // Person
@@ -93,6 +92,8 @@ router.post('/admin/email', EmailController.listEmail)
 router.post('/admin/email/create', EmailController.createEmail)
 router.post('/admin/email/update', EmailController.updateEmail)
 router.post('/admin/email/delete', EmailController.deleteEmail)
+// Probe
+router.post('/admin/probe', ProbeController.findProbe)
 
 // COMBOS
 router.post('/combo/probes', ComboController.listProbes)
@@ -104,9 +105,9 @@ router.post('/combo/modules', ComboController.listModules)
 router.post('/combo/countries', ComboController.listCountries)
 router.post('/combo/clients', ComboController.listClients)
 router.post('/combo/projects', ComboController.listProjects)
-router.post('/combo/teams', ComboController.listTeams)
+router.post('/combo/equipment', ComboController.listEquipment)
 router.post('/combo/users', ComboController.listUsers)
-router.post('/combo/productTypes', ComboController.listProductTypes) 
+router.post('/combo/productTypes', ComboController.listProductTypes)
 router.post('/combo/measures', ComboController.listMeasures)
 router.post('/combo/products', ComboController.listProducts)
 router.post('/combo/lines', ComboController.listLines)

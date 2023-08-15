@@ -2,13 +2,23 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class EmailService { 
-  static async listEmails(companyId, mailTo) {
+  static async listEmails(defaultCompanyID, companyID) {
     try {
       const Email = await prisma.email.findMany({
         where: {
-          mail_to: { contains: mailTo === undefined ? "" : mailTo },
-          company_id: { contains: companyId === undefined ? "" : companyId }
+          OR: [
+            { company_id: companyID } ,
+            { company_id: defaultCompanyID },
+          ],         
         },
+        include:{
+          mailType: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
+        }
       });
       return Email;
     } catch (error) {
@@ -25,6 +35,7 @@ export class EmailService {
             CC: EmailModel.CC,
             CCO: EmailModel.CCO,
             active: EmailModel.active,
+            company_id: EmailModel.company_id,
             created_At: new Date(),
             updated_At: new Date(),
         },
@@ -35,7 +46,7 @@ export class EmailService {
       throw new Error('Failed to createEmail');
     }
   }  
-  static async updateEmail(data) {
+  static async updateEmail(EmailModel) {
     try {
       const updatedEmail = await prisma.email.update({
         where: {
@@ -47,6 +58,7 @@ export class EmailService {
             CC: EmailModel.CC,
             CCO: EmailModel.CCO,
             active: EmailModel.active,
+            company_id: EmailModel.company_id,
             created_At: new Date(),
             updated_At: new Date(),
         },

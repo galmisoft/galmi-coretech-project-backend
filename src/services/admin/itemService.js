@@ -2,56 +2,55 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class ItemsService { 
-  static async listItems(companyId, ItemType, ItemName) {
+  static async listItems(defaultCompanyID, companyID, productTypeID) {
     try {
       const Item = await prisma.Items.findMany({
         where: {
-          Product: {
-            AND: [
-                {name: { contains: ItemName === undefined ? "" : ItemName }, },
-                {type: { equals: ItemType === undefined ? 0 : ItemType }, },
-                {company_id: { contains: companyId === undefined ? "" : companyId } }
-              ]
-            }
+          AND: [
+            {
+              OR: [
+                { Product: { company_id: defaultCompanyID } },
+                { Product: { company_id: companyID } },
+              ],
+            },
+            { 
+              Product: { type_id: productTypeID }
+            } 
+          ]
         },
         include: {
           Product: {
             select: {
               id: true,
-              name: true
-            }
-          },
-          Line: {
-            select: {
-              id: true,
-              name: true
-            }
+              description: true,
+            },
           },
           DayPartProducts: {
             select: {
               id: true,
-              serial_number: true
-            }
-          }
-        }
+              serial_number: true,
+            },
+          },
+        },
       });
       return Item;
     } catch (error) {
       console.error('Error fetching Item:', error);
       throw new Error('Failed to listItems');
     }
-  }
+}
+
   static async createItem(ItemModel) {
     try {
       const newItem = await prisma.Items.create({
         data: {
-          product_id: ItemModel.type,
-          line_id: ItemModel.name,
-          serial_number: ItemModel.SKU,
-          unit_price: ItemModel.company_id,
-          client_id: ItemModel.meassure_id,
-          project_id: ItemModel.description,
-          dayPartProdayPartProducts_id: ItemModel.dayPartProducts_id,
+          product_id: ItemModel.product_id,
+          line_id: ItemModel.line_id,
+          serial_number: ItemModel.serial_number,
+          unit_price: ItemModel.unit_price,
+          client_id: ItemModel.client_id,
+          project_id: ItemModel.project_id,
+          dayPartProducts_id: ItemModel.dayPartProducts_id,
           created_At: new Date(),
           updated_At: new Date(),
         },
@@ -69,13 +68,13 @@ export class ItemsService {
           id: ItemModel.id,
         },
         data: {
-          product_id: ItemModel.type,
-          line_id: ItemModel.name,
-          serial_number: ItemModel.SKU,
-          unit_price: ItemModel.company_id,
-          client_id: ItemModel.meassure_id,
-          project_id: ItemModel.description,
-          dayPartProdayPartProducts_id: ItemModel.dayPartProducts_id,
+          product_id: ItemModel.product_id,
+          line_id: ItemModel.line_id,
+          serial_number: ItemModel.serial_number,
+          unit_price: ItemModel.unit_price,
+          client_id: ItemModel.client_id,
+          project_id: ItemModel.project_id,
+          dayPartProducts_id: ItemModel.dayPartProducts_id,
           updated_At: new Date(),
         },
       });
