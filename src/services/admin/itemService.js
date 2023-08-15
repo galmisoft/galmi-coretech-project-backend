@@ -25,11 +25,15 @@ export class ItemsService {
               description: true,
             },
           },
-          DayPartProducts: {
+          ItemDayPartProduct: {
             select: {
-              id: true,
-              serial_number: true,
-            },
+              dayPartProduct: {
+                select: {
+                  id: true,
+                  serial_number: true,
+                },
+              }
+            }
           },
         },
       });
@@ -50,7 +54,6 @@ export class ItemsService {
           unit_price: ItemModel.unit_price,
           client_id: ItemModel.client_id,
           project_id: ItemModel.project_id,
-          dayPartProducts_id: ItemModel.dayPartProducts_id,
           created_At: new Date(),
           updated_At: new Date(),
         },

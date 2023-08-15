@@ -124,12 +124,11 @@ export class UserService {
           id: true,
           username: true,
           user_type: true,
-          email: true,
-          active: true,
-          reports_to: true,
           names: true,
           lastname: true,
+          reports_to: true,
           created_At: true,
+          active: true,
           UserType: {
             select: {
               id: true,
