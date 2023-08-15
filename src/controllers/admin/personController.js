@@ -13,8 +13,9 @@ export class PersonController {
   }
   static async createPerson(req, res, next) {
     try {
+      const { picture } = req.files;
       const PersonModel = req.body;
-      const Persons = await PersonsService.createPerson(PersonModel);
+      const Persons = await PersonsService.createPerson(PersonModel, picture);
       return res.status(200).json({ Persons });
     } catch (error) {
       console.error(error);
@@ -22,9 +23,10 @@ export class PersonController {
     }
   }
   static async updatePerson(req, res, next) {
+    const { picture } = req.files;
     try {
       const PersonModel = req.body;
-      const Persons = await PersonsService.updatePerson(PersonModel);
+      const Persons = await PersonsService.updatePerson(PersonModel, picture);
       return res.status(200).json({ Persons });
     } catch (error) {
       console.error(error);

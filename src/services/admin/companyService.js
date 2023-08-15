@@ -4,12 +4,12 @@ const prisma = new PrismaClient();
 export class CompanyService {
   static async listCompanies(companyModel) {
     try {
-        const listCompanies = prisma.company.findMany({
-            where: {
-                id: companyModel.companyID
-            },
-            distinct: ['name']
-        })
+      const listCompanies = prisma.company.findMany({
+        where: {
+          id: companyModel.companyID
+        },
+        distinct: ['name']
+      })
       return listCompanies;
     } catch (error) {
       console.log(error)
@@ -18,23 +18,44 @@ export class CompanyService {
   }
   static async listCompaniesContratos(companyModel) {
     try {
-        const listCompanies = prisma.company.findUnique({
-            select: {
-              visible_name: true,
-              visible_icon: true,
-              visible_logo1: true,
-              visible_logo2: true
-            },
-            where: {
-                id: companyModel.companyID
-            }
-        })
+      const listCompanies = await prisma.company.findUnique({
+        select: {
+          visible_name: true,
+          visible_icon: true,
+          visible_logo1: true,
+          visible_logo2: true
+        },
+        where: {
+          id: companyModel.companyID
+        }
+      })
       return listCompanies;
     } catch (error) {
       console.log(error)
       throw new Error('Failed to listCompanies');
     }
   }
+
+  static async updateCompanyContratos(companyModel, visible_icon, visible_logo1, visible_logo2) {
+    try {
+      const listCompanies = await prisma.company.update({
+        where: {
+          id: companyModel.companyID
+        },
+        data: {
+          visible_name: companyModel.visible_name,
+          visible_icon: Buffer.from(visible_icon[0].filename),
+          visible_logo1: Buffer.from(visible_logo1[0].filename),
+          visible_logo2: Buffer.from(visible_logo2[0].filename)
+        }
+      })
+      return listCompanies;
+    } catch (error) {
+      console.log(error)
+      throw new Error('Failed to listCompanies');
+    }
+  }
+
   static async createCompany(companyModel) {
     try {
       const company = await prisma.company.create({
@@ -126,6 +147,6 @@ export class CompanyService {
       throw new Error(`Error creating companydayPart`);
     }
   }
-  
-  
+
+
 }
