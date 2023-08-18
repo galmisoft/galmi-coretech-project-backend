@@ -44,7 +44,7 @@ router.post('/admin/user/update', UserController.updateUser)
 router.post('/admin/user/delete', UserController.deleteUser)
 router.post('/admin/userContrato', UserController.listUserContratos)
 router.post('/admin/userContrato/create', UserController.createUserContratos)
-router.post('/admin/userContrato/update', UserController.createUserContratos)
+router.post('/admin/userContrato/update', UserController.updateUserContratos)
 // Clients
 router.post('/admin/client', ClientController.listClients)
 router.post('/admin/client/create', ClientController.createClient)

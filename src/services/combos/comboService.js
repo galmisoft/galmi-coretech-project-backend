@@ -234,8 +234,7 @@ export class ComboService {
     try {
       const result = await prisma.DayPartProducts.findMany({
         select: {
-          id: true,
-          serial_number: true,
+          id: true
         },
         where: {
           Items: {
