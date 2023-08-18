@@ -24,17 +24,7 @@ export class ItemsService {
               id: true,
               description: true,
             },
-          },
-          ItemDayPartProduct: {
-            select: {
-              dayPartProduct: {
-                select: {
-                  id: true,
-                  serial_number: true,
-                },
-              }
-            }
-          },
+          }
         },
       });
       return Item;
@@ -54,6 +44,7 @@ export class ItemsService {
           unit_price: ItemModel.unit_price,
           client_id: ItemModel.client_id,
           project_id: ItemModel.project_id,
+          dayPartProduct_serial_number: ItemModel.dayPartProduct_serial_number,
           created_At: new Date(),
           updated_At: new Date(),
         },
@@ -78,6 +69,7 @@ export class ItemsService {
           client_id: ItemModel.client_id,
           project_id: ItemModel.project_id,
           dayPartProducts_id: ItemModel.dayPartProducts_id,
+          dayPartProduct_serial_number: ItemModel.dayPartProduct_serial_number,
           updated_At: new Date(),
         },
       });

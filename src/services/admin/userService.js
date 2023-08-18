@@ -66,6 +66,7 @@ export class UserService {
 
   static async deleteUser(id) {
     try {
+      const result2 = await prisma.companyUser.deleteMany({ where: { user_id: id } })
       const result = await prisma.user.delete({ where: { id: id } });
       return result
     } catch (error) {
@@ -124,6 +125,7 @@ export class UserService {
           id: true,
           username: true,
           user_type: true,
+          email: true,
           names: true,
           lastname: true,
           reports_to: true,
@@ -172,7 +174,7 @@ export class UserService {
       const result2 = await prisma.companyUser.create({
         data: {
           company_id: userData.company_id,
-          user_id: result.Users.id
+          user_id: result.id
         }
       })
       return result
@@ -188,12 +190,12 @@ export class UserService {
         data: {
           username: userData.username,
           password: hashedPassword,
-          user_type: userData.user_type,
-          active: userData.active,
+          user_type: Number(userData.user_type),
           reports_to: userData.reports_to,
           names: userData.names, 
           lastname: userData.lastname,
           email: userData.email,
+          active: userData.active,
           created_At: new Date(),
           updated_At: new Date(),
         }
@@ -201,7 +203,7 @@ export class UserService {
       const result2 = await prisma.companyUser.create({
         data: {
           company_id: userData.company_id,
-          user_id: result.Users.id
+          user_id: result.id
         }
       })
       return result
@@ -259,23 +261,21 @@ export class UserService {
           where: { id: userData.id },
           data: {
             username: userData.username,
-            user_type: userData.user_type,
-            active: userData.active,
+            password: hashedPassword,
+            user_type: Number(userData.user_type),
             reports_to: userData.reports_to,
-            names: userData.names,
+            names: userData.names, 
             lastname: userData.lastname,
             email: userData.email,
+            active: userData.active,
             updated_At: new Date(),
           }
         });
-        const result2 = await prisma.companyUser.update({
-          where: {
-            user_id: result.Users.id
-          },
-          data: {
-            company_id: userData.company_id
-          }
+        const result2 = await prisma.companyUser.updateMany({
+          where: { user_id: result.id },
+          data: { company_id: userData.company_id }
         });  
+        return result
       }
       else {
         const hashedPassword = md5(userData.password)
@@ -284,7 +284,7 @@ export class UserService {
           data: {
             username: userData.username,
             password: hashedPassword,
-            user_type: userData.user_type,
+            user_type: Number(userData.user_type),
             active: userData.active,
             reports_to: userData.reports_to,
             names: userData.names,
@@ -293,16 +293,12 @@ export class UserService {
             updated_At: new Date(),
           }
         });
-        const result2 = await prisma.companyUser.update({
-          where: {
-            user_id: result.Users.id
-          },
-          data: {
-            company_id: userData.company_id
-          }
+        const result2 = await prisma.companyUser.updateMany({
+          where: { user_id: result.id },
+          data: { company_id: userData.company_id }
         });        
+        return result
       }
-      return result
     } catch (error) {
       console.error('Error updateUser:', error);
       throw new Error('An error occurred while updating the user')

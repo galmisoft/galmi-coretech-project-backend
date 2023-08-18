@@ -11,8 +11,8 @@ export class ProbeService {
                 select: {
                     DayPartProducts: {
                         select: {
+                            id: true,
                             line: true,
-                            serial_number: true,
                             brand: true,
                             matrix: true,
                             condition: true,
@@ -32,7 +32,7 @@ export class ProbeService {
             }
         }
       });
-      return Probe;
+      return Probe === null ? {} : Probe;
     } catch (error) {
       console.log(error);
       throw new Error('Failed to list Projects');
