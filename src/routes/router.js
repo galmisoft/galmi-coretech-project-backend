@@ -17,7 +17,8 @@ import { AuthController } from "../controllers/admin/authController.js";
 import { ProbeController } from "../controllers/admin/probeController.js";
 import multer from 'multer'
 
-const upload = multer({ dest: 'uploads/' })
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
 
 const router = Router();
 
