@@ -7,13 +7,13 @@ export class ComboService {
       const result = await prisma.probe.findMany({
         select: {
           id: true,
-          probe_number: true
+          probe_number: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listProbes')
+      console.log(error);
+      throw new Error("An error occurred in listProbes");
     }
   }
 
@@ -25,10 +25,10 @@ export class ComboService {
           terrain_name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listTerrainTypes')
+      console.log(error);
+      throw new Error("An error occurred in listTerrainTypes");
     }
   }
 
@@ -40,10 +40,10 @@ export class ComboService {
           name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listPositions')
+      console.log(error);
+      throw new Error("An error occurred in listPositions");
     }
   }
 
@@ -55,10 +55,10 @@ export class ComboService {
           visible_name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listCompanies')
+      console.log(error);
+      throw new Error("An error occurred in listCompanies");
     }
   }
 
@@ -70,10 +70,10 @@ export class ComboService {
           email: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listUsersEmails')
+      console.log(error);
+      throw new Error("An error occurred in listUsersEmails");
     }
   }
 
@@ -85,10 +85,10 @@ export class ComboService {
           name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listModules')
+      console.log(error);
+      throw new Error("An error occurred in listModules");
     }
   }
 
@@ -100,13 +100,13 @@ export class ComboService {
           name: true,
         },
         orderBy: {
-          name: 'asc'
+          name: "asc",
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listCountries')
+      console.log(error);
+      throw new Error("An error occurred in listCountries");
     }
   }
 
@@ -118,10 +118,10 @@ export class ComboService {
           name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listClients')
+      console.log(error);
+      throw new Error("An error occurred in listClients");
     }
   }
 
@@ -133,10 +133,10 @@ export class ComboService {
           name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listProjects')
+      console.log(error);
+      throw new Error("An error occurred in listProjects");
     }
   }
 
@@ -148,10 +148,10 @@ export class ComboService {
           internal_code: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listTeams')
+      console.log(error);
+      throw new Error("An error occurred in listTeams");
     }
   }
 
@@ -163,10 +163,10 @@ export class ComboService {
           names: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listUsers')
+      console.log(error);
+      throw new Error("An error occurred in listUsers");
     }
   }
 
@@ -178,10 +178,10 @@ export class ComboService {
           category_name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listProductTypes')
+      console.log(error);
+      throw new Error("An error occurred in listProductTypes");
     }
   }
 
@@ -193,10 +193,10 @@ export class ComboService {
           name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listMeasures')
+      console.log(error);
+      throw new Error("An error occurred in listMeasures");
     }
   }
 
@@ -208,10 +208,10 @@ export class ComboService {
           description: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listProducts')
+      console.log(error);
+      throw new Error("An error occurred in listProducts");
     }
   }
 
@@ -223,10 +223,10 @@ export class ComboService {
           name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listLines')
+      console.log(error);
+      throw new Error("An error occurred in listLines");
     }
   }
 
@@ -234,18 +234,18 @@ export class ComboService {
     try {
       const result = await prisma.DayPartProducts.findMany({
         select: {
-          id: true
+          id: true,
         },
         where: {
           Items: {
-            none: {}
-          }
-        }
+            none: {},
+          },
+        },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listProductSerialNumbers')
+      console.log(error);
+      throw new Error("An error occurred in listProductSerialNumbers");
     }
   }
 
@@ -257,10 +257,10 @@ export class ComboService {
           name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listActivityTypes')
+      console.log(error);
+      throw new Error("An error occurred in listActivityTypes");
     }
   }
 
@@ -272,10 +272,10 @@ export class ComboService {
           name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listDocumentTypes')
+      console.log(error);
+      throw new Error("An error occurred in listDocumentTypes");
     }
   }
 
@@ -287,10 +287,24 @@ export class ComboService {
           name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listMailTypes')
+      console.log(error);
+      throw new Error("An error occurred in listMailTypes");
+    }
+  }
+  static async listUserTypes() {
+    try {
+      const result = await prisma.userType.findMany({
+        select: {
+          id: true,
+          name: true,
+        },
+      });
+      return result;
+    } catch (error) {
+      console.log(error);
+      throw new Error("An error occurred in listUserTypes");
     }
   }
 }
