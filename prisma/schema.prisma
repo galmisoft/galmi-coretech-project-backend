@@ -328,7 +328,7 @@ model Run {
   meters_to               Int
   length                  Int
   recuperation_percentage Int?
-  terrain_type1           Int
+  terrain_type1           Int?
   terrain_type2           Int?
   terrain_type3           Int?
   observation             String?
@@ -377,7 +377,7 @@ model Items {
   unit_price        Float
   client_id         String
   project_id        String
-  dayPartProduct_id String
+  dayPartProduct_serial_number String
 
   created_At DateTime @default(now())
   updated_At DateTime @updatedAt
@@ -385,7 +385,7 @@ model Items {
   Product         Product         @relation(fields: [product_id], references: [id])
   Client          Client          @relation(fields: [client_id], references: [id])
   Project         Project         @relation(fields: [project_id], references: [id])
-  DayPartProducts DayPartProducts @relation(fields: [dayPartProduct_id], references: [id])
+  // DayPartProducts DayPartProducts @relation(fields: [dayPartProduct_id], references: [id])
   Line            Line            @relation(fields: [line_id], references: [id])
 }
 
@@ -461,22 +461,23 @@ model DayPartRun {
 }
 
 model DayPartProducts {
-  id               String   @id
+  id               String   @id @default(uuid())
   dayPart_id       String
+  serial_number    String
   type_id          Int
   line             String?
   brand            String?
   matrix           String?
-  condition        Boolean?
+  condition        Int?
   meters_from      Int?
-  drill_bit_change Boolean?
-  end_condition    Boolean?
+  drill_bit_change Int?
+  end_condition    Int?
   meters_to        Int?
   change_motive    Int?     @default(1)
 
   ProductType ProductType @relation(fields: [type_id], references: [id])
   DayPart     DayPart     @relation(fields: [dayPart_id], references: [id])
-  Items       Items[]
+  // Items       Items[]
 }
 
 model DayPartActivities {
