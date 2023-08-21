@@ -236,7 +236,7 @@ export class ComboService {
       const usedSerialNumbers = items.map( (i) => i.dayPartProduct_serial_number )
       const result = await prisma.DayPartProducts.findMany({
         select: {
-          id: true,
+          serial_number: true,
         },
         where: {
           NOT: {
