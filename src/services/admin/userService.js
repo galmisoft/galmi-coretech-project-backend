@@ -18,6 +18,16 @@ export class UserService {
           ]        
         },
         include: {
+          TeamUser: {
+            select: {
+              Team: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              }
+            }
+          },
           CompanyUser: {
             select: {
               Company: {
@@ -49,7 +59,15 @@ export class UserService {
         }
       })
       if (result) {
-        console.log(JSON.stringify({ result }))
+        const defaultCompany = await prisma.company.findUnique({
+          where: { id: 'dd6eb56d-f8f4-4686-80b8-31a41062ea77' },
+          select: {
+            id: true,
+            name: true,
+            visible_name: true,
+          }
+        })
+        result[0].DefaultCompany = defaultCompany
         return JwtAuth.sign(JSON.stringify({ result }));
       }
     } catch(error) {
@@ -220,15 +238,17 @@ export class UserService {
           where: { id: userData.id },
           data: {
             username: userData.username,
-            user_type: userData.user_type,
             active: userData.active,
+            user_type: userData.user_type,
             reports_to: userData.reports_to,
             names: userData.names,
             lastname: userData.lastname,
+            status: userData.status,
             email: userData.email,
             updated_At: new Date(),
           }
         });
+        return result
       }
       else {
         const hashedPassword = md5(userData.password)
@@ -237,17 +257,18 @@ export class UserService {
           data: {
             username: userData.username,
             password: hashedPassword,
-            user_type: userData.user_type,
             active: userData.active,
+            user_type: userData.user_type,
             reports_to: userData.reports_to,
             names: userData.names,
             lastname: userData.lastname,
+            status: userData.status,
             email: userData.email,
             updated_At: new Date(),
           }
         });
+        return result
       }
-      return result
     } catch (error) {
       console.error('Error updateUser:', error);
       throw new Error('An error occurred while updating the user')

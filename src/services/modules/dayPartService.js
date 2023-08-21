@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import transformJson from "../../model/dayPartModel.js";
 const prisma = new PrismaClient();
 
 export class DayPartService {
@@ -122,7 +123,6 @@ export class DayPartService {
                   meassure_id: true,
                   description: true,
                   brand: true,
-                  serial_number: true,
                   presentation: true,
                   Meassure: {
                     select: {
@@ -179,13 +179,16 @@ export class DayPartService {
     }
   }
   
-  static async createDayParts(dayPartModel) {
+  static async createDayParts(JsonBody) {
+    const dayPartModel = await transformJson(JsonBody)
+    console.log('DayPartFormated')
     try {
+      console.log('Creating Probe')
       if ( dayPartModel.probe_id === null ){
         const newProbe = await prisma.probe.create({
           data: {
             probe_number: dayPartModel.probe_number,
-            date_ini: dayPartModel.probe.date_ini,
+            date_ini: new Date(dayPartModel.probe.date_ini),
             azimut_ini: dayPartModel.probe.azimut_ini,
             incline_ini: dayPartModel.probe.incline_ini,
             job_type: dayPartModel.probe.job_type,
@@ -198,13 +201,13 @@ export class DayPartService {
             horometer_ini: dayPartModel.probe.horometer_ini,
             horometer_fin: dayPartModel.probe.horometer_fin,
             finalized: dayPartModel.probe.finalized,
-            date_fin: dayPartModel.probe.date_fin,
+            date_fin: new Date(dayPartModel.probe.date_ini),
           }
         })
         dayPartModel.probe_id = newProbe.id
       }
 
-      
+      console.log('Creating Run')
       const newRuns = [];
       dayPartModel.dayPartRun.forEach( async run => {
         const createdRun = await prisma.Run.create({
@@ -223,6 +226,7 @@ export class DayPartService {
         newRuns.push(createdRun);
       })
 
+      console.log('Creating DayPart')
       const dayParts = await prisma.DayPart.create({
         data: {
             date: new Date(dayPartModel.date),
@@ -244,7 +248,7 @@ export class DayPartService {
             created_At: new Date(),
             updated_At: new Date(),
           }
-        })
+      })
 
       console.log('Creating Runs for ', dayParts.id)
       newRuns.forEach( async run => {
@@ -258,6 +262,7 @@ export class DayPartService {
 
       console.log('Creating Activities for ', dayParts.id)
       dayPartModel.DayPartActivities.forEach( async activity => {
+        console.log(`Activity with ${dayParts.id}`, activity)
         const createdDayPartActivities = await prisma.dayPartActivities.create({
           data: {
             dayPart_id: dayParts.id,
@@ -289,7 +294,7 @@ export class DayPartService {
             supervisor_name: test.supervisor_name,
             company_name: test.company_name,
             magnetic_intensity: test.magnetic_intensity,
-            efective: test.active
+            efective: test.active ? test.active : true
           }
         });
       });
@@ -299,9 +304,9 @@ export class DayPartService {
         const createdDayPartProducts = await prisma.DayPartProducts.create({
           data: {
             dayPart_id: dayParts.id,
-            type_id: 1,
-            line_id: product.line_id,
             serial_number: product.serial_number,
+            type_id: 1,
+            line: product.line,
             brand: product.brand,
             matrix: product.matrix,
             condition: product.condition,
@@ -323,7 +328,6 @@ export class DayPartService {
           }
         })
         if (checkPerson) {
-
           const dayPartPerson = await prisma.dayPartPerson.create({
             data: {
               dayPart_id: dayParts.id,
@@ -331,7 +335,6 @@ export class DayPartService {
             },
           });
         } else {
-
           const newPerson = await prisma.person.create({
             data: {
               complete_name: personData.complete_name,
@@ -341,7 +344,7 @@ export class DayPartService {
               dni: personData.dni,
               position_id: personData.position_id,
               picture: personData.picture,
-              active: personData.active,
+              active: personData.active ? personData.active : true,
               company_id: personData.company_id
             },
           });

@@ -232,13 +232,17 @@ export class ComboService {
 
   static async listProductSerialNumbers() {
     try {
+      const items = await prisma.Items.findMany({}) 
+      const usedSerialNumbers = items.map( (i) => i.dayPartProduct_serial_number )
       const result = await prisma.DayPartProducts.findMany({
         select: {
           id: true,
         },
         where: {
-          Items: {
-            none: {},
+          NOT: {
+            serial_number: {
+              in: usedSerialNumbers,
+            },
           },
         },
       });
