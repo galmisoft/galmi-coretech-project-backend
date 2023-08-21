@@ -262,6 +262,7 @@ export class DayPartService {
 
       console.log('Creating Activities for ', dayParts.id)
       dayPartModel.DayPartActivities.forEach( async activity => {
+        console.log(`Activity with ${dayParts.id}`, activity)
         const createdDayPartActivities = await prisma.dayPartActivities.create({
           data: {
             dayPart_id: dayParts.id,
@@ -299,7 +300,6 @@ export class DayPartService {
       });
 
       console.log('Creating Products for ', dayParts.id)
-      console.log(dayPartModel)
       dayPartModel.DayPartProducts.forEach( async product => {
         const createdDayPartProducts = await prisma.DayPartProducts.create({
           data: {
@@ -327,7 +327,6 @@ export class DayPartService {
             dni: personData.dni
           }
         })
-        console.log(checkPerson)
         if (checkPerson) {
           const dayPartPerson = await prisma.dayPartPerson.create({
             data: {
@@ -336,7 +335,6 @@ export class DayPartService {
             },
           });
         } else {
-          console.log('Creating', personData)
           const newPerson = await prisma.person.create({
             data: {
               complete_name: personData.complete_name,
