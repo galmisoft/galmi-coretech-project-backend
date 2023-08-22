@@ -25,7 +25,11 @@ const router = Router();
 router.post("/sigin", AuthController.login);
 router.post("/dayPart", DayPartController.listDayParts);
 router.post("/dayPart/get", DayPartController.getDayPart);
-router.post("/dayPart/create", upload.fields([{ name: "validacion" }]), DayPartController.createDayParts);
+router.post(
+  "/dayPart/create",
+  upload.fields([{ name: "validacion" }]),
+  DayPartController.createDayParts
+);
 
 /**** ADMIN *****/
 // FALTA PATALLA RESUMEN
@@ -35,7 +39,9 @@ router.post("/admin/company/create", CompanyController.createCompany);
 router.post("/admin/company/update", CompanyController.updateCompany);
 router.post("/admin/company/delete", CompanyController.deleteCompany);
 router.post("/admin/companyContrato", CompanyController.listCompanyContratos);
-router.post("/admin/companyContrato/update", upload.fields([
+router.post(
+  "/admin/companyContrato/update",
+  upload.fields([
     { name: "visible_icon" },
     { name: "visible_logo1" },
     { name: "visible_logo2" },
@@ -67,8 +73,14 @@ router.post("/admin/equipment/update", EquipmentController.updateEquipment);
 router.post("/admin/equipment/delete", EquipmentController.deleteEquipment);
 // Assignation
 router.post("/admin/assignation", AssignationController.listAssignation);
-router.post("/admin/assignation/create", AssignationController.createAssignation);
-router.post("/admin/assignation/update", AssignationController.updateAssignation);
+router.post(
+  "/admin/assignation/create",
+  AssignationController.createAssignation
+);
+router.post(
+  "/admin/assignation/update",
+  AssignationController.updateAssignation
+);
 router.post(
   "/admin/assignation/delete",
   AssignationController.deleteAssignation
@@ -128,7 +140,10 @@ router.post("/combo/productTypes", ComboController.listProductTypes);
 router.post("/combo/measures", ComboController.listMeasures);
 router.post("/combo/products", ComboController.listProducts);
 router.post("/combo/lines", ComboController.listLines);
-router.post("/combo/productSerialNumbers",ComboController.listProductSerialNumbers);
+router.post(
+  "/combo/productSerialNumbers",
+  ComboController.listProductSerialNumbers
+);
 router.post("/combo/activityTypes", ComboController.listActivityTypes);
 router.post("/combo/documentTypes", ComboController.listDocumentTypes);
 router.post("/combo/mailTypes", ComboController.listMailTypes);
