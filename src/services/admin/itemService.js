@@ -19,6 +19,12 @@ export class ItemsService {
           ]
         },
         include: {
+          Line: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
           Product: {
             select: {
               id: true,
