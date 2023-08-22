@@ -395,7 +395,7 @@ model Probe {
   date_ini       DateTime
   azimut_ini     Int?
   incline_ini    Int?
-  job_type       String?
+  job_type       Int?
   objective_prof Int?
   platform       String?
   level          String?
@@ -430,17 +430,19 @@ model DayPart {
   PH                Float?
   PPM               Float?
   fluid_return      Boolean             @default(true)
+  signature         Bytes?
+
   created_At        DateTime            @default(now())
   updated_At        DateTime            @updatedAt
   Probe             Probe               @relation(fields: [probe_id], references: [id])
   Team              Team                @relation(fields: [team_id], references: [id])
   DayPartRun        DayPartRun[]
   DayPartProducts   DayPartProducts[]
-  CompanydayPart    CompanydayPart[]
   DayPartActivities DayPartActivities[]
   DayPartPerson     DayPartPerson[]
   DayPartFluids     DayPartFluids[]
   DayPartTest       DayPartTest[]
+  CompanydayPart    CompanydayPart[]
 }
 
 model DayPartPerson {
@@ -470,7 +472,7 @@ model DayPartProducts {
   matrix           String?
   condition        Int?
   meters_from      Int?
-  drill_bit_change Int?
+  drill_bit_change Boolean?
   end_condition    Int?
   meters_to        Int?
   change_motive    Int?     @default(1)
