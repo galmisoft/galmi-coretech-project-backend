@@ -184,7 +184,6 @@ export function transformPrisma(dayPartData){
         const Paralizacion = []
         
         for ( const activity of DayPartActivities ) {
-            console.log(activity)
             switch(activity.Activities.ActivityType.id){
                 case 1:
                     Operativas.push({ id: activity.id, horas: activity.hours })
@@ -210,7 +209,6 @@ export function transformPrisma(dayPartData){
         const Tricono = []
         
         for ( const product of DayPartProducts ) {
-            console.log(product)
             switch(product.ProductType.id){
                 case 1:
                     Brocas.push({
@@ -284,7 +282,6 @@ export function transformPrisma(dayPartData){
     function obtenerMedicionesSondaje(DayPartTest){
         const tests = []
         for ( const test of DayPartTest ){
-            console.log(test)
             tests.push({
                 'id': test.id,
                 'profundidad': test.depth,
@@ -304,7 +301,6 @@ export function transformPrisma(dayPartData){
         
         var n = 1
         for ( const person of dayPartPerson ) {
-            console.log(person)
             let positon = person.Person.Position.name
             if (positon==='Ayudante'){
                 positon = `${positon}${n}`
@@ -359,7 +355,7 @@ export function transformPrisma(dayPartData){
             "herramientas": obtenerHerramientas(dayPartData.DayPartProducts),
             "medicionesSondaje": obtenerMedicionesSondaje(dayPartData.DayPartTest),
             "personal": obtenerPersonal(dayPartData.DayPartPerson),
-            // "firma": dayPartData.signature.data
+            "firma": dayPartData.signature
     }
     return data
 }
