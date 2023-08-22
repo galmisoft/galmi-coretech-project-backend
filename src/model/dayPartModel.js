@@ -19,7 +19,7 @@ async function findActivityByDescription(desc) {
 
 async function findFluidsByDescription(desc) {
     try {
-        const query = await prisma.Product.findFirst({
+        const query = await prisma.inputJson.herramientas[Product].findFirst({
           select: { id: true },
           where: {
             AND: [{ description: desc }, { type_id: 3 } ]
@@ -35,91 +35,82 @@ async function findFluidsByDescription(desc) {
 
 export default function transformJson(inputJson) {
     const DayPartRun = []
-    for ( corrida in inputJson.corridas ) {
+    for ( const corrida in inputJson.corridas ) {
         DayPartRun.push({
-            meters_from: corrida.desde,
-            meters_to: corrida.hasta,
-            length: corrida.longitud,
-            recuperation_percentage: corrida.recuperacion,
-            terrain_type1: corrida.terreno1,
-            terrain_type2: corrida.terreno2,
-            terrain_type3: corrida.terreno3,
-            observation: corrida.observacion,
-            picture: corrida.foto
+            meters_from: inputJson.corridas[corrida].desde,
+            meters_to: inputJson.corridas[corrida].hasta,
+            length: inputJson.corridas[corrida].longitud,
+            recuperation_percentage: inputJson.corridas[corrida].recuperacion,
+            terrain_type1: inputJson.corridas[corrida].terreno1,
+            terrain_type2: inputJson.corridas[corrida].terreno2,
+            terrain_type3: inputJson.corridas[corrida].terreno3,
+            observation: inputJson.corridas[corrida].observacion,
+            picture: inputJson.corridas[corrida].foto
         })
     }
 
     const DayPartActivities = []
-    for ( activityTypes in inputJson.actividades ) {
-        for ( activity in activityTypes ) {
-            DayPartActivities.push({
-                id: activity.id, 
-                hours: activity.horas 
-            })
-        }
+    for ( const activity in inputJson.actividades ) {
+        DayPartActivities.push({
+            id: inputJson.actividades[activity].id,
+            type_id: inputJson.actividades[activity].type_id,
+            hours: inputJson.actividades[activity].horas 
+        })
     }
 
     const DayPartFluids = []
-    for ( fluid in inputJson.fluidos.fluidos ){
+    for ( const fluid in inputJson.fluidos.fluidos ){
         DayPartFluids.push({
-            id: fluid.id,
-            quantity: fluid.cantidad
+            id: inputJson.fluidos.fluidos[fluid].id,
+            quantity: inputJson.fluidos.fluidos[fluid].cantidad
         })
     }
 
     const DayPartTest = []
-    for ( test in inputJson.medicionesSondaje) {
+    for ( const test in inputJson.medicionesSondaje) {
         DayPartTest.push({
-            depth: test.profundidad,
-            azimut: test.azimut,
-            inclination: test.inclinacion,
-            supervisor_name: test.nombre,
-            company_name: test.empresa,
-            magnetic_intensity: test.intensidad,
-            efective: test.tiroEfectivo === 'si'
+            depth: inputJson.medicionesSondaje[test].profundidad,
+            azimut: inputJson.medicionesSondaje[test].azimut,
+            inclination: inputJson.medicionesSondaje[test].inclinacion,
+            supervisor_name: inputJson.medicionesSondaje[test].nombre,
+            company_name: inputJson.medicionesSondaje[test].empresa,
+            magnetic_intensity: inputJson.medicionesSondaje[test].intensidad,
+            efective: inputJson.medicionesSondaje[test].tiroEfectivo === 'si'
         })
     }
 
     const DayPartProducts = []
-    for ( herramienta in inputJson.herramientas ) {
+    for ( const product in inputJson.herramientas ) {
         DayPartProducts.push({
-            line: product.linea,
-            type_id: product.type_id,
-            serial_number: product.nroSerie,
-            brand: product.marca,
-            matrix: product.matriz,
-            condition: product.condicionEntrada,
-            meters_from: product.desde,
-            drill_bit_change: product.cambio,
-            end_condition: product.condicionSalida,
-            meters_to: product.hasta,
-            change_motive: product.motivoCambio
+            line: inputJson.herramientas[product].linea,
+            type_id: inputJson.herramientas[product].type_id,
+            serial_number: inputJson.herramientas[product].nroSerie,
+            brand: inputJson.herramientas[product].marca,
+            matrix: inputJson.herramientas[product].matriz,
+            condition: inputJson.herramientas[product].condicionEntrada,
+            meters_from: inputJson.herramientas[product].desde,
+            drill_bit_change: inputJson.herramientas[product].cambio,
+            end_condition: inputJson.herramientas[product].condicionSalida,
+            meters_to: inputJson.herramientas[product].hasta,
+            change_motive: inputJson.herramientas[product].motivoCambio
         })
     }
 
     const DayPartPerson = []
-    for ( person in inputJson.personal ) {
+    for ( const person in inputJson.personal ) {
         DayPartPerson.push({
-            complete_name: person_data.nombre,
-            lastname1: person_data.nombre.split(' ')[0],
-            lastname2: person_data.nombre.split(' ')[1],
-            dni_type: 1,
-            dni: person_data.dni,
-            position_id: person_data.position_id,
-            picture: null,
-            active: true,
-            company_id: person_data.id
+            person_id: inputJson.personal[person].id
         })
     }
 
     const output = {
         date: inputJson.datos_generales.fechaParteDiario,
-        shift: inputJson.datos_generales.turno === 'dia' ? 1 : 2,
-        status: inputJson.datos_generales.sondajeTerminado === 'si' ? 1 : 2,
-        probe_id: inputJson.datos_generales.probe_id ? inputJson.datos_generales.probe_id : null,
+        shift: inputJson.datos_generales.turno,
+        status: inputJson.datos_generales.sondajeTerminado === true ? 1 : 0,
+        probe_id: inputJson.datos_generales.sondaje_id ? inputJson.datos_generales.sondaje_id : null,
         probe: {
             probe_number: inputJson.datos_generales.nroSondaje,
-            date_ini: inputJson.datos_generales.inicioFechaSondaje,
+            date_ini: inputJson.datos_generales.inicioSondaje,
             azimut_ini: inputJson.datos_generales.azimut,
             incline_ini: inputJson.datos_generales.inclinacion,
             job_type: inputJson.datos_generales.tipoTrabajo,
@@ -132,6 +123,7 @@ export default function transformJson(inputJson) {
             horometer_ini: inputJson.datos_generales.horometroInicial,
             horometer_fin: inputJson.datos_generales.horometroFinal,
             finalized: inputJson.datos_generales.sondajeTerminado,
+            date_fin: inputJson.datos_generales.finSondaje
         },
         team_id: inputJson.datos_generales.team_id,
         meters_from: inputJson.avance_perforacion.metrosPerforadosDesde,

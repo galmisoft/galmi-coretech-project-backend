@@ -484,7 +484,7 @@ model DayPartActivities {
   id          String     @id @default(uuid())
   dayPart_id  String
   activity_id String
-  hours       Int
+  hours       Int?
   DayPart     DayPart    @relation(fields: [dayPart_id], references: [id])
   Activities  Activities @relation(fields: [activity_id], references: [id])
 }
