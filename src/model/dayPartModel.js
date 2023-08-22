@@ -1,4 +1,117 @@
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
+
+async function findActivityByDescription(desc) {
+    try {
+        const query = await prisma.activities.findFirst({
+          select: {
+            id: true
+          },
+          where: { name: desc }
+        });
+        console.log('findActivityByDescription', query)
+        return query.id
+      } catch (error) {
+        console.log(error)
+        throw new Error('Failed to findActivityByDescription');
+      }
+}
+
+async function findFluidsByDescription(desc) {
+    try {
+        const query = await prisma.Product.findFirst({
+          select: { id: true },
+          where: {
+            AND: [{ description: desc }, { type_id: 3 } ]
+          }
+        });
+        console.log('findFluidsByDescription', query)
+        return query.id
+      } catch (error) {
+        console.log(error)
+        throw new Error('Failed to findActivityByDescription');
+      }
+}
+
 export default function transformJson(inputJson) {
+    const DayPartRun = []
+    for ( corrida in inputJson.corridas ) {
+        DayPartRun.push({
+            meters_from: corrida.desde,
+            meters_to: corrida.hasta,
+            length: corrida.longitud,
+            recuperation_percentage: corrida.recuperacion,
+            terrain_type1: corrida.terreno1,
+            terrain_type2: corrida.terreno2,
+            terrain_type3: corrida.terreno3,
+            observation: corrida.observacion,
+            picture: corrida.foto
+        })
+    }
+
+    const DayPartActivities = []
+    for ( activityTypes in inputJson.actividades ) {
+        for ( activity in activityTypes ) {
+            DayPartActivities.push({
+                id: activity.id, 
+                hours: activity.horas 
+            })
+        }
+    }
+
+    const DayPartFluids = []
+    for ( fluid in inputJson.fluidos.fluidos ){
+        DayPartFluids.push({
+            id: fluid.id,
+            quantity: fluid.cantidad
+        })
+    }
+
+    const DayPartTest = []
+    for ( test in inputJson.medicionesSondaje) {
+        DayPartTest.push({
+            depth: test.profundidad,
+            azimut: test.azimut,
+            inclination: test.inclinacion,
+            supervisor_name: test.nombre,
+            company_name: test.empresa,
+            magnetic_intensity: test.intensidad,
+            efective: test.tiroEfectivo === 'si'
+        })
+    }
+
+    const DayPartProducts = []
+    for ( herramienta in inputJson.herramientas ) {
+        DayPartProducts.push({
+            line: product.linea,
+            type_id: product.type_id,
+            serial_number: product.nroSerie,
+            brand: product.marca,
+            matrix: product.matriz,
+            condition: product.condicionEntrada,
+            meters_from: product.desde,
+            drill_bit_change: product.cambio,
+            end_condition: product.condicionSalida,
+            meters_to: product.hasta,
+            change_motive: product.motivoCambio
+        })
+    }
+
+    const DayPartPerson = []
+    for ( person in inputJson.personal ) {
+        DayPartPerson.push({
+            complete_name: person_data.nombre,
+            lastname1: person_data.nombre.split(' ')[0],
+            lastname2: person_data.nombre.split(' ')[1],
+            dni_type: 1,
+            dni: person_data.dni,
+            position_id: person_data.position_id,
+            picture: null,
+            active: true,
+            company_id: person_data.id
+        })
+    }
+
     const output = {
         date: inputJson.datos_generales.fechaParteDiario,
         shift: inputJson.datos_generales.turno === 'dia' ? 1 : 2,
@@ -32,73 +145,12 @@ export default function transformJson(inputJson) {
         PH: inputJson.fluidos.ph,
         PPM: inputJson.fluidos.ppm,
         fluid_return: inputJson.fluidos.retorno,
-        dayPartRun: inputJson.corridas.map(corrida => ({
-            meters_from: corrida.desde,
-            meters_to: corrida.hasta,
-            length: corrida.longitud,
-            recuperation_percentage: corrida.recuperacion,
-            terrain_type1: corrida.terreno1,
-            terrain_type2: corrida.terreno2,
-            terrain_type3: corrida.terreno3,
-            observation: corrida.observacion,
-            picture: corrida.foto
-        })),
-        DayPartActivities: inputJson.actividades.operativas
-            .filter(activity => activity.horas !== null)
-            .map(activity => ({ id: activity.descripcion, hours: activity.horas })),
-        DayPartFluids: inputJson.fluidos.fluidos.map(fluid => ({
-            id: fluid.descripcion,
-            quantity: fluid.cantidad
-        })),
-        DayPartTest: inputJson.medicionesSondaje.map(test => ({
-            depth: test.profundidad,
-            azimut: test.azimut,
-            inclination: test.inclinacion,
-            supervisor_name: test.nombre,
-            company_name: test.empresa,
-            magnetic_intensity: test.intensidad,
-            efective: test.tiroEfectivo === 'si'
-        })),
-        DayPartProducts: [
-            ...inputJson.herramientas.broca.map(product => ({
-                line: product.linea,
-                type_id: 1,
-                serial_number: product.nroSerie,
-                brand: product.marca,
-                matrix: product.matriz,
-                condition: product.condicionEntrada,
-                meters_from: product.desde,
-                drill_bit_change: product.cambio,
-                end_condition: product.condicionSalida,
-                meters_to: product.hasta,
-                change_motive: product.motivoCambio
-            })),
-            ...inputJson.herramientas.rShell.map(product => ({
-                line: product.linea,
-                type_id: 2,
-                serial_number: product.nroSerie,
-                brand: product.marca,
-                matrix: product.matriz,
-                condition: product.condicionEntrada,
-                meters_from: product.desde,
-                drill_bit_change: product.cambio,
-                end_condition: product.condicionSalida,
-                meters_to: product.hasta,
-                change_motive: product.motivoCambio
-            }))
-        ],
-        DayPartPerson: Object.values(inputJson.personal)
-            .map(person_data => ({
-                complete_name: person_data.nombre,
-                lastname1: person_data.nombre.split(' ')[0],
-                lastname2: person_data.nombre.split(' ')[1],
-                dni_type: 1, // Replace with actual DNI type
-                dni: person_data.dni,
-                position_id: 1, // Replace with actual position ID
-                picture: null,
-                active: true,
-                company_id: person_data.id
-            }))
+        dayPartRun: DayPartRun,
+        DayPartActivities: DayPartActivities,
+        DayPartFluids: DayPartFluids,
+        DayPartTest: DayPartTest,
+        DayPartProducts: DayPartProducts,
+        DayPartPerson: DayPartPerson
     };
     return output;
 }
