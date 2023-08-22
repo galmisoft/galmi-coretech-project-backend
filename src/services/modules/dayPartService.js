@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import transformJson from "../../model/dayPartModel.js";
+import { transformJson, transformPrisma } from "../../model/dayPartModel.js";
 const prisma = new PrismaClient();
 
 export class DayPartService {
@@ -63,19 +63,6 @@ export class DayPartService {
               date_fin: true,
             }
           },
-          DayPartActivities: {
-            select: {
-              id: true,
-              activity_id: true,
-              hours: true,
-              Activities: {
-                select: {
-                  id: true,
-                  name: true,
-                }
-              }
-            }
-          },
           DayPartRun: {
               select: {
                 id: true,
@@ -101,6 +88,7 @@ export class DayPartService {
               id: true,
               line: true,
               serial_number: true,
+              type_id: true,
               brand: true,
               matrix: true,
               condition: true,
@@ -108,7 +96,62 @@ export class DayPartService {
               meters_to: true,
               drill_bit_change: true,
               end_condition: true,
-              change_motive: true
+              change_motive: true,
+              ProductType: {
+                select: {
+                  id: true,
+                  category_name: true
+                }
+              }
+            }
+          },
+          DayPartActivities: {
+            select: {
+              id: true,
+              activity_id: true,
+              hours: true,
+              Activities: {
+                select: {
+                  id: true,
+                  name: true,
+                  ActivityType: {
+                    select: {
+                      id: true,
+                      name: true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          DayPartPerson: {
+            select: {
+              id: true,
+              person_id: true,
+              Person:{
+                select: {
+                  id: true,
+                  complete_name: true,
+                  lastname1: true,
+                  lastname2: true,
+                  dni_type: true,
+                  dni: true,
+                  position_id: true,
+                  picture: true,
+                  DniType: {
+                    select: {
+                      id: true,
+                      name: true
+                    }
+                  },
+                  Position: {
+                    select: {
+                      id: true,
+                      name: true
+                    }
+                  }
+                }
+              }
             }
           },
           DayPartFluids: {
@@ -134,30 +177,6 @@ export class DayPartService {
               }
             }
           },
-          DayPartPerson: {
-            select: {
-              id: true,
-              person_id: true,
-              Person:{
-                select: {
-                  id: true,
-                  complete_name: true,
-                  lastname1: true,
-                  lastname2: true,
-                  dni_type: true,
-                  dni: true,
-                  position_id: true,
-                  picture: true,
-                  Position: {
-                    select: {
-                      id: true,
-                      name: true
-                    }
-                  }
-                }
-              }
-            }
-          },
           DayPartTest: {
             select: {
               id: true,
@@ -172,15 +191,15 @@ export class DayPartService {
           }
         }
       });
-      return query
+      return transformPrisma(query)
     } catch (error) {
       console.log(error)
       throw new Error('Failed to list day parts');
     }
   }
   
-  static async createDayParts(JsonBody) {
-    const dayPartModel = await transformJson(JsonBody)
+  static async createDayParts(JsonBody, validacion) {
+    const dayPartModel = await transformJson(JsonBody, validacion)
 
     try {
       console.log('Creating Probe')
@@ -245,6 +264,8 @@ export class DayPartService {
             PH: dayPartModel.ph,
             PPM: dayPartModel.ppm,
             fluid_return: dayPartModel.fluid_return,
+            signature: dayPartModel.signature,
+
             created_At: new Date(),
             updated_At: new Date(),
           }

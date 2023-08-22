@@ -23,8 +23,11 @@ export class DayPartController {
   }
   static async createDayParts(req, res, next) {
     try {
-      const dayPartModel = req.body;
-      const dayParts = await DayPartService.createDayParts(dayPartModel)
+      const { data } = req.body;
+      const { validacion } = req.files
+      const jsonObject = JSON.parse(data);
+
+      const dayParts = await DayPartService.createDayParts(jsonObject, validacion)
       return res.status(200).json({ dayParts });
     } catch (error) { 
       console.log(error)
