@@ -181,7 +181,7 @@ export class DayPartService {
   
   static async createDayParts(JsonBody) {
     const dayPartModel = await transformJson(JsonBody)
-    console.log('DayPartFormated')
+
     try {
       console.log('Creating Probe')
       if ( dayPartModel.probe_id === null ){
@@ -248,13 +248,11 @@ export class DayPartService {
             created_At: new Date(),
             updated_At: new Date(),
           }
-      })
-      console.log('DayPart created :', dayParts)
-      
+      })      
 
       console.log('Creating Runs for ', dayParts.id)
       for ( const run of newRuns ) {
-        await prisma.dayPartRun.create({
+        await prisma.DayPartRun.create({
           data: {
             dayPart_id: dayParts.id,
             run_id: run.id
@@ -264,8 +262,7 @@ export class DayPartService {
 
       console.log('Creating Activities for ', dayParts.id)
       for ( const activity of dayPartModel.DayPartActivities ){
-        console.log('Activities: ', activity)
-        await prisma.dayPartActivities.create({
+        await prisma.DayPartActivities.create({
           data: {
             dayPart_id: dayParts.id,
             activity_id: activity.id,
@@ -276,7 +273,6 @@ export class DayPartService {
 
       console.log('Creating Fluids for ', dayParts.id)
       for ( const fluid of dayPartModel.DayPartFluids ) {
-        console.log('Fluids:', fluid)
         await prisma.DayPartFluids.create({
           data: {
             dayPart_id: dayParts.id,
@@ -287,8 +283,7 @@ export class DayPartService {
       }
 
       console.log('Creating DayPartTest for ', dayParts.id)
-      for ( const test of dayPartModel.DayPartT ) {
-        console.log('Tests :', test)
+      for ( const test of dayPartModel.DayPartTest ) {
         await prisma.DayPartTest.create({
           data: {
             dayPart_id: dayParts.id,
@@ -324,40 +319,13 @@ export class DayPartService {
       }
 
       console.log('Creating Persons for ', dayParts.id)
-      for ( const personData in dayPartModel.DayPartPerson ) {
-        const checkPerson = await prisma.person.findFirst({
-          where: {
-            dni: personData.dni
-          }
-        })
-        if (checkPerson) {
-          const dayPartPerson = await prisma.dayPartPerson.create({
-            data: {
-              dayPart_id: dayParts.id,
-              person_id: checkPerson.id,
-            },
-          });
-        } else {
-          const newPerson = await prisma.person.create({
-            data: {
-              complete_name: personData.complete_name,
-              lastname1: personData.lastname1,
-              lastname2: personData.lastname2,
-              dni_type: personData.dni_type,
-              dni: personData.dni,
-              position_id: personData.position_id,
-              picture: personData.picture,
-              active: personData.active ? personData.active : true,
-              company_id: personData.company_id
-            },
-          });
-          const dayPartPerson = await prisma.dayPartPerson.create({
-            data: {
-              dayPart_id: dayParts.id,
-              person_id: newPerson.id,
-            },
-          });
-        }
+      for ( const personData of dayPartModel.DayPartPerson ) {
+        const dayPartPerson = await prisma.DayPartPerson.create({
+          data: {
+            dayPart_id: dayParts.id,
+            person_id: personData.person_id
+          },
+        });
       }
 
       const resultDayPart = await prisma.dayPart.findFirst({
