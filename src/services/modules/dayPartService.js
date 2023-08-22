@@ -209,7 +209,7 @@ export class DayPartService {
 
       console.log('Creating Run')
       const newRuns = [];
-      dayPartModel.dayPartRun.forEach( async run => {
+      for ( const run of dayPartModel.dayPartRun ) {
         const createdRun = await prisma.Run.create({
           data: {
             meters_from: run.meters_from,
@@ -224,7 +224,7 @@ export class DayPartService {
           },
         });
         newRuns.push(createdRun);
-      })
+      }
 
       console.log('Creating DayPart')
       const dayParts = await prisma.DayPart.create({
@@ -249,43 +249,47 @@ export class DayPartService {
             updated_At: new Date(),
           }
       })
+      console.log('DayPart created :', dayParts)
+      
 
       console.log('Creating Runs for ', dayParts.id)
-      newRuns.forEach( async run => {
-        const createdDayPartRun = await prisma.dayPartRun.create({
+      for ( const run of newRuns ) {
+        await prisma.dayPartRun.create({
           data: {
             dayPart_id: dayParts.id,
             run_id: run.id
           }
         });
-      });
+      }
 
       console.log('Creating Activities for ', dayParts.id)
-      dayPartModel.DayPartActivities.forEach( async activity => {
-        console.log(`Activity with ${dayParts.id}`, activity)
-        const createdDayPartActivities = await prisma.dayPartActivities.create({
+      for ( const activity of dayPartModel.DayPartActivities ){
+        console.log('Activities: ', activity)
+        await prisma.dayPartActivities.create({
           data: {
             dayPart_id: dayParts.id,
             activity_id: activity.id,
             hours: activity.hours
           }
         });
-      });
+      }     
 
       console.log('Creating Fluids for ', dayParts.id)
-      dayPartModel.DayPartFluids.forEach( async fluid => {
-        const createddayPartFluids = await prisma.DayPartFluids.create({
+      for ( const fluid of dayPartModel.DayPartFluids ) {
+        console.log('Fluids:', fluid)
+        await prisma.DayPartFluids.create({
           data: {
             dayPart_id: dayParts.id,
             fluid_id: fluid.id,
             quantity: fluid.quantity
           }
         });
-      });
+      }
 
       console.log('Creating DayPartTest for ', dayParts.id)
-      dayPartModel.DayPartTest.forEach( async test => {
-        const DayPartTest = await prisma.DayPartTest.create({
+      for ( const test of dayPartModel.DayPartT ) {
+        console.log('Tests :', test)
+        await prisma.DayPartTest.create({
           data: {
             dayPart_id: dayParts.id,
             depth: test.depth,
@@ -297,10 +301,10 @@ export class DayPartService {
             efective: test.active ? test.active : true
           }
         });
-      });
+      }
 
       console.log('Creating Products for ', dayParts.id)
-      dayPartModel.DayPartProducts.forEach( async product => {
+      for ( const product of dayPartModel.DayPartProducts ) {
         const createdDayPartProducts = await prisma.DayPartProducts.create({
           data: {
             dayPart_id: dayParts.id,
@@ -317,11 +321,10 @@ export class DayPartService {
             change_motive: product.change_motive
           }
         });
-      });
+      }
 
       console.log('Creating Persons for ', dayParts.id)
-      dayPartModel.DayPartPerson.forEach( async personData => {
-
+      for ( const personData in dayPartModel.DayPartPerson ) {
         const checkPerson = await prisma.person.findFirst({
           where: {
             dni: personData.dni
@@ -355,7 +358,7 @@ export class DayPartService {
             },
           });
         }
-      });
+      }
 
       const resultDayPart = await prisma.dayPart.findFirst({
         where: {
