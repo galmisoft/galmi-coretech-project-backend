@@ -30,6 +30,8 @@ router.post(
   upload.fields([{ name: "validacion" }]),
   DayPartController.createDayParts
 );
+// Probe
+router.post("/dayPart/probe", ProbeController.findProbe);
 
 /**** ADMIN *****/
 // FALTA PATALLA RESUMEN
@@ -121,8 +123,6 @@ router.post("/admin/email", EmailController.listEmail);
 router.post("/admin/email/create", EmailController.createEmail);
 router.post("/admin/email/update", EmailController.updateEmail);
 router.post("/admin/email/delete", EmailController.deleteEmail);
-// Probe
-router.post("/admin/probe", ProbeController.findProbe);
 
 // COMBOS
 router.post("/combo/probes", ComboController.listProbes);
