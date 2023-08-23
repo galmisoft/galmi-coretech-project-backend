@@ -1,38 +1,3 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
-
-async function findActivityByDescription(desc) {
-  try {
-    const query = await prisma.activities.findFirst({
-      select: {
-        id: true,
-      },
-      where: { name: desc },
-    });
-    console.log("findActivityByDescription", query);
-    return query.id;
-  } catch (error) {
-    console.log(error);
-    throw new Error("Failed to findActivityByDescription");
-  }
-}
-
-async function findFluidsByDescription(desc) {
-  try {
-    const query = await prisma.inputJson.herramientas[Product].findFirst({
-      select: { id: true },
-      where: {
-        AND: [{ description: desc }, { type_id: 3 }],
-      },
-    });
-    console.log("findFluidsByDescription", query);
-    return query.id;
-  } catch (error) {
-    console.log(error);
-    throw new Error("Failed to findActivityByDescription");
-  }
-}
-
 export function transformJson(inputJson, validacion) {
   const DayPartRun = [];
   for (const corrida in inputJson.corridas) {
@@ -328,7 +293,6 @@ export function transformPrisma(dayPartData) {
       let positon = person.Person.Position.name.toLowerCase();
       if (positon === "ayudante") {
         positon = `${positon}${n}`;
-        console.log(positon);
         n = n + 1;
       }
       Persons[positon] = {

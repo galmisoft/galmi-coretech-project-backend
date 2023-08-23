@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
+import { transformPrisma } from '../../model/probeModel.js'
+
 export class ProbeService {
   static async findProbe(probeID) {
     try {
@@ -9,9 +11,14 @@ export class ProbeService {
         include: {
             DayPart: {
                 select: {
+                    meters_from: true,
+                    meters_to: true,
+                    constant_meters: true,
                     DayPartProducts: {
                         select: {
                             id: true,
+                            serial_number: true,
+                            type_id: true,
                             line: true,
                             brand: true,
                             matrix: true,
@@ -20,6 +27,7 @@ export class ProbeService {
                             meters_from: true,
                             meters_to: true,
                             change_motive: true,
+                            end_condition: true,
                             ProductType: {
                               select: {
                                 id: true,
@@ -32,7 +40,8 @@ export class ProbeService {
             }
         }
       });
-      return Probe === null ? {} : Probe;
+      const probe = transformPrisma(Probe)
+      return probe === null ? {} : probe;
     } catch (error) {
       console.log(error);
       throw new Error('Failed to list Projects');
