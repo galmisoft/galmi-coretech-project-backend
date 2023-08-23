@@ -293,7 +293,6 @@ export function transformPrisma(dayPartData) {
       let positon = person.Person.Position.name.toLowerCase();
       if (positon === "ayudante") {
         positon = `${positon}${n}`;
-        console.log(positon);
         n = n + 1;
       }
       Persons[positon] = {
