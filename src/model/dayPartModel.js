@@ -1,38 +1,3 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
-
-async function findActivityByDescription(desc) {
-    try {
-        const query = await prisma.activities.findFirst({
-          select: {
-            id: true
-          },
-          where: { name: desc }
-        });
-        console.log('findActivityByDescription', query)
-        return query.id
-      } catch (error) {
-        console.log(error)
-        throw new Error('Failed to findActivityByDescription');
-      }
-}
-
-async function findFluidsByDescription(desc) {
-    try {
-        const query = await prisma.inputJson.herramientas[Product].findFirst({
-          select: { id: true },
-          where: {
-            AND: [{ description: desc }, { type_id: 3 } ]
-          }
-        });
-        console.log('findFluidsByDescription', query)
-        return query.id
-      } catch (error) {
-        console.log(error)
-        throw new Error('Failed to findActivityByDescription');
-      }
-}
-
 export function transformJson(inputJson, validacion) {
     const DayPartRun = []
     for ( const corrida in inputJson.corridas ) {
@@ -120,7 +85,7 @@ export function transformJson(inputJson, validacion) {
             objective_vein: inputJson.datos_generales.vetaObjetivo,
             platform: inputJson.datos_generales.plataforma,
             zone: inputJson.datos_generales.zona,
-            horometer_ini: inputJson.datos_generales.horometroInicial,
+            horometer_ini: inputJson.datos_generales.horometroInicial, 
             horometer_fin: inputJson.datos_generales.horometroFinal,
             finalized: inputJson.datos_generales.sondajeTerminado,
             date_fin: inputJson.datos_generales.finSondaje
