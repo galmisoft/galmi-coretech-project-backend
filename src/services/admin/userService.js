@@ -93,7 +93,7 @@ export class UserService {
     }
   }
 
-  static async listUsers(defaultCompanyID, companyID) {
+  static async listUsersContratos(defaultCompanyID, companyID) {
     try {
       if (defaultCompanyID === undefined) {
         throw new Error('Se requiere variable defaultCompanyID');
@@ -104,12 +104,11 @@ export class UserService {
           id: true,
           username: true,
           user_type: true,
-          email: true,
-          active: true,
-          reports_to: true,
           names: true,
           lastname: true,
+          reports_to: true,
           created_At: true,
+          active: true,
           UserType: {
             select: {
               id: true,
@@ -132,7 +131,7 @@ export class UserService {
       throw new Error('An error occurred while listing Users');
     }
   }
-  static async listUsersContratos(defaultCompanyID, companyID) {
+  static async listUsers(defaultCompanyID, companyID) {
     try {
       if (defaultCompanyID === undefined) {
         throw new Error('Se requiere variable defaultCompanyID');
@@ -140,15 +139,21 @@ export class UserService {
   
       const result = await prisma.User.findMany({
         select: {
-          id: true,
           username: true,
           user_type: true,
-          email: true,
           names: true,
           lastname: true,
-          reports_to: true,
           created_At: true,
           active: true,
+          CompanyUser: {
+            select: {
+              Company: {
+                select: {
+                  name: true
+                }
+              }
+            }
+          },
           UserType: {
             select: {
               id: true,

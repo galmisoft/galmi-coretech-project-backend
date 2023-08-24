@@ -5,8 +5,18 @@ export class CompanyService {
   static async listCompanies(companyModel) {
     try {
       const listCompanies = prisma.company.findMany({
-        where: {
-          id: companyModel.companyID
+        select: {
+          name: true,
+          created_At: true,
+          contact_name: true,
+          contact_email: true,
+          country_id: true,
+          active: true,
+          Country: {
+            select: {
+              name: true,
+            }
+          }
         },
         distinct: ['name']
       })
