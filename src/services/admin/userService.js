@@ -53,6 +53,27 @@ export class UserService {
                   id: true,
                   name: true
                 }
+              },
+              Equipment: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              }
+            }
+          },
+          UserPermission: {
+            select: {
+              Permission: {
+                select: {
+                  module_id: true,
+                  active: true,
+                  Modules: {
+                    select: {
+                      name: true
+                    }
+                  }
+                }
               }
             }
           }
@@ -68,6 +89,7 @@ export class UserService {
           }
         })
         result[0].DefaultCompany = defaultCompany
+        console.log(JSON.stringify(result, null, 2))
         return JwtAuth.sign(JSON.stringify({ result }));
       }
     } catch(error) {
@@ -93,7 +115,7 @@ export class UserService {
     }
   }
 
-  static async listUsers(defaultCompanyID, companyID) {
+  static async listUsersContratos(defaultCompanyID, companyID) {
     try {
       if (defaultCompanyID === undefined) {
         throw new Error('Se requiere variable defaultCompanyID');
@@ -104,12 +126,11 @@ export class UserService {
           id: true,
           username: true,
           user_type: true,
-          email: true,
-          active: true,
-          reports_to: true,
           names: true,
           lastname: true,
+          reports_to: true,
           created_At: true,
+          active: true,
           UserType: {
             select: {
               id: true,
@@ -132,7 +153,7 @@ export class UserService {
       throw new Error('An error occurred while listing Users');
     }
   }
-  static async listUsersContratos(defaultCompanyID, companyID) {
+  static async listUsers(defaultCompanyID, companyID) {
     try {
       if (defaultCompanyID === undefined) {
         throw new Error('Se requiere variable defaultCompanyID');
@@ -140,21 +161,27 @@ export class UserService {
   
       const result = await prisma.User.findMany({
         select: {
-          id: true,
           username: true,
           user_type: true,
-          email: true,
           names: true,
           lastname: true,
-          reports_to: true,
           created_At: true,
           active: true,
+          CompanyUser: {
+            select: {
+              Company: {
+                select: {
+                  name: true
+                }
+              }
+            }
+          },
           UserType: {
             select: {
               id: true,
               name: true,
             }
-          }
+          },
         },
         where: {
           OR: [
@@ -195,6 +222,16 @@ export class UserService {
           user_id: result.id
         }
       })
+      for ( const permission of userData.permissions ){
+        const result3 = await prisma.UserPermission.create({
+          data: {
+            user_id: result.id,
+            module_id: permission.module_id,
+            active: permission.active
+          }
+        })
+      }
+
       return result
     } catch (error) {
       console.error('Error createUser:', error);
@@ -224,6 +261,15 @@ export class UserService {
           user_id: result.id
         }
       })
+      for ( const permission of userData.permissions ){
+        const result3 = await prisma.UserPermission.create({
+          data: {
+            user_id: result.id,
+            module_id: permission.module_id,
+            active: permission.active
+          }
+        })
+      }
       return result
     } catch (error) {
       console.error('Error createUser:', error);
@@ -248,6 +294,17 @@ export class UserService {
             updated_At: new Date(),
           }
         });
+        for ( const permission of userData.permissions ){
+          const result3 = await prisma.UserPermission.update({
+            where: { 
+              user_permission_id: permission.user_permission_id 
+            },
+            data: {
+              module_id: permission.module_id,
+              active: permission.active
+            }
+          })
+        }
         return result
       }
       else {
@@ -267,6 +324,17 @@ export class UserService {
             updated_At: new Date(),
           }
         });
+        for ( const permission of userData.permissions ){
+          const result3 = await prisma.UserPermission.update({
+            where: { 
+              user_permission_id: permission.user_permission_id 
+            },
+            data: {
+              module_id: permission.module_id,
+              active: permission.active
+            }
+          })
+        }
         return result
       }
     } catch (error) {
@@ -323,6 +391,31 @@ export class UserService {
     } catch (error) {
       console.error('Error updateUser:', error);
       throw new Error('An error occurred while updating the user')
+    }
+  }
+
+  static async getUserPermissions(userID) {
+    try {
+      const result = await prisma.UserPermission.findMany({
+        select: {
+          module_id: true,
+          active: true,
+          Modules: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
+        },
+        where: {
+          user_id: userID
+        }
+      });
+  
+      return result;
+    } catch (error) {
+      console.error('Error listUsers:', error);
+      throw new Error('An error occurred while listing Users');
     }
   }
 }

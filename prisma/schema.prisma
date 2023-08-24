@@ -22,7 +22,7 @@ model Modules {
   created_At     DateTime         @default(now())
   updated_At     DateTime         @updatedAt
   CompanyModules CompanyModules[]
-  Permission     Permission[]
+  UserPermission UserPermission[]
 }
 
 model Client {
@@ -221,7 +221,7 @@ model User {
   UserType    UserType      @relation(fields: [user_type], references: [id])
   CompanyUser CompanyUser[]
   Assignation Assignation[]
-  UserRole    UserRole[]
+  UserPermission UserPermission[]
   TeamUser    TeamUser[]
 }
 
@@ -231,14 +231,6 @@ model CompanyUser {
   company_id String
   User       User    @relation(fields: [user_id], references: [id])
   Company    Company @relation(fields: [company_id], references: [id])
-}
-
-model UserRole {
-  user_role_id String @id @default(uuid())
-  user_id      String
-  role_id      String
-  User         User   @relation(fields: [user_id], references: [id])
-  Role         Role   @relation(fields: [role_id], references: [id])
 }
 
 model UserType {
@@ -268,33 +260,13 @@ model TeamUser {
   Team    Team   @relation(fields: [team_id], references: [id])
 }
 
-model Role {
-  id             String           @id @default(uuid())
-  name           String
-  modifiable     Boolean
-  active         Boolean
-  created_At     DateTime         @default(now())
-  updated_At     DateTime         @updatedAt
-  UserRole       UserRole[]
-  RolePermission RolePermission[]
-}
-
-model RolePermission {
-  role_permission_id String     @id @default(uuid())
-  role_id            String
-  permission_id      String
-  Role               Role       @relation(fields: [role_id], references: [id])
-  Permission         Permission @relation(fields: [permission_id], references: [id])
-}
-
-model Permission {
-  id             String           @id @default(uuid())
-  module_id      Int
-  active         Boolean
-  created_At     DateTime         @default(now())
-  updated_At     DateTime         @updatedAt
-  Modules        Modules          @relation(fields: [module_id], references: [id])
-  RolePermission RolePermission[]
+model UserPermission {
+  user_permission_id String     @id @default(uuid())
+  user_id            String
+  module_id          Int
+  active             Boolean
+  User               User       @relation(fields: [user_id], references: [id])
+  Modules            Modules    @relation(fields: [module_id], references: [id])
 }
 
 model ActivityType {

@@ -30,6 +30,8 @@ router.post(
   upload.fields([{ name: "validacion" }]),
   DayPartController.createDayParts
 );
+// Probe
+router.post("/dayPart/probe", ProbeController.findProbe);
 
 /**** ADMIN *****/
 // FALTA PATALLA RESUMEN
@@ -53,6 +55,7 @@ router.post("/admin/user", UserController.listUser);
 router.post("/admin/user/create", UserController.createUser);
 router.post("/admin/user/update", UserController.updateUser);
 router.post("/admin/user/delete", UserController.deleteUser);
+router.post("/admin/user/permission", UserController.getUserPermissions);
 router.post("/admin/userContrato", UserController.listUserContratos);
 router.post("/admin/userContrato/create", UserController.createUserContratos);
 router.post("/admin/userContrato/update", UserController.updateUserContratos);
@@ -121,8 +124,6 @@ router.post("/admin/email", EmailController.listEmail);
 router.post("/admin/email/create", EmailController.createEmail);
 router.post("/admin/email/update", EmailController.updateEmail);
 router.post("/admin/email/delete", EmailController.deleteEmail);
-// Probe
-router.post("/admin/probe", ProbeController.findProbe);
 
 // COMBOS
 router.post("/combo/probes", ComboController.listProbes);
