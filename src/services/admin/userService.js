@@ -136,6 +136,18 @@ export class UserService {
               id: true,
               name: true,
             }
+          },
+          UserPermission:{
+            select: {
+              module_id: true,
+              active: true,
+              Modules: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              }
+            },
           }
         },
         where: {
@@ -182,6 +194,18 @@ export class UserService {
               name: true,
             }
           },
+          UserPermission:{
+            select: {
+              module_id: true,
+              active: true,
+              Modules: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              }
+            },
+          }
         },
         where: {
           OR: [
