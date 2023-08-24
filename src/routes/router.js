@@ -55,6 +55,7 @@ router.post("/admin/user", UserController.listUser);
 router.post("/admin/user/create", UserController.createUser);
 router.post("/admin/user/update", UserController.updateUser);
 router.post("/admin/user/delete", UserController.deleteUser);
+router.post("/admin/user/permission", UserController.getUserPermissions);
 router.post("/admin/userContrato", UserController.listUserContratos);
 router.post("/admin/userContrato/create", UserController.createUserContratos);
 router.post("/admin/userContrato/update", UserController.updateUserContratos);

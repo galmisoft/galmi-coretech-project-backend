@@ -70,4 +70,15 @@ export class UserController {
       return res.status(500).json({ message: 'Internal server error', details: error.message });
     }
   }
+
+  static async getUserPermissions(req, res, next) {
+    try {
+      const { id } = req.body;
+      const Users = await UserService.getUserPermissions(id);
+      return res.status(200).json({ Users });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
+    }
+  }
 }
