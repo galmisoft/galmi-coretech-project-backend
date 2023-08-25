@@ -1,21 +1,18 @@
 import { JwtAuth } from "../../auth/jwtAuth.js";
 import { PrismaClient } from "@prisma/client";
-import md5 from 'md5';
+import md5 from "md5";
 const prisma = new PrismaClient();
 
 export class UserService {
   static async validateUser(username, password) {
     try {
-      const hashedPassword = md5(password)
+      const hashedPassword = md5(password);
       const result = await prisma.user.findMany({
         where: {
           AND: [
             { password: hashedPassword },
-            { OR: [
-              { username: username },
-              { email: username }
-            ]}
-          ]        
+            { OR: [{ username: username }, { email: username }] },
+          ],
         },
         include: {
           TeamUser: {
@@ -23,10 +20,10 @@ export class UserService {
               Team: {
                 select: {
                   id: true,
-                  name: true
-                }
-              }
-            }
+                  name: true,
+                },
+              },
+            },
           },
           CompanyUser: {
             select: {
@@ -34,10 +31,10 @@ export class UserService {
                 select: {
                   id: true,
                   name: true,
-                  visible_name: true
-                }
-              }
-            }
+                  visible_name: true,
+                },
+              },
+            },
           },
           Assignation: {
             select: {
@@ -45,22 +42,22 @@ export class UserService {
                 select: {
                   id: true,
                   name: true,
-                  comercial_name: true
-                }
+                  comercial_name: true,
+                },
               },
               Project: {
                 select: {
                   id: true,
-                  name: true
-                }
+                  name: true,
+                },
               },
               Equipment: {
                 select: {
                   id: true,
-                  name: true
-                }
-              }
-            }
+                  name: true,
+                },
+              },
+            },
           },
           UserPermission: {
             select: {
@@ -70,57 +67,59 @@ export class UserService {
                   active: true,
                   Modules: {
                     select: {
-                      name: true
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      })
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
       if (result) {
         const defaultCompany = await prisma.company.findUnique({
-          where: { id: 'dd6eb56d-f8f4-4686-80b8-31a41062ea77' },
+          where: { id: "dd6eb56d-f8f4-4686-80b8-31a41062ea77" },
           select: {
             id: true,
             name: true,
             visible_name: true,
-          }
-        })
-        result[0].DefaultCompany = defaultCompany
-        console.log(JSON.stringify(result, null, 2))
+          },
+        });
+        result[0].DefaultCompany = defaultCompany;
+        console.log(JSON.stringify(result, null, 2));
         return JwtAuth.sign(JSON.stringify({ result }));
       }
-    } catch(error) {
-      console.log(error)
-      throw new Error('An error occurred while login')
+    } catch (error) {
+      console.log(error);
+      throw new Error("An error occurred while login");
     }
   }
 
   static validateToken(req) {
-    const token = req.headers.authorization.split(' ')[1];
+    const token = req.headers.authorization.split(" ")[1];
     const decodetoken = JwtAuth.verify(token);
     return decodetoken;
   }
 
   static async deleteUser(id) {
     try {
-      const result2 = await prisma.companyUser.deleteMany({ where: { user_id: id } })
+      const result2 = await prisma.companyUser.deleteMany({
+        where: { user_id: id },
+      });
       const result = await prisma.user.delete({ where: { id: id } });
-      return result
+      return result;
     } catch (error) {
-      console.error('Error deleteUser:', error);
-      throw new Error('An error occurred while deleting the user')
+      console.error("Error deleteUser:", error);
+      throw new Error("An error occurred while deleting the user");
     }
   }
 
   static async listUsersContratos(defaultCompanyID, companyID) {
     try {
       if (defaultCompanyID === undefined) {
-        throw new Error('Se requiere variable defaultCompanyID');
+        throw new Error("Se requiere variable defaultCompanyID");
       }
-  
+
       const result = await prisma.User.findMany({
         select: {
           id: true,
@@ -135,9 +134,9 @@ export class UserService {
             select: {
               id: true,
               name: true,
-            }
+            },
           },
-          UserPermission:{
+          UserPermission: {
             select: {
               user_permission_id: true,
               module_id: true,
@@ -145,35 +144,36 @@ export class UserService {
               Modules: {
                 select: {
                   id: true,
-                  name: true
-                }
-              }
+                  name: true,
+                },
+              },
             },
-          }
+          },
         },
         where: {
           OR: [
-            { CompanyUser: { some: { company_id: defaultCompanyID }, } },
-            { CompanyUser: { some: { company_id: companyID }, } }
-          ], 
+            { CompanyUser: { some: { company_id: defaultCompanyID } } },
+            { CompanyUser: { some: { company_id: companyID } } },
+          ],
         },
-        distinct: ['username']
+        distinct: ["username"],
       });
-  
+
       return result;
     } catch (error) {
-      console.error('Error listUsers:', error);
-      throw new Error('An error occurred while listing Users');
+      console.error("Error listUsers:", error);
+      throw new Error("An error occurred while listing Users");
     }
   }
   static async listUsers(defaultCompanyID, companyID) {
     try {
       if (defaultCompanyID === undefined) {
-        throw new Error('Se requiere variable defaultCompanyID');
+        throw new Error("Se requiere variable defaultCompanyID");
       }
-  
+
       const result = await prisma.User.findMany({
         select: {
+          id: true,
           username: true,
           user_type: true,
           names: true,
@@ -184,18 +184,18 @@ export class UserService {
             select: {
               Company: {
                 select: {
-                  name: true
-                }
-              }
-            }
+                  name: true,
+                },
+              },
+            },
           },
           UserType: {
             select: {
               id: true,
               name: true,
-            }
+            },
           },
-          UserPermission:{
+          UserPermission: {
             select: {
               user_permission_id: true,
               module_id: true,
@@ -203,30 +203,30 @@ export class UserService {
               Modules: {
                 select: {
                   id: true,
-                  name: true
-                }
-              }
+                  name: true,
+                },
+              },
             },
-          }
+          },
         },
         where: {
           OR: [
-            { CompanyUser: { some: { company_id: defaultCompanyID }, } },
-            { CompanyUser: { some: { company_id: companyID }, } }
-          ], 
+            { CompanyUser: { some: { company_id: defaultCompanyID } } },
+            { CompanyUser: { some: { company_id: companyID } } },
+          ],
         },
-        distinct: ['username']
+        distinct: ["username"],
       });
       return result;
     } catch (error) {
-      console.error('Error listUsers:', error);
-      throw new Error('An error occurred while listing Users');
+      console.error("Error listUsers:", error);
+      throw new Error("An error occurred while listing Users");
     }
   }
-  
+
   static async createUser(userData) {
     try {
-      const hashedPassword = md5(userData.password)
+      const hashedPassword = md5(userData.password);
       const result = await prisma.user.create({
         data: {
           username: userData.username,
@@ -240,72 +240,72 @@ export class UserService {
           email: userData.email,
           created_At: new Date(),
           updated_At: new Date(),
-        }
+        },
       });
       const result2 = await prisma.companyUser.create({
         data: {
           company_id: userData.company_id,
-          user_id: result.id
-        }
-      })
-      for ( const permission of userData.permissions ){
+          user_id: result.id,
+        },
+      });
+      for (const permission of userData.permissions) {
         const result3 = await prisma.UserPermission.create({
           data: {
             user_id: result.id,
             module_id: permission.module_id,
-            active: permission.active
-          }
-        })
+            active: permission.active,
+          },
+        });
       }
 
-      return result
+      return result;
     } catch (error) {
-      console.error('Error createUser:', error);
-      throw new Error('An error occurred while creating the user')
+      console.error("Error createUser:", error);
+      throw new Error("An error occurred while creating the user");
     }
   }
   static async createUserContratos(userData) {
     try {
-      const hashedPassword = md5(userData.password)
+      const hashedPassword = md5(userData.password);
       const result = await prisma.user.create({
         data: {
           username: userData.username,
           password: hashedPassword,
           user_type: Number(userData.user_type),
           reports_to: userData.reports_to,
-          names: userData.names, 
+          names: userData.names,
           lastname: userData.lastname,
           email: userData.email,
           active: userData.active,
           created_At: new Date(),
           updated_At: new Date(),
-        }
+        },
       });
       const result2 = await prisma.companyUser.create({
         data: {
           company_id: userData.company_id,
-          user_id: result.id
-        }
-      })
-      for ( const permission of userData.permissions ){
+          user_id: result.id,
+        },
+      });
+      for (const permission of userData.permissions) {
         const result3 = await prisma.UserPermission.create({
           data: {
             user_id: result.id,
             module_id: permission.module_id,
-            active: permission.active
-          }
-        })
+            active: permission.active,
+          },
+        });
       }
-      return result
+      return result;
     } catch (error) {
-      console.error('Error createUser:', error);
-      throw new Error('An error occurred while creating the user')
+      console.error("Error createUser:", error);
+      throw new Error("An error occurred while creating the user");
     }
   }
 
   static async updateUser(userData) {
     try {
-      if(userData.password == undefined || userData.password == null ){
+      if (userData.password == undefined || userData.password == null) {
         const result = await prisma.user.update({
           where: { id: userData.id },
           data: {
@@ -318,23 +318,22 @@ export class UserService {
             status: userData.status,
             email: userData.email,
             updated_At: new Date(),
-          }
+          },
         });
-        for ( const permission of userData.permissions ){
+        for (const permission of userData.permissions) {
           const result3 = await prisma.UserPermission.update({
-            where: { 
-              user_permission_id: permission.user_permission_id 
+            where: {
+              user_permission_id: permission.user_permission_id,
             },
             data: {
               module_id: permission.module_id,
-              active: permission.active
-            }
-          })
+              active: permission.active,
+            },
+          });
         }
-        return result
-      }
-      else {
-        const hashedPassword = md5(userData.password)
+        return result;
+      } else {
+        const hashedPassword = md5(userData.password);
         const result = await prisma.user.update({
           where: { id: userData.id },
           data: {
@@ -348,30 +347,30 @@ export class UserService {
             status: userData.status,
             email: userData.email,
             updated_At: new Date(),
-          }
+          },
         });
-        for ( const permission of userData.permissions ){
+        for (const permission of userData.permissions) {
           const result3 = await prisma.UserPermission.update({
-            where: { 
-              user_permission_id: permission.user_permission_id 
+            where: {
+              user_permission_id: permission.user_permission_id,
             },
             data: {
               module_id: permission.module_id,
-              active: permission.active
-            }
-          })
+              active: permission.active,
+            },
+          });
         }
-        return result
+        return result;
       }
     } catch (error) {
-      console.error('Error updateUser:', error);
-      throw new Error('An error occurred while updating the user')
+      console.error("Error updateUser:", error);
+      throw new Error("An error occurred while updating the user");
     }
   }
 
   static async updateUserContratos(userData) {
     try {
-      if(userData.password == undefined || userData.password == null ){
+      if (userData.password == undefined || userData.password == null) {
         const result = await prisma.user.update({
           where: { id: userData.id },
           data: {
@@ -379,32 +378,31 @@ export class UserService {
             password: hashedPassword,
             user_type: Number(userData.user_type),
             reports_to: userData.reports_to,
-            names: userData.names, 
+            names: userData.names,
             lastname: userData.lastname,
             email: userData.email,
             active: userData.active,
             updated_At: new Date(),
-          }
+          },
         });
         const result2 = await prisma.companyUser.updateMany({
           where: { user_id: result.id },
-          data: { company_id: userData.company_id }
+          data: { company_id: userData.company_id },
         });
-        for ( const permission of userData.permissions ){
+        for (const permission of userData.permissions) {
           const result3 = await prisma.UserPermission.update({
-            where: { 
-              user_permission_id: permission.user_permission_id 
+            where: {
+              user_permission_id: permission.user_permission_id,
             },
             data: {
               module_id: permission.module_id,
-              active: permission.active
-            }
-          })
+              active: permission.active,
+            },
+          });
         }
-        return result
-      }
-      else {
-        const hashedPassword = md5(userData.password)
+        return result;
+      } else {
+        const hashedPassword = md5(userData.password);
         const result = await prisma.user.update({
           where: { id: userData.id },
           data: {
@@ -417,28 +415,28 @@ export class UserService {
             lastname: userData.lastname,
             email: userData.email,
             updated_At: new Date(),
-          }
+          },
         });
         const result2 = await prisma.companyUser.updateMany({
           where: { user_id: result.id },
-          data: { company_id: userData.company_id }
+          data: { company_id: userData.company_id },
         });
-        for ( const permission of userData.permissions ){
+        for (const permission of userData.permissions) {
           const result3 = await prisma.UserPermission.update({
-            where: { 
-              user_permission_id: permission.user_permission_id 
+            where: {
+              user_permission_id: permission.user_permission_id,
             },
             data: {
               module_id: permission.module_id,
-              active: permission.active
-            }
-          })
-        }      
-        return result
+              active: permission.active,
+            },
+          });
+        }
+        return result;
       }
     } catch (error) {
-      console.error('Error updateUser:', error);
-      throw new Error('An error occurred while updating the user')
+      console.error("Error updateUser:", error);
+      throw new Error("An error occurred while updating the user");
     }
   }
 
@@ -451,19 +449,19 @@ export class UserService {
           Modules: {
             select: {
               id: true,
-              name: true
-            }
-          }
+              name: true,
+            },
+          },
         },
         where: {
-          user_id: userID
-        }
+          user_id: userID,
+        },
       });
-  
+
       return result;
     } catch (error) {
-      console.error('Error listUsers:', error);
-      throw new Error('An error occurred while listing Users');
+      console.error("Error listUsers:", error);
+      throw new Error("An error occurred while listing Users");
     }
   }
 }
