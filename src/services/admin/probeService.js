@@ -34,10 +34,14 @@ export class ProbeService {
                                 category_name: true
                               }
                             }
-                        }
+                        },
+                        orderBy: { created_At: 'desc' },
+                        take: 1
                     }    
-                }
-            }
+                },
+                orderBy: { created_At: 'desc' },
+                take: 1
+            },
         }
       });
       const probe = transformPrisma(Probe)

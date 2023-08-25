@@ -139,6 +139,7 @@ export class UserService {
           },
           UserPermission:{
             select: {
+              user_permission_id: true,
               module_id: true,
               active: true,
               Modules: {
@@ -196,6 +197,7 @@ export class UserService {
           },
           UserPermission:{
             select: {
+              user_permission_id: true,
               module_id: true,
               active: true,
               Modules: {
@@ -387,7 +389,18 @@ export class UserService {
         const result2 = await prisma.companyUser.updateMany({
           where: { user_id: result.id },
           data: { company_id: userData.company_id }
-        });  
+        });
+        for ( const permission of userData.permissions ){
+          const result3 = await prisma.UserPermission.update({
+            where: { 
+              user_permission_id: permission.user_permission_id 
+            },
+            data: {
+              module_id: permission.module_id,
+              active: permission.active
+            }
+          })
+        }
         return result
       }
       else {
@@ -409,7 +422,18 @@ export class UserService {
         const result2 = await prisma.companyUser.updateMany({
           where: { user_id: result.id },
           data: { company_id: userData.company_id }
-        });        
+        });
+        for ( const permission of userData.permissions ){
+          const result3 = await prisma.UserPermission.update({
+            where: { 
+              user_permission_id: permission.user_permission_id 
+            },
+            data: {
+              module_id: permission.module_id,
+              active: permission.active
+            }
+          })
+        }      
         return result
       }
     } catch (error) {

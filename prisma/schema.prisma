@@ -448,7 +448,7 @@ model DayPartProducts {
   end_condition    Int?
   meters_to        Int?
   change_motive    Int?     @default(1)
-
+  created_At       DateTime @default(now())
   ProductType ProductType @relation(fields: [type_id], references: [id])
   DayPart     DayPart     @relation(fields: [dayPart_id], references: [id])
   // Items       Items[]
