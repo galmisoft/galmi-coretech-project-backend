@@ -6,6 +6,7 @@ export class CompanyService {
     try {
       const listCompanies = prisma.company.findMany({
         select: {
+          id: true,
           name: true,
           created_At: true,
           contact_name: true,
@@ -30,6 +31,7 @@ export class CompanyService {
     try {
       const listCompanies = await prisma.company.findUnique({
         select: {
+          id: true,
           visible_name: true,
           visible_icon: true,
           visible_logo1: true,
