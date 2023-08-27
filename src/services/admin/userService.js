@@ -311,7 +311,6 @@ export class UserService {
               user_permission_id: permission.user_permission_id,
             },
             data: {
-              module_id: permission.module_id,
               active: permission.active,
             },
           });
@@ -340,7 +339,6 @@ export class UserService {
               user_permission_id: permission.user_permission_id,
             },
             data: {
-              module_id: permission.module_id,
               active: permission.active,
             },
           });
@@ -380,7 +378,6 @@ export class UserService {
               user_permission_id: permission.user_permission_id,
             },
             data: {
-              module_id: permission.module_id,
               active: permission.active,
             },
           });
