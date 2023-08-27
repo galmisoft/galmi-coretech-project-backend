@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class EquipmentService {
-  static async listEquipments(defaultCompanyID, companyID) {
+  static async listEquipments(companyID) {
     try {
       const whereClause = {
         Client: {
@@ -10,7 +10,6 @@ export class EquipmentService {
             { 
               OR: [
                 { company_id: companyID },
-                { company_id: defaultCompanyID },
               ]
             },
           ],

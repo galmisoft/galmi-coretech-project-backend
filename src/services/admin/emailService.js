@@ -2,13 +2,12 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class EmailService { 
-  static async listEmails(defaultCompanyID, companyID) {
+  static async listEmails(companyID) {
     try {
       const Email = await prisma.email.findMany({
         where: {
           OR: [
-            { company_id: companyID } ,
-            { company_id: defaultCompanyID },
+            { company_id: companyID },
           ],         
         },
         include:{

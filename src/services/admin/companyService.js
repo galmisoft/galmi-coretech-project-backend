@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class CompanyService {
-  static async listCompanies(companyModel) {
+  static async listCompanies() {
     try {
       const listCompanies = prisma.company.findMany({
         select: {
