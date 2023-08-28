@@ -3,8 +3,8 @@ import { EmailService } from '../../services/admin/emailService.js';
 export class EmailController {
   static async listEmail(req, res, next) {
     try {
-      const { defaultCompanyID, companyID } = req.body;
-      const Emails = await EmailService.listEmails(defaultCompanyID, companyID);
+      const { companyID } = req.body;
+      const Emails = await EmailService.listEmails(companyID);
       return res.status(200).json({ Emails });
     } catch (error) {
       console.error(error);
