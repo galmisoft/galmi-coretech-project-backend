@@ -175,6 +175,7 @@ export class UserService {
             select: {
               Company: {
                 select: {
+                  id: true,
                   name: true,
                 },
               },
