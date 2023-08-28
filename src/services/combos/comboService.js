@@ -232,8 +232,8 @@ export class ComboService {
 
   static async listProductSerialNumbers() {
     try {
-      const items = await prisma.Items.findMany({}) 
-      const usedSerialNumbers = items.map( (i) => i.dayPartProduct_serial_number )
+      const items = await prisma.Items.findMany({})
+      const usedSerialNumbers = items.map((i) => i.dayPartProduct_serial_number)
       const result = await prisma.DayPartProducts.findMany({
         select: {
           serial_number: true,
@@ -258,13 +258,7 @@ export class ComboService {
       const result = await prisma.activityType.findMany({
         select: {
           id: true,
-          name: true,
-          activityType: {
-            select: {
-              id: true,
-              name: true
-            }
-          }
+          name: true
         },
       });
       return result;
