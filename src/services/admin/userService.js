@@ -171,6 +171,7 @@ export class UserService {
           active: true,
           email: true,
           status: true,
+          reports_to: true,
           CompanyUser: {
             select: {
               Company: {
