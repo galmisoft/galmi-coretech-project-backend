@@ -147,9 +147,7 @@ export class UserService {
           },
         },
         where: {
-          OR: [
-            { CompanyUser: { some: { company_id: companyID } } },
-          ],
+          OR: [{ CompanyUser: { some: { company_id: companyID } } }],
         },
         distinct: ["username"],
       });
@@ -171,6 +169,8 @@ export class UserService {
           lastname: true,
           created_At: true,
           active: true,
+          email: true,
+          status: true,
           CompanyUser: {
             select: {
               Company: {
