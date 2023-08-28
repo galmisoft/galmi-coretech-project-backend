@@ -2,14 +2,13 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class ItemsService { 
-  static async listItems(defaultCompanyID, companyID, productTypeID) {
+  static async listItems(companyID, productTypeID) {
     try {
       const Item = await prisma.Items.findMany({
         where: {
           AND: [
             {
               OR: [
-                { Product: { company_id: defaultCompanyID } },
                 { Product: { company_id: companyID } },
               ],
             },

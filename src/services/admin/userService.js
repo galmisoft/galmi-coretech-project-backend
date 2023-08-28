@@ -114,12 +114,8 @@ export class UserService {
     }
   }
 
-  static async listUsersContratos(defaultCompanyID, companyID) {
+  static async listUsersContratos(companyID) {
     try {
-      if (defaultCompanyID === undefined) {
-        throw new Error("Se requiere variable defaultCompanyID");
-      }
-
       const result = await prisma.User.findMany({
         select: {
           id: true,
@@ -152,7 +148,6 @@ export class UserService {
         },
         where: {
           OR: [
-            { CompanyUser: { some: { company_id: defaultCompanyID } } },
             { CompanyUser: { some: { company_id: companyID } } },
           ],
         },
@@ -165,12 +160,8 @@ export class UserService {
       throw new Error("An error occurred while listing Users");
     }
   }
-  static async listUsers(defaultCompanyID, companyID) {
+  static async listUsers() {
     try {
-      if (defaultCompanyID === undefined) {
-        throw new Error("Se requiere variable defaultCompanyID");
-      }
-
       const result = await prisma.User.findMany({
         select: {
           id: true,
@@ -208,12 +199,6 @@ export class UserService {
               },
             },
           },
-        },
-        where: {
-          OR: [
-            { CompanyUser: { some: { company_id: defaultCompanyID } } },
-            { CompanyUser: { some: { company_id: companyID } } },
-          ],
         },
         distinct: ["username"],
       });
@@ -326,7 +311,6 @@ export class UserService {
               user_permission_id: permission.user_permission_id,
             },
             data: {
-              module_id: permission.module_id,
               active: permission.active,
             },
           });
@@ -355,7 +339,6 @@ export class UserService {
               user_permission_id: permission.user_permission_id,
             },
             data: {
-              module_id: permission.module_id,
               active: permission.active,
             },
           });
@@ -395,7 +378,6 @@ export class UserService {
               user_permission_id: permission.user_permission_id,
             },
             data: {
-              module_id: permission.module_id,
               active: permission.active,
             },
           });
