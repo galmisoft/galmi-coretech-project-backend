@@ -92,7 +92,7 @@ export function transformPrisma(probeData) {
     vetaObjetivo: probeData.objective_vein,
     plataforma: probeData.platform,
     zona: probeData.zone,
-    metrosPerforadosDesde: probeData.DayPart[0].meters_from,
+    metrosPerforadosDesde: probeData.DayPart[0].meters_to,
     constante: probeData.DayPart[0].constant_meters,
     herramientas: obtenerHerramientas(probeData.DayPart[0].DayPartProducts),
   };
