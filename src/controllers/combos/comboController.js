@@ -3,7 +3,8 @@ import { ComboService } from "../../services/combos/comboService.js";
 export class ComboController {
   static async listProbes(req, res, next) {
     try {
-      const result = await ComboService.listProbes();
+      const { defaultCompanyID, companyID } = req.body;
+      const result = await ComboService.listProbes(companyID, defaultCompanyID);
       return res.status(200).json({ Probes: result });
     } catch (error) {
       console.error(error);
@@ -80,7 +81,8 @@ export class ComboController {
   }
   static async listClients(req, res, next) {
     try {
-      const result = await ComboService.listClients();
+      const { defaultCompanyID, companyID } = req.body;
+      const result = await ComboService.listClients(companyID, defaultCompanyID);
       return res.status(200).json({ Clients: result });
     } catch (error) {
       console.error(error);
@@ -91,7 +93,8 @@ export class ComboController {
   }
   static async listProjects(req, res, next) {
     try {
-      const result = await ComboService.listProjects();
+      const { defaultCompanyID, companyID } = req.body;
+      const result = await ComboService.listProjects(companyID, defaultCompanyID);
       return res.status(200).json({ Projects: result });
     } catch (error) {
       console.error(error);
@@ -102,7 +105,8 @@ export class ComboController {
   }
   static async listEquipment(req, res, next) {
     try {
-      const result = await ComboService.listEquipment();
+      const { defaultCompanyID, companyID } = req.body;
+      const result = await ComboService.listEquipment(companyID, defaultCompanyID);
       const response = result.map((item) => {
         return { id: item.id, name: item.internal_code };
       });
@@ -116,7 +120,19 @@ export class ComboController {
   }
   static async listUsers(req, res, next) {
     try {
-      const result = await ComboService.listUsers();
+      const { defaultCompanyID, companyID } = req.body;
+      const result = await ComboService.listUsers(companyID, defaultCompanyID);
+      return res.status(200).json({ Users: result });
+    } catch (error) {
+      console.error(error);
+      return res
+        .status(500)
+        .json({ message: "Internal server error", details: error.message });
+    }
+  }
+  static async listUsersCoretech(req, res, next) {
+    try {
+      const result = await ComboService.listUsersCoretech();
       return res.status(200).json({ Users: result });
     } catch (error) {
       console.error(error);
@@ -149,7 +165,8 @@ export class ComboController {
   }
   static async listProducts(req, res, next) {
     try {
-      const result = await ComboService.listProducts();
+      const { defaultCompanyID, companyID } = req.body;
+      const result = await ComboService.listProducts(companyID, defaultCompanyID);
       return res.status(200).json({ Products: result });
     } catch (error) {
       console.error(error);
@@ -171,7 +188,8 @@ export class ComboController {
   }
   static async listProductSerialNumbers(req, res, next) {
     try {
-      const result = await ComboService.listProductSerialNumbers();
+      const { defaultCompanyID, companyID } = req.body;
+      const result = await ComboService.listProductSerialNumbers(companyID, defaultCompanyID);
       return res.status(200).json({ ProductSerialNumbers: result });
     } catch (error) {
       console.error(error);

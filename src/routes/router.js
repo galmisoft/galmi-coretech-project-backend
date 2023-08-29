@@ -137,6 +137,7 @@ router.post("/combo/clients", ComboController.listClients);
 router.post("/combo/projects", ComboController.listProjects);
 router.post("/combo/equipment", ComboController.listEquipment);
 router.post("/combo/users", ComboController.listUsers);
+router.post("/combo/usersCoretech", ComboController.listUsersCoretech);
 router.post("/combo/productTypes", ComboController.listProductTypes);
 router.post("/combo/measures", ComboController.listMeasures);
 router.post("/combo/products", ComboController.listProducts);

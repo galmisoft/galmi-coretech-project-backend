@@ -2,13 +2,19 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class ComboService {
-  static async listProbes() {
+  static async listProbes(companyID, defaultCompanyID) {
     try {
       const result = await prisma.probe.findMany({
         select: {
           id: true,
           probe_number: true,
         },
+        where: {
+          OR: [
+            { DayPart: { every: { CompanydayPart: { every: { company_id: companyID } } } } },
+            { DayPart: { every: { CompanydayPart: { every: { company_id: defaultCompanyID } } } } }
+          ]
+        }
       });
       return result;
     } catch (error) {
@@ -62,13 +68,19 @@ export class ComboService {
     }
   }
 
-  static async listUsersEmails() {
+  static async listUsersEmails(companyID, defaultCompanyID) {
     try {
       const result = await prisma.user.findMany({
         select: {
           id: true,
           email: true,
         },
+        where: {
+          OR: [
+            { CompanyUser: { every: { company_id: companyID } } },
+            { CompanyUser: { every: { company_id: defaultCompanyID } } },
+          ]
+        }
       });
       return result;
     } catch (error) {
@@ -92,7 +104,7 @@ export class ComboService {
     }
   }
 
-  static async listCountries() {
+  static async listCountries() { 
     try {
       const result = await prisma.country.findMany({
         select: {
@@ -110,13 +122,19 @@ export class ComboService {
     }
   }
 
-  static async listClients() {
+  static async listClients(companyID, defaultCompanyID) {
     try {
       const result = await prisma.client.findMany({
         select: {
           id: true,
           name: true,
         },
+        where: {
+          OR: [
+            { company_id: companyID },
+            { company_id: defaultCompanyID }
+          ]
+        }
       });
       return result;
     } catch (error) {
@@ -125,13 +143,19 @@ export class ComboService {
     }
   }
 
-  static async listProjects() {
+  static async listProjects(companyID, defaultCompanyID) {
     try {
       const result = await prisma.project.findMany({
         select: {
           id: true,
           name: true,
         },
+        where: {
+          OR: [
+            { Client: { company_id: companyID } },
+            { Client: { company_id: defaultCompanyID } },
+          ]
+        }
       });
       return result;
     } catch (error) {
@@ -140,13 +164,19 @@ export class ComboService {
     }
   }
 
-  static async listEquipment() {
+  static async listEquipment(companyID, defaultCompanyID) {
     try {
       const result = await prisma.equipment.findMany({
         select: {
           id: true,
           internal_code: true,
         },
+        where: {
+          OR: [
+            { Client: { company_id: companyID } },
+            { Client: { company_id: defaultCompanyID } },
+          ]
+        }
       });
       return result;
     } catch (error) {
@@ -155,7 +185,28 @@ export class ComboService {
     }
   }
 
-  static async listUsers() {
+  static async listUsers(companyID, defaultCompanyID) {
+    try {
+      const result = await prisma.user.findMany({
+        select: {
+          id: true,
+          names: true,
+        },
+        where: {
+          OR: [
+            { CompanyUser: { company_id: companyID } },
+            { CompanyUser: { company_id: defaultCompanyID } },
+          ]
+        }
+      });
+      return result;
+    } catch (error) {
+      console.log(error);
+      throw new Error("An error occurred in listUsers");
+    }
+  }
+
+  static async listUsersCoretech() {
     try {
       const result = await prisma.user.findMany({
         select: {
@@ -200,13 +251,19 @@ export class ComboService {
     }
   }
 
-  static async listProducts() {
+  static async listProducts(companyID, defaultCompanyID) {
     try {
       const result = await prisma.product.findMany({
         select: {
           id: true,
           description: true,
         },
+        where: {
+          OR: [
+            { company_id: companyID },
+            { company_id: defaultCompanyID },
+          ]
+        }
       });
       return result;
     } catch (error) {
@@ -230,21 +287,29 @@ export class ComboService {
     }
   }
 
-  static async listProductSerialNumbers() {
+  static async listProductSerialNumbers(companyID, defaultCompanyID) {
     try {
-      const items = await prisma.Items.findMany({})
-      const usedSerialNumbers = items.map((i) => i.dayPartProduct_serial_number)
+      const items = await prisma.Items.findMany({
+        where: {
+          OR: [
+            { Client: { company_id: companyID } },
+            { Client: { company_id: defaultCompanyID } }
+          ]
+        }
+      }) 
+      const usedSerialNumbers = items.map( (i) => i.dayPartProduct_serial_number )
       const result = await prisma.DayPartProducts.findMany({
         select: {
           serial_number: true,
         },
         where: {
-          NOT: {
-            serial_number: {
-              in: usedSerialNumbers,
-            },
-          },
+          AND: [
+            { DayPart: { every: { CompanydayPart: { every: { company_id: companyID } } } } },
+            { DayPart: { every: { CompanydayPart: { every: { company_id: defaultCompanyID } } } } },
+            { NOT: { serial_number: { in: usedSerialNumbers } } }
+          ]
         },
+        distinct: ['serial_number'],
       });
       return result;
     } catch (error) {
@@ -258,7 +323,13 @@ export class ComboService {
       const result = await prisma.activityType.findMany({
         select: {
           id: true,
-          name: true
+          name: true,
+          activityType: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
         },
       });
       return result;
