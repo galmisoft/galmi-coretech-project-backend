@@ -11,10 +11,20 @@ export class ComboService {
         },
         where: {
           OR: [
-            { DayPart: { every: { CompanydayPart: { every: { company_id: companyID } } } } },
-            { DayPart: { every: { CompanydayPart: { every: { company_id: defaultCompanyID } } } } }
-          ]
-        }
+            {
+              DayPart: {
+                every: { CompanydayPart: { every: { company_id: companyID } } },
+              },
+            },
+            {
+              DayPart: {
+                every: {
+                  CompanydayPart: { every: { company_id: defaultCompanyID } },
+                },
+              },
+            },
+          ],
+        },
       });
       return result;
     } catch (error) {
@@ -76,11 +86,8 @@ export class ComboService {
           email: true,
         },
         where: {
-          OR: [
-            { CompanyUser: { every: { company_id: companyID } } },
-            { CompanyUser: { every: { company_id: defaultCompanyID } } },
-          ]
-        }
+          OR: [{ company_id: companyID }, { company_id: defaultCompanyID }],
+        },
       });
       return result;
     } catch (error) {
@@ -104,7 +111,7 @@ export class ComboService {
     }
   }
 
-  static async listCountries() { 
+  static async listCountries() {
     try {
       const result = await prisma.country.findMany({
         select: {
@@ -130,11 +137,8 @@ export class ComboService {
           name: true,
         },
         where: {
-          OR: [
-            { company_id: companyID },
-            { company_id: defaultCompanyID }
-          ]
-        }
+          OR: [{ company_id: companyID }, { company_id: defaultCompanyID }],
+        },
       });
       return result;
     } catch (error) {
@@ -154,8 +158,8 @@ export class ComboService {
           OR: [
             { Client: { company_id: companyID } },
             { Client: { company_id: defaultCompanyID } },
-          ]
-        }
+          ],
+        },
       });
       return result;
     } catch (error) {
@@ -175,8 +179,8 @@ export class ComboService {
           OR: [
             { Client: { company_id: companyID } },
             { Client: { company_id: defaultCompanyID } },
-          ]
-        }
+          ],
+        },
       });
       return result;
     } catch (error) {
@@ -193,11 +197,8 @@ export class ComboService {
           names: true,
         },
         where: {
-          OR: [
-            { CompanyUser: { company_id: companyID } },
-            { CompanyUser: { company_id: defaultCompanyID } },
-          ]
-        }
+          OR: [{ company_id: companyID }, { company_id: defaultCompanyID }],
+        },
       });
       return result;
     } catch (error) {
@@ -259,11 +260,8 @@ export class ComboService {
           description: true,
         },
         where: {
-          OR: [
-            { company_id: companyID },
-            { company_id: defaultCompanyID },
-          ]
-        }
+          OR: [{ company_id: companyID }, { company_id: defaultCompanyID }],
+        },
       });
       return result;
     } catch (error) {
@@ -293,23 +291,35 @@ export class ComboService {
         where: {
           OR: [
             { Client: { company_id: companyID } },
-            { Client: { company_id: defaultCompanyID } }
-          ]
-        }
-      }) 
-      const usedSerialNumbers = items.map( (i) => i.dayPartProduct_serial_number )
+            { Client: { company_id: defaultCompanyID } },
+          ],
+        },
+      });
+      const usedSerialNumbers = items.map(
+        (i) => i.dayPartProduct_serial_number
+      );
       const result = await prisma.DayPartProducts.findMany({
         select: {
           serial_number: true,
         },
         where: {
           AND: [
-            { DayPart: { every: { CompanydayPart: { every: { company_id: companyID } } } } },
-            { DayPart: { every: { CompanydayPart: { every: { company_id: defaultCompanyID } } } } },
-            { NOT: { serial_number: { in: usedSerialNumbers } } }
-          ]
+            {
+              DayPart: {
+                is: { CompanydayPart: { every: { company_id: companyID } } },
+              },
+            },
+            {
+              DayPart: {
+                is: {
+                  CompanydayPart: { every: { company_id: defaultCompanyID } },
+                },
+              },
+            },
+            { NOT: { serial_number: { in: usedSerialNumbers } } },
+          ],
         },
-        distinct: ['serial_number'],
+        distinct: ["serial_number"],
       });
       return result;
     } catch (error) {
@@ -327,9 +337,9 @@ export class ComboService {
           activityType: {
             select: {
               id: true,
-              name: true
-            }
-          }
+              name: true,
+            },
+          },
         },
       });
       return result;
