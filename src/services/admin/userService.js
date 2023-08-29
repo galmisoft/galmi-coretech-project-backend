@@ -144,11 +144,13 @@ export class UserService {
           created_At: true,
           active: true,
           company_id: true,
+          status: true,
+          reports_to: true,
           Company: {
             select: {
               id: true,
               name: true,
-            }
+            },
           },
           UserType: {
             select: {
@@ -269,7 +271,7 @@ export class UserService {
         for (const permission of userData.permissions) {
           const result3 = await prisma.UserPermission.update({
             where: {
-              user_permission_id: permission.user_permission_id,
+              user_permission_id: permission.id,
             },
             data: {
               active: permission.active,
@@ -298,7 +300,7 @@ export class UserService {
         for (const permission of userData.permissions) {
           const result3 = await prisma.UserPermission.update({
             where: {
-              user_permission_id: permission.user_permission_id,
+              user_permission_id: permission.id,
             },
             data: {
               active: permission.active,
@@ -334,7 +336,7 @@ export class UserService {
         for (const permission of userData.permissions) {
           const result3 = await prisma.UserPermission.update({
             where: {
-              user_permission_id: permission.user_permission_id,
+              user_permission_id: permission.id,
             },
             data: {
               active: permission.active,
@@ -362,7 +364,7 @@ export class UserService {
         for (const permission of userData.permissions) {
           const result3 = await prisma.UserPermission.update({
             where: {
-              user_permission_id: permission.user_permission_id,
+              user_permission_id: permission.id,
             },
             data: {
               module_id: permission.module_id,
