@@ -48,7 +48,11 @@ export class ComboController {
   }
   static async listUsersEmails(req, res, next) {
     try {
-      const result = await ComboService.listUsersEmails();
+      const { defaultCompanyID, companyID } = req.body;
+      const result = await ComboService.listUsersEmails(
+        companyID,
+        defaultCompanyID
+      );
       return res.status(200).json({ UsersEmails: result });
     } catch (error) {
       console.error(error);
@@ -82,7 +86,10 @@ export class ComboController {
   static async listClients(req, res, next) {
     try {
       const { defaultCompanyID, companyID } = req.body;
-      const result = await ComboService.listClients(companyID, defaultCompanyID);
+      const result = await ComboService.listClients(
+        companyID,
+        defaultCompanyID
+      );
       return res.status(200).json({ Clients: result });
     } catch (error) {
       console.error(error);
@@ -94,7 +101,10 @@ export class ComboController {
   static async listProjects(req, res, next) {
     try {
       const { defaultCompanyID, companyID } = req.body;
-      const result = await ComboService.listProjects(companyID, defaultCompanyID);
+      const result = await ComboService.listProjects(
+        companyID,
+        defaultCompanyID
+      );
       return res.status(200).json({ Projects: result });
     } catch (error) {
       console.error(error);
@@ -106,7 +116,10 @@ export class ComboController {
   static async listEquipment(req, res, next) {
     try {
       const { defaultCompanyID, companyID } = req.body;
-      const result = await ComboService.listEquipment(companyID, defaultCompanyID);
+      const result = await ComboService.listEquipment(
+        companyID,
+        defaultCompanyID
+      );
       const response = result.map((item) => {
         return { id: item.id, name: item.internal_code };
       });
@@ -166,7 +179,10 @@ export class ComboController {
   static async listProducts(req, res, next) {
     try {
       const { defaultCompanyID, companyID } = req.body;
-      const result = await ComboService.listProducts(companyID, defaultCompanyID);
+      const result = await ComboService.listProducts(
+        companyID,
+        defaultCompanyID
+      );
       return res.status(200).json({ Products: result });
     } catch (error) {
       console.error(error);
@@ -189,7 +205,10 @@ export class ComboController {
   static async listProductSerialNumbers(req, res, next) {
     try {
       const { defaultCompanyID, companyID } = req.body;
-      const result = await ComboService.listProductSerialNumbers(companyID, defaultCompanyID);
+      const result = await ComboService.listProductSerialNumbers(
+        companyID,
+        defaultCompanyID
+      );
       return res.status(200).json({ ProductSerialNumbers: result });
     } catch (error) {
       console.error(error);
