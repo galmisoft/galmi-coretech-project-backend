@@ -60,47 +60,47 @@ model Project {
 }
 
 model Company {
-  id                      String           @id @default(uuid())
-  name                    String
-  visible_name            String
-  visible_icon            Bytes?
-  visible_logo1           Bytes?
-  visible_logo2           Bytes?
-  country_id              Int
-  division                String
-  sub_division            String
-  zone                    String
-  sub_zone                String
-  canAddFluids            Boolean
-  canAddSteel             Boolean
-  canAddActivities        Boolean
-  contact_name            String
-  contact_email           String
-  contact_phone           String
-  active                  Boolean
-  created_At              DateTime         @default(now())
-  updated_At              DateTime         @updatedAt
-  Country                 Country          @relation(fields: [country_id], references: [id])
-  CompanyModules          CompanyModules[]
-  CompanydayPart          CompanydayPart[]
-  CompanyProject          CompanyProject[]
-  User                    User[]
-  CompanyTypeUser         CompanyTypeUser[]
-  Client                  Client[]
-  Product                 Product[]
-  Person                  Person[]
-  email                   email[]
-  Activities              Activities[]
+  id               String            @id @default(uuid())
+  name             String
+  visible_name     String
+  visible_icon     Bytes?
+  visible_logo1    Bytes?
+  visible_logo2    Bytes?
+  country_id       Int
+  division         String?
+  sub_division     String?
+  zone             String?
+  sub_zone         String?
+  canAddFluids     Boolean
+  canAddSteel      Boolean
+  canAddActivities Boolean
+  contact_name     String
+  contact_email    String
+  contact_phone    String
+  active           Boolean
+  created_At       DateTime          @default(now())
+  updated_At       DateTime          @updatedAt
+  Country          Country           @relation(fields: [country_id], references: [id])
+  CompanyModules   CompanyModules[]
+  CompanydayPart   CompanydayPart[]
+  CompanyProject   CompanyProject[]
+  User             User[]
+  CompanyTypeUser  CompanyTypeUser[]
+  Client           Client[]
+  Product          Product[]
+  Person           Person[]
+  email            email[]
+  Activities       Activities[]
 }
 
 model CompanyTypeUser {
-  id        String @id @default(uuid())
-  company_id String
+  id          String @id @default(uuid())
+  company_id  String
   userType_id Int
-  quantity Int
+  quantity    Int
 
-  UserType    UserType      @relation(fields: [userType_id], references: [id])
-  Company     Company @relation(fields: [company_id], references: [id])
+  UserType UserType @relation(fields: [userType_id], references: [id])
+  Company  Company  @relation(fields: [company_id], references: [id])
 }
 
 model CompanyModules {
@@ -213,34 +213,34 @@ model email {
 }
 
 model User {
-  id          String        @id @default(uuid())
-  company_id  String        
-  username    String
-  password    String
-  user_type   Int
-  active      Boolean
-  reports_to  String
-  names       String?
-  lastname    String?
-  email       String?
-  status      String?
-  created_At  DateTime      @default(now())
-  updated_At  DateTime      @updatedAt
+  id         String   @id @default(uuid())
+  company_id String
+  username   String
+  password   String
+  user_type  Int
+  active     Boolean
+  reports_to String
+  names      String?
+  lastname   String?
+  email      String?
+  status     String?
+  created_At DateTime @default(now())
+  updated_At DateTime @updatedAt
 
-  UserType        UserType      @relation(fields: [user_type], references: [id])
-  Company         Company       @relation(fields: [company_id], references: [id])
-  Assignation     Assignation[]
-  UserPermission  UserPermission[]
-  TeamUser        TeamUser[]
+  UserType       UserType         @relation(fields: [user_type], references: [id])
+  Company        Company          @relation(fields: [company_id], references: [id])
+  Assignation    Assignation[]
+  UserPermission UserPermission[]
+  TeamUser       TeamUser[]
 }
 
 model UserType {
-  id         Int      @id @default(autoincrement())
-  name       String
-  active     Boolean
-  created_At DateTime @default(now())
-  updated_At DateTime @updatedAt
-  User       User[]
+  id              Int               @id @default(autoincrement())
+  name            String
+  active          Boolean
+  created_At      DateTime          @default(now())
+  updated_At      DateTime          @updatedAt
+  User            User[]
   CompanyTypeUser CompanyTypeUser[]
 }
 
@@ -263,12 +263,12 @@ model TeamUser {
 }
 
 model UserPermission {
-  user_permission_id String     @id @default(uuid())
+  user_permission_id String  @id @default(uuid())
   user_id            String
   module_id          Int
   active             Boolean
-  User               User       @relation(fields: [user_id], references: [id])
-  Modules            Modules    @relation(fields: [module_id], references: [id])
+  User               User    @relation(fields: [user_id], references: [id])
+  Modules            Modules @relation(fields: [module_id], references: [id])
 }
 
 model ActivityType {
@@ -325,7 +325,7 @@ model Product {
   description  String?
   brand        String
   presentation String?
-  active        Boolean         @default(true)
+  active       Boolean @default(true)
 
   created_At    DateTime        @default(now())
   updated_At    DateTime        @updatedAt
@@ -344,23 +344,23 @@ model ProductType {
 }
 
 model Items {
-  id                String @id @default(uuid())
-  product_id        String
-  line_id           Int
-  serial_number     String
-  unit_price        Float
-  client_id         String
-  project_id        String
+  id                           String @id @default(uuid())
+  product_id                   String
+  line_id                      Int
+  serial_number                String
+  unit_price                   Float
+  client_id                    String
+  project_id                   String
   dayPartProduct_serial_number String
 
   created_At DateTime @default(now())
   updated_At DateTime @updatedAt
 
-  Product         Product         @relation(fields: [product_id], references: [id])
-  Client          Client          @relation(fields: [client_id], references: [id])
-  Project         Project         @relation(fields: [project_id], references: [id])
+  Product Product @relation(fields: [product_id], references: [id])
+  Client  Client  @relation(fields: [client_id], references: [id])
+  Project Project @relation(fields: [project_id], references: [id])
   // DayPartProducts DayPartProducts @relation(fields: [dayPartProduct_id], references: [id])
-  Line            Line            @relation(fields: [line_id], references: [id])
+  Line    Line    @relation(fields: [line_id], references: [id])
 }
 
 model Probe {
@@ -387,24 +387,24 @@ model Probe {
 }
 
 model DayPart {
-  id                String              @id @default(uuid())
-  date              DateTime
-  shift             Int                 @default(1)
-  status            Int                 @default(1)
-  probe_id          String
-  team_id           String
-  meters_from       Float
-  meters_to         Float
-  surplus_meters    Float
-  constant_meters   Float
-  M1                Float?
-  M2                Float?
-  M3                Float?
-  M4                Float?
-  PH                Float?
-  PPM               Float?
-  fluid_return      Boolean             @default(true)
-  signature         Bytes?
+  id              String   @id @default(uuid())
+  date            DateTime
+  shift           Int      @default(1)
+  status          Int      @default(1)
+  probe_id        String
+  team_id         String
+  meters_from     Float
+  meters_to       Float
+  surplus_meters  Float
+  constant_meters Float
+  M1              Float?
+  M2              Float?
+  M3              Float?
+  M4              Float?
+  PH              Float?
+  PPM             Float?
+  fluid_return    Boolean  @default(true)
+  signature       Bytes?
 
   created_At        DateTime            @default(now())
   updated_At        DateTime            @updatedAt
@@ -437,7 +437,7 @@ model DayPartRun {
 }
 
 model DayPartProducts {
-  id               String   @id @default(uuid())
+  id               String      @id @default(uuid())
   dayPart_id       String
   serial_number    String
   type_id          Int
@@ -449,10 +449,10 @@ model DayPartProducts {
   drill_bit_change Boolean?
   end_condition    Int?
   meters_to        Int?
-  change_motive    Int?     @default(1)
-  created_At       DateTime @default(now())
-  ProductType ProductType @relation(fields: [type_id], references: [id])
-  DayPart     DayPart     @relation(fields: [dayPart_id], references: [id])
+  change_motive    Int?        @default(1)
+  created_At       DateTime    @default(now())
+  ProductType      ProductType @relation(fields: [type_id], references: [id])
+  DayPart          DayPart     @relation(fields: [dayPart_id], references: [id])
   // Items       Items[]
 }
 

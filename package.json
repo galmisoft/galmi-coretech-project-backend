@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon src/app.js",
-    "dev": "npx prisma migrate && node --watch src/app.js "
+    "dev": "npx prisma generate && node --watch src/app.js "
   },
   "author": "",
   "license": "ISC",

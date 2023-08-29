@@ -334,12 +334,6 @@ export class ComboService {
         select: {
           id: true,
           name: true,
-          activityType: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
         },
       });
       return result;
