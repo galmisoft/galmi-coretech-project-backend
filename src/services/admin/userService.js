@@ -15,27 +15,6 @@ export class UserService {
           ],
         },
         include: {
-          TeamUser: {
-            select: {
-              Team: {
-                select: {
-                  id: true,
-                  name: true,
-                },
-              },
-            },
-          },
-          CompanyUser: {
-            select: {
-              Company: {
-                select: {
-                  id: true,
-                  name: true,
-                  visible_name: true,
-                },
-              },
-            },
-          },
           Assignation: {
             select: {
               Client: {
@@ -61,15 +40,12 @@ export class UserService {
           },
           UserPermission: {
             select: {
-              Permission: {
+              active: true,
+              module_id: true,
+              Modules: {
                 select: {
-                  module_id: true,
-                  active: true,
-                  Modules: {
-                    select: {
-                      name: true,
-                    },
-                  },
+                  id: true,
+                  name: true,
                 },
               },
             },
@@ -146,9 +122,7 @@ export class UserService {
             },
           },
         },
-        where: {
-          OR: [{ CompanyUser: { some: { company_id: companyID } } }],
-        },
+        where: { company_id: companyID },
         distinct: ["username"],
       });
 
@@ -169,18 +143,12 @@ export class UserService {
           lastname: true,
           created_At: true,
           active: true,
-          email: true,
-          status: true,
-          reports_to: true,
-          CompanyUser: {
+          company_id: true,
+          Company: {
             select: {
-              Company: {
-                select: {
-                  id: true,
-                  name: true,
-                },
-              },
-            },
+              id: true,
+              name: true,
+            }
           },
           UserType: {
             select: {
@@ -225,14 +193,9 @@ export class UserService {
           lastname: userData.lastname,
           status: userData.status,
           email: userData.email,
+          company_id: userData.company_id,
           created_At: new Date(),
           updated_At: new Date(),
-        },
-      });
-      const result2 = await prisma.companyUser.create({
-        data: {
-          company_id: userData.company_id,
-          user_id: result.id,
         },
       });
       for (const permission of userData.permissions) {
@@ -264,14 +227,9 @@ export class UserService {
           lastname: userData.lastname,
           email: userData.email,
           active: userData.active,
+          company_id: userData.company_id,
           created_At: new Date(),
           updated_At: new Date(),
-        },
-      });
-      const result2 = await prisma.companyUser.create({
-        data: {
-          company_id: userData.company_id,
-          user_id: result.id,
         },
       });
       for (const permission of userData.permissions) {
@@ -304,6 +262,7 @@ export class UserService {
             lastname: userData.lastname,
             status: userData.status,
             email: userData.email,
+            company_id: userData.company_id,
             updated_At: new Date(),
           },
         });
@@ -332,6 +291,7 @@ export class UserService {
             lastname: userData.lastname,
             status: userData.status,
             email: userData.email,
+            company_id: userData.company_id,
             updated_At: new Date(),
           },
         });
@@ -367,12 +327,9 @@ export class UserService {
             lastname: userData.lastname,
             email: userData.email,
             active: userData.active,
+            company_id: userData.company_id,
             updated_At: new Date(),
           },
-        });
-        const result2 = await prisma.companyUser.updateMany({
-          where: { user_id: result.id },
-          data: { company_id: userData.company_id },
         });
         for (const permission of userData.permissions) {
           const result3 = await prisma.UserPermission.update({
@@ -398,12 +355,9 @@ export class UserService {
             names: userData.names,
             lastname: userData.lastname,
             email: userData.email,
+            company_id: userData.company_id,
             updated_At: new Date(),
           },
-        });
-        const result2 = await prisma.companyUser.updateMany({
-          where: { user_id: result.id },
-          data: { company_id: userData.company_id },
         });
         for (const permission of userData.permissions) {
           const result3 = await prisma.UserPermission.update({

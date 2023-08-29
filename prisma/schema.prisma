@@ -77,10 +77,6 @@ model Company {
   contact_name            String
   contact_email           String
   contact_phone           String
-  number_users_admin      Int
-  number_users_supervisor Int
-  number_users_leader     Int
-  number_users_perforist  Int
   active                  Boolean
   created_At              DateTime         @default(now())
   updated_At              DateTime         @updatedAt
@@ -88,12 +84,23 @@ model Company {
   CompanyModules          CompanyModules[]
   CompanydayPart          CompanydayPart[]
   CompanyProject          CompanyProject[]
-  CompanyUser             CompanyUser[]
+  User                    User[]
+  CompanyTypeUser         CompanyTypeUser[]
   Client                  Client[]
   Product                 Product[]
   Person                  Person[]
   email                   email[]
   Activities              Activities[]
+}
+
+model CompanyTypeUser {
+  id        String @id @default(uuid())
+  company_id String
+  userType_id Int
+  quantity Int
+
+  UserType    UserType      @relation(fields: [userType_id], references: [id])
+  Company     Company @relation(fields: [company_id], references: [id])
 }
 
 model CompanyModules {
@@ -207,6 +214,7 @@ model email {
 
 model User {
   id          String        @id @default(uuid())
+  company_id  String        
   username    String
   password    String
   user_type   Int
@@ -218,19 +226,12 @@ model User {
   status      String?
   created_At  DateTime      @default(now())
   updated_At  DateTime      @updatedAt
-  UserType    UserType      @relation(fields: [user_type], references: [id])
-  CompanyUser CompanyUser[]
-  Assignation Assignation[]
-  UserPermission UserPermission[]
-  TeamUser    TeamUser[]
-}
 
-model CompanyUser {
-  id         String  @id @default(uuid())
-  user_id    String
-  company_id String
-  User       User    @relation(fields: [user_id], references: [id])
-  Company    Company @relation(fields: [company_id], references: [id])
+  UserType        UserType      @relation(fields: [user_type], references: [id])
+  Company         Company       @relation(fields: [company_id], references: [id])
+  Assignation     Assignation[]
+  UserPermission  UserPermission[]
+  TeamUser        TeamUser[]
 }
 
 model UserType {
@@ -240,6 +241,7 @@ model UserType {
   created_At DateTime @default(now())
   updated_At DateTime @updatedAt
   User       User[]
+  CompanyTypeUser CompanyTypeUser[]
 }
 
 model Team {

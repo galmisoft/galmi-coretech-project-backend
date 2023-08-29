@@ -6,16 +6,47 @@ export class CompanyService {
     try {
       const listCompanies = prisma.company.findMany({
         select: {
-          id: true,
           name: true,
-          created_At: true,
+          active: true,
+          visible_name: true,
+          country_id: true,
+          division: true,
+          sub_division: true,
+          zone: true,
+          sub_zone: true,
+          canAddFluids: true,
+          canAddSteel: true,
+          canAddActivities: true,
           contact_name: true,
           contact_email: true,
-          country_id: true,
-          active: true,
+          contact_phone: true,
           Country: {
             select: {
               name: true,
+            }
+          },
+          CompanyTypeUser: {
+            select: {
+              id: true,
+              quantity: true,
+              UserType: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              }
+            }
+          },
+          CompanyModules: {
+            select: {
+              id: true,
+              active: true,
+              Modules: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              }
             }
           }
         },
@@ -73,7 +104,6 @@ export class CompanyService {
       const company = await prisma.company.create({
         data: {
           name: companyModel.name,
-          active: companyModel.active,
           visible_name: companyModel.visible_name,
           country_id: companyModel.country_id,
           division: companyModel.division,
@@ -86,14 +116,32 @@ export class CompanyService {
           contact_name: companyModel.contact_name,
           contact_email: companyModel.contact_email,
           contact_phone: companyModel.contact_phone,
-          number_users_admin: companyModel.number_users_admin,
-          number_users_supervisor: companyModel.number_users_supervisor,
-          number_users_leader: companyModel.number_users_leader,
-          number_users_perforist: companyModel.number_users_perforist,
+          active: companyModel.active,
           created_At: new Date(),
           updated_At: new Date()
         }
       });
+
+      for ( const typeUser of companyModel.CompanyTypeUser ){
+        const companyUserTypes = await prisma.CompanyTypeUser.create({
+          data: {
+            company_id: company.id,
+            userType_id: typeUser.userType_id,
+            quantity: typeUser.quantity,
+          }
+        });
+      }
+
+      for ( const permission of companyModel.CompanyModules ){
+        const companyUserTypes = await prisma.CompanyModules.create({
+          data: {
+            company_id: company.id,
+            module_id: permission.module_id,
+            active: permission.active,
+          }
+        });
+      }
+
       return company;
     } catch (error) {
       console.log(error)
@@ -119,13 +167,32 @@ export class CompanyService {
           contact_name: companyModel.contact_name,
           contact_email: companyModel.contact_email,
           contact_phone: companyModel.contact_phone,
-          number_users_admin: companyModel.number_users_admin,
-          number_users_supervisor: companyModel.number_users_supervisor,
-          number_users_leader: companyModel.number_users_leader,
-          number_users_perforist: companyModel.number_users_perforist,
           updated_At: new Date()
         }
       });
+
+      for ( const typeUser of companyModel.CompanyTypeUser ){
+        const companyUserTypes = await prisma.CompanyTypeUser.update({
+          data: {
+            quantity: typeUser.quantity,
+          },
+          where: {
+            id: typeUser.id,
+          }
+        });
+      }
+
+      for ( const permission of companyModel.CompanyModules ){
+        const companyUserTypes = await prisma.CompanyModules.update({
+          data: {
+            active: permission.active,
+          },
+          where: {
+            id: permission.id
+          }
+        });
+      }
+
       return company;
     } catch (error) {
       console.error('Error updating company:', error);
@@ -135,6 +202,14 @@ export class CompanyService {
   }
   static async deleteCompany(companyID) {
     try {
+      const delCompanyModules = await prisma.CompanyModules.deleteMany({
+        where: { company_id: companyID }
+      })
+
+      const delCompanyTypeUser = await prisma.CompanyTypeUser.deleteMany({
+        where: { company_id: companyID }
+      })
+
       const company = await prisma.company.delete({
         where: { id: companyID }
       });
