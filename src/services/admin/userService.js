@@ -34,6 +34,8 @@ export class UserService {
                 select: {
                   id: true,
                   name: true,
+                  internal_code: true,
+                  mine_code: true,
                 },
               },
             },
@@ -54,7 +56,7 @@ export class UserService {
       });
       if (result) {
         const defaultCompany = await prisma.company.findUnique({
-          where: { id: "dd6eb56d-f8f4-4686-80b8-31a41062ea77" },
+          where: { id: process.env.CORETECH_CODE },
           select: {
             id: true,
             name: true,
