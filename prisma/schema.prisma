@@ -236,7 +236,7 @@ model User {
 
 model UserType {
   id              Int               @id @default(autoincrement())
-  name            String
+  name            String?
   active          Boolean
   created_At      DateTime          @default(now())
   updated_At      DateTime          @updatedAt

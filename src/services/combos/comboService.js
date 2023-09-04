@@ -13,13 +13,13 @@ export class ComboService {
           OR: [
             {
               DayPart: {
-                every: { CompanydayPart: { every: { company_id: companyID } } },
+                some: { CompanydayPart: { some: { company_id: companyID } } },
               },
             },
             {
               DayPart: {
-                every: {
-                  CompanydayPart: { every: { company_id: defaultCompanyID } },
+                some: {
+                  CompanydayPart: { some: { company_id: defaultCompanyID } },
                 },
               },
             },
@@ -306,13 +306,13 @@ export class ComboService {
           AND: [
             {
               DayPart: {
-                is: { CompanydayPart: { every: { company_id: companyID } } },
+                is: { CompanydayPart: { some: { company_id: companyID } } },
               },
             },
             {
               DayPart: {
                 is: {
-                  CompanydayPart: { every: { company_id: defaultCompanyID } },
+                  CompanydayPart: { some: { company_id: defaultCompanyID } },
                 },
               },
             },
