@@ -185,6 +185,18 @@ export class UserService {
 
   static async createUser(userData) {
     try {
+      const checkUsedUsernameOrMail = await prisma.user.findMany({
+        where: {
+          OR: [
+            { username: userData.username },
+            { email: userData.email },
+          ]
+        }
+      })
+      if (checkUsedUsernameOrMail) {
+        throw new Error("Username o Mail en uso");
+      }
+
       const hashedPassword = md5(userData.password);
       const result = await prisma.user.create({
         data: {
@@ -220,6 +232,18 @@ export class UserService {
   }
   static async createUserContratos(userData) {
     try {
+      const checkUsedUsernameOrMail = await prisma.user.findMany({
+        where: {
+          OR: [
+            { username: userData.username },
+            { email: userData.email },
+          ]
+        }
+      })
+      if (checkUsedUsernameOrMail) {
+        throw new Error("Username o Mail en uso");
+      }
+
       const hashedPassword = md5(userData.password);
       const result = await prisma.user.create({
         data: {
