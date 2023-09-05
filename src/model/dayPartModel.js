@@ -10,7 +10,7 @@ export function transformJson(inputJson, files) {
       terrain_type2: inputJson.corridas[corrida].terreno2,
       terrain_type3: inputJson.corridas[corrida].terreno3,
       observation: inputJson.corridas[corrida].observacion,
-      picture: files.corridaImagenes ? files.corridaImagenes[0].buffer : null,
+      picture: files.corridaImagenes ? files.corridaImagenes[corrida].buffer : null,
     });
   }
 
