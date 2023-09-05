@@ -82,7 +82,7 @@ model Company {
   updated_At       DateTime          @updatedAt
   Country          Country           @relation(fields: [country_id], references: [id])
   CompanyModules   CompanyModules[]
-  CompanydayPart   CompanydayPart[]
+  Probe            Probe[]
   CompanyProject   CompanyProject[]
   User             User[]
   CompanyTypeUser  CompanyTypeUser[]
@@ -110,14 +110,6 @@ model CompanyModules {
   active     Boolean
   Modules    Modules @relation(fields: [module_id], references: [id])
   Company    Company @relation(fields: [company_id], references: [id])
-}
-
-model CompanydayPart {
-  id         String  @id @default(uuid())
-  company_id String
-  dayPart_id String
-  Company    Company @relation(fields: [company_id], references: [id])
-  DayPart    DayPart @relation(fields: [dayPart_id], references: [id])
 }
 
 model CompanyProject {
@@ -294,6 +286,9 @@ model Activities {
 model TerrainType {
   id           Int    @id @default(autoincrement())
   terrain_name String
+  Run1         Run[]  @relation("TerrainType1")
+  Run2         Run[]  @relation("TerrainType2")
+  Run3         Run[]  @relation("TerrainType3")
 }
 
 model Run {
@@ -302,12 +297,16 @@ model Run {
   meters_to               Int
   length                  Int
   recuperation_percentage Int?
-  terrain_type1           Int?
-  terrain_type2           Int?
-  terrain_type3           Int?
+  terrain_type1           Int           @default(0)
+  terrain_type2           Int           @default(0)
+  terrain_type3           Int           @default(0)
   observation             String?
   picture                 Bytes?
   DayPartRun              DayPartRun[]
+
+  TerrainType1            TerrainType @relation(name: "TerrainType1", fields: [terrain_type1], references: [id])
+  TerrainType2            TerrainType @relation(name: "TerrainType2", fields: [terrain_type2], references: [id])
+  TerrainType3            TerrainType @relation(name: "TerrainType3", fields: [terrain_type3], references: [id])
 }
 
 model Meassure {
@@ -365,6 +364,7 @@ model Items {
 
 model Probe {
   id             String    @id @default(uuid())
+  company_id     String
   probe_number   String?
   date_ini       DateTime
   azimut_ini     Int?
@@ -383,6 +383,7 @@ model Probe {
 
   created_At DateTime  @default(now())
   updated_At DateTime  @updatedAt
+  Company    Company             @relation(fields: [company_id], references: [id])
   DayPart    DayPart[]
 }
 
@@ -416,7 +417,6 @@ model DayPart {
   DayPartPerson     DayPartPerson[]
   DayPartFluids     DayPartFluids[]
   DayPartTest       DayPartTest[]
-  CompanydayPart    CompanydayPart[]
 }
 
 model DayPartPerson {
