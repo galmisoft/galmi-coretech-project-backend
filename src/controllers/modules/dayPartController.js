@@ -24,10 +24,10 @@ export class DayPartController {
   static async createDayParts(req, res, next) {
     try {
       const { data } = req.body;
-      const { validacion } = req.files
+      const files = req.files
       const jsonObject = JSON.parse(data);
 
-      const dayParts = await DayPartService.createDayParts(jsonObject, validacion)
+      const dayParts = await DayPartService.createDayParts(jsonObject, files)
       return res.status(200).json({ dayParts });
     } catch (error) { 
       console.log(error)

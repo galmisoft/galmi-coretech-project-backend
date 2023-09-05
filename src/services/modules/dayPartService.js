@@ -198,8 +198,8 @@ export class DayPartService {
     }
   }
 
-  static async createDayParts(JsonBody, validacion) {
-    const dayPartModel = await transformJson(JsonBody, validacion);
+  static async createDayParts(JsonBody, files) {
+    const dayPartModel = await transformJson(JsonBody, files);
 
     try {
       if (dayPartModel.probe_id === null) {

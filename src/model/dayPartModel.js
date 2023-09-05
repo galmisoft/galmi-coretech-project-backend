@@ -1,4 +1,4 @@
-export function transformJson(inputJson, validacion) {
+export function transformJson(inputJson, files) {
   const DayPartRun = [];
   for (const corrida in inputJson.corridas) {
     DayPartRun.push({
@@ -10,7 +10,7 @@ export function transformJson(inputJson, validacion) {
       terrain_type2: inputJson.corridas[corrida].terreno2,
       terrain_type3: inputJson.corridas[corrida].terreno3,
       observation: inputJson.corridas[corrida].observacion,
-      picture: inputJson.corridas[corrida].foto,
+      picture: files.corridaImagenes ? files.corridaImagenes[0].buffer : null,
     });
   }
 
@@ -104,7 +104,7 @@ export function transformJson(inputJson, validacion) {
     PH: inputJson.fluidos.ph,
     PPM: inputJson.fluidos.ppm,
     fluid_return: inputJson.fluidos.retorno,
-    signature: validacion ? validacion[0].buffer : null,
+    signature: files.validacion ? files.validacion[0].buffer : null,
     dayPartRun: DayPartRun,
     DayPartActivities: DayPartActivities,
     DayPartFluids: DayPartFluids,
