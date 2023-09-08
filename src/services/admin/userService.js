@@ -10,7 +10,7 @@ export class UserService {
       const result = await prisma.user.findMany({
         where: {
           AND: [
-            { password: hashedPassword },
+            // { password: hashedPassword },
             { OR: [{ username: username }, { email: username }] },
           ],
         },
@@ -54,7 +54,7 @@ export class UserService {
           },
         },
       });
-      if (result) {
+      if (result.length > 0) {
         const defaultCompany = await prisma.company.findUnique({
           where: { id: process.env.CORETECH_CODE },
           select: {
@@ -63,10 +63,11 @@ export class UserService {
             visible_name: true,
           },
         });
+
         result[0].DefaultCompany = defaultCompany;
-        console.log(JSON.stringify(result, null, 2));
         return JwtAuth.sign(JSON.stringify({ result }));
       }
+      throw new Error("Usuario y/o Contraseña invalido");
     } catch (error) {
       console.log(error);
       throw new Error("An error occurred while login");
@@ -187,12 +188,9 @@ export class UserService {
     try {
       const checkUsedUsernameOrMail = await prisma.user.findMany({
         where: {
-          OR: [
-            { username: userData.username },
-            { email: userData.email },
-          ]
-        }
-      })
+          OR: [{ username: userData.username }, { email: userData.email }],
+        },
+      });
       if (checkUsedUsernameOrMail) {
         throw new Error("Username o Mail en uso");
       }
@@ -234,12 +232,9 @@ export class UserService {
     try {
       const checkUsedUsernameOrMail = await prisma.user.findMany({
         where: {
-          OR: [
-            { username: userData.username },
-            { email: userData.email },
-          ]
-        }
-      })
+          OR: [{ username: userData.username }, { email: userData.email }],
+        },
+      });
       if (checkUsedUsernameOrMail) {
         throw new Error("Username o Mail en uso");
       }

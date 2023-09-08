@@ -9,7 +9,6 @@ export class DayPartService {
         select: {
           id: true,
           date: date !== undefined ? Date(date) : true,
-          Team: { select: { name: team !== undefined ? team : true } },
           shift: shift !== undefined ? shift : true,
           status: status !== undefined ? Number(status) : true,
           Probe: {
@@ -18,17 +17,32 @@ export class DayPartService {
               probe_number: true,
             },
           },
+          User: {
+            select: {
+              Assignation: {
+                select: {
+                  Equipment: {
+                    select: {
+                      id: true,
+                      internal_code: true,
+                      mine_code: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       });
+
       const listDayPart = query.map((dayPart) => ({
         id: dayPart.id,
         date: dayPart.date,
-        name: dayPart.Team.name,
+        name: dayPart.User?.Assignation[0]?.Equipment?.internal_code ?? "",
         shift: dayPart.shift === true ? "Día" : "Noche",
         status: dayPart.status,
         Probe: dayPart.Probe,
       }));
-      console.log(listDayPart);
       return listDayPart;
     } catch (error) {
       console.log(error);
@@ -37,7 +51,6 @@ export class DayPartService {
   }
   static async getDayPart(dayPartID) {
     try {
-      console.log("getDayPart", dayPartID);
       const query = await prisma.DayPart.findUnique({
         where: {
           id: dayPartID,
@@ -47,7 +60,7 @@ export class DayPartService {
             select: {
               Assignation: {
                 select: {
-                  Client : {
+                  Client: {
                     select: {
                       id: true,
                       name: true,
@@ -60,10 +73,10 @@ export class DayPartService {
                       internal_code: true,
                       mine_code: true,
                     },
-                  }
-                }
-              }
-            }
+                  },
+                },
+              },
+            },
           },
           Probe: {
             select: {
@@ -71,7 +84,7 @@ export class DayPartService {
               Company: {
                 select: {
                   name: true,
-                }
+                },
               },
               Project: {
                 select: {
@@ -290,6 +303,7 @@ export class DayPartService {
           meters_to: dayPartModel.meters_to,
           surplus_meters: dayPartModel.surplus_meters,
           constant_meters: dayPartModel.constant_meters,
+          user_id: dayPartModel.user_id,
           M1: dayPartModel.m1,
           M2: dayPartModel.m2,
           M3: dayPartModel.m3,
