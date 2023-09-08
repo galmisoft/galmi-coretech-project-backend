@@ -43,9 +43,42 @@ export class DayPartService {
           id: dayPartID,
         },
         include: {
+          User: {
+            select: {
+              Assignation: {
+                select: {
+                  Client : {
+                    select: {
+                      id: true,
+                      name: true,
+                      comercial_name: true,
+                    },
+                  },
+                  Equipment: {
+                    select: {
+                      id: true,
+                      internal_code: true,
+                      mine_code: true,
+                    },
+                  }
+                }
+              }
+            }
+          },
           Probe: {
             select: {
               id: true,
+              Company: {
+                select: {
+                  name: true,
+                }
+              },
+              Project: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
               probe_number: true,
               date_ini: true,
               azimut_ini: true,
@@ -205,6 +238,8 @@ export class DayPartService {
       if (dayPartModel.probe_id === null) {
         const newProbe = await prisma.probe.create({
           data: {
+            company_id: dayPartModel.probe.company_id,
+            project_id: dayPartModel.probe.project_id,
             probe_number: dayPartModel.probe.probe_number,
             date_ini: new Date(dayPartModel.probe.date_ini),
             azimut_ini: dayPartModel.probe.azimut_ini,
@@ -251,7 +286,6 @@ export class DayPartService {
           shift: dayPartModel.shift,
           status: dayPartModel.status,
           probe_id: dayPartModel.probe_id,
-          team_id: dayPartModel.team_id,
           meters_from: dayPartModel.meters_from,
           meters_to: dayPartModel.meters_to,
           surplus_meters: dayPartModel.surplus_meters,
