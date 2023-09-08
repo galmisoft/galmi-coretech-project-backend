@@ -76,6 +76,8 @@ export function transformJson(inputJson, files) {
       ? inputJson.datos_generales.sondaje_id
       : null,
     probe: {
+      company_id: inputJson.datos_generales.companyId,
+      project_id: inputJson.datos_generales.projectId,
       probe_number: inputJson.datos_generales.nroSondaje,
       date_ini: inputJson.datos_generales.inicioSondaje,
       azimut_ini: inputJson.datos_generales.azimut,
@@ -92,7 +94,6 @@ export function transformJson(inputJson, files) {
       finalized: inputJson.datos_generales.sondajeTerminado,
       date_fin: inputJson.datos_generales.finSondaje,
     },
-    team_id: inputJson.datos_generales.team_id,
     meters_from: inputJson.avance_perforacion.metrosPerforadosDesde,
     meters_to: inputJson.avance_perforacion.metrosPerforadosHasta,
     surplus_meters: inputJson.avance_perforacion.sobrante,
@@ -304,16 +305,19 @@ export function transformPrisma(dayPartData) {
     return Persons;
   }
 
+  console.log(dayPartData.User)
   const data = {
     datos_generales: {
       fechaParteDiario: dayPartData.date,
+      project: { name: dayPartData.Probe.Project.name, id: dayPartData.Probe.Project.id },
+      client: { name: dayPartData.User.Assignation[0].Client.name, id: dayPartData.User.Assignation[0].Client.id, comercial_name: dayPartData.User.Assignation[0].Client.comercial_name },
+      equipment: { id: dayPartData.User.Assignation[0].Equipment.id, internal_code: dayPartData.User.Assignation[0].Equipment.internal_code, mine_code: dayPartData.User.Assignation[0].Equipment.mine_code },
       turno: dayPartData.shift,
       sondaje_id: dayPartData.probe_id,
       nroSondaje: dayPartData.Probe.probe_number,
       inicioSondaje: dayPartData.Probe.date_ini,
       azimut: dayPartData.Probe.azimut_ini,
       inclinacion: dayPartData.Probe.incline_ini,
-      team_id: dayPartData.team_id,
       tipoTrabajo: dayPartData.Probe.job_type,
       profundidadObjetivo: dayPartData.Probe.objective_prof,
       nivel: dayPartData.Probe.level,
