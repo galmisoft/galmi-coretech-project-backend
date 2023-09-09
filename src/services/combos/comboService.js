@@ -10,21 +10,9 @@ export class ComboService {
           probe_number: true,
         },
         where: {
-          OR: [
-            {
-              DayPart: {
-                some: { CompanydayPart: { some: { company_id: companyID } } },
-              },
-            },
-            {
-              DayPart: {
-                some: {
-                  CompanydayPart: { some: { company_id: defaultCompanyID } },
-                },
-              },
-            },
-          ],
+          OR: [{ company_id: companyID }, { company_id: defaultCompanyID }],
         },
+        distinct: ["probe_number"],
       });
       return result;
     } catch (error) {
@@ -306,13 +294,13 @@ export class ComboService {
           AND: [
             {
               DayPart: {
-                is: { CompanydayPart: { some: { company_id: companyID } } },
+                is: { Probe: { company_id: companyID } },
               },
             },
             {
               DayPart: {
                 is: {
-                  CompanydayPart: { some: { company_id: defaultCompanyID } },
+                  Probe: { company_id: defaultCompanyID },
                 },
               },
             },

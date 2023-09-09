@@ -6,11 +6,13 @@ export function transformJson(inputJson, files) {
       meters_to: inputJson.corridas[corrida].hasta,
       length: inputJson.corridas[corrida].longitud,
       recuperation_percentage: inputJson.corridas[corrida].recuperacion,
-      terrain_type1: inputJson.corridas[corrida].terreno1,
-      terrain_type2: inputJson.corridas[corrida].terreno2,
-      terrain_type3: inputJson.corridas[corrida].terreno3,
+      terrain_type1: inputJson.corridas[corrida].terreno1 ?? 0,
+      terrain_type2: inputJson.corridas[corrida].terreno2 ?? 0,
+      terrain_type3: inputJson.corridas[corrida].terreno3 ?? 0,
       observation: inputJson.corridas[corrida].observacion,
-      picture: files.corridaImagenes ? files.corridaImagenes[corrida].buffer : null,
+      picture: files.corridaImagenes
+        ? files.corridaImagenes[corrida].buffer
+        : null,
     });
   }
 
@@ -75,6 +77,7 @@ export function transformJson(inputJson, files) {
     probe_id: inputJson.datos_generales.sondaje_id
       ? inputJson.datos_generales.sondaje_id
       : null,
+    user_id: inputJson.datos_generales.userId,
     probe: {
       company_id: inputJson.datos_generales.companyId,
       project_id: inputJson.datos_generales.projectId,
@@ -305,13 +308,9 @@ export function transformPrisma(dayPartData) {
     return Persons;
   }
 
-  console.log(dayPartData.User)
   const data = {
     datos_generales: {
       fechaParteDiario: dayPartData.date,
-      project: { name: dayPartData.Probe.Project.name, id: dayPartData.Probe.Project.id },
-      client: { name: dayPartData.User.Assignation[0].Client.name, id: dayPartData.User.Assignation[0].Client.id, comercial_name: dayPartData.User.Assignation[0].Client.comercial_name },
-      equipment: { id: dayPartData.User.Assignation[0].Equipment.id, internal_code: dayPartData.User.Assignation[0].Equipment.internal_code, mine_code: dayPartData.User.Assignation[0].Equipment.mine_code },
       turno: dayPartData.shift,
       sondaje_id: dayPartData.probe_id,
       nroSondaje: dayPartData.Probe.probe_number,
@@ -329,6 +328,20 @@ export function transformPrisma(dayPartData) {
       horometroFinal: dayPartData.Probe.horometer_fin,
       sondajeTerminado: dayPartData.Probe.finalized,
       finSondaje: dayPartData.Probe.date_fin,
+    },
+    proyecto: {
+      name: dayPartData.Probe.Project.name,
+      id: dayPartData.Probe.Project.id,
+    },
+    cliente: {
+      name: dayPartData.User.Assignation[0].Client.name,
+      id: dayPartData.User.Assignation[0].Client.id,
+      comercial_name: dayPartData.User.Assignation[0].Client.comercial_name,
+    },
+    equipo: {
+      id: dayPartData.User.Assignation[0].Equipment.id,
+      internal_code: dayPartData.User.Assignation[0].Equipment.internal_code,
+      mine_code: dayPartData.User.Assignation[0].Equipment.mine_code,
     },
     avance_perforacion: {
       metrosPerforadosDesde: dayPartData.meters_from,

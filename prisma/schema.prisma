@@ -297,7 +297,7 @@ model Run {
   meters_from             Int
   meters_to               Int
   length                  Int
-  recuperation_percentage Int?
+  recuperation_percentage Float?
   terrain_type1           Int          @default(0)
   terrain_type2           Int          @default(0)
   terrain_type3           Int          @default(0)
@@ -396,7 +396,7 @@ model DayPart {
   shift           Int      @default(1)
   status          Int      @default(1)
   probe_id        String
-  user_id         String  
+  user_id         String
   meters_from     Float
   meters_to       Float
   surplus_meters  Float

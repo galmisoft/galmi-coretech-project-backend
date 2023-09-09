@@ -27,7 +27,7 @@ router.post("/dayPart", DayPartController.listDayParts);
 router.post("/dayPart/get", DayPartController.getDayPart);
 router.post(
   "/dayPart/create",
-  upload.fields([{ name: "validacion" }]),
+  upload.fields([{ name: "validacion" }, { name: "corridaImagenes" }]),
   DayPartController.createDayParts
 );
 // Probe
