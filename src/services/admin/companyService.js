@@ -2,57 +2,110 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class CompanyService {
-  static async listCompanies(companyModel) {
+  static async listCompanies() {
     try {
       const listCompanies = prisma.company.findMany({
-        where: {
-          id: companyModel.companyID
+        select: {
+          id: true,
+          name: true,
+          active: true,
+          created_At: true,
+          visible_name: true,
+          country_id: true,
+          division: true,
+          sub_division: true,
+          zone: true,
+          sub_zone: true,
+          canAddFluids: true,
+          canAddSteel: true,
+          canAddActivities: true,
+          contact_name: true,
+          contact_email: true,
+          contact_phone: true,
+          Country: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          CompanyTypeUser: {
+            select: {
+              id: true,
+              quantity: true,
+              userType_id: true,
+              UserType: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+          CompanyModules: {
+            select: {
+              id: true,
+              module_id: true,
+              active: true,
+              Modules: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
         },
-        distinct: ['name']
-      })
+        distinct: ["name"],
+      });
       return listCompanies;
     } catch (error) {
-      console.log(error)
-      throw new Error('Failed to listCompanies');
+      console.log(error);
+      throw new Error("Failed to listCompanies");
     }
   }
   static async listCompaniesContratos(companyModel) {
     try {
       const listCompanies = await prisma.company.findUnique({
         select: {
+          id: true,
           visible_name: true,
           visible_icon: true,
           visible_logo1: true,
-          visible_logo2: true
+          visible_logo2: true,
         },
         where: {
-          id: companyModel.companyID
-        }
-      })
+          id: companyModel.companyID,
+        },
+      });
       return listCompanies;
     } catch (error) {
-      console.log(error)
-      throw new Error('Failed to listCompanies');
+      console.log(error);
+      throw new Error("Failed to listCompanies");
     }
   }
 
-  static async updateCompanyContratos(companyModel, visible_icon, visible_logo1, visible_logo2) {
+  static async updateCompanyContratos(
+    companyModel,
+    visible_icon,
+    visible_logo1,
+    visible_logo2
+  ) {
     try {
       const listCompanies = await prisma.company.update({
         where: {
-          id: companyModel.companyID
+          id: companyModel.companyID,
         },
         data: {
           visible_name: companyModel.visible_name,
-          visible_icon: Buffer.from(visible_icon[0].filename),
-          visible_logo1: Buffer.from(visible_logo1[0].filename),
-          visible_logo2: Buffer.from(visible_logo2[0].filename)
-        }
-      })
+          visible_icon: visible_icon ? visible_icon[0].buffer : null,
+          visible_logo1: visible_logo1 ? visible_logo1[0].buffer : null,
+          visible_logo2: visible_logo2 ? visible_logo2[0].buffer : null,
+        },
+      });
       return listCompanies;
     } catch (error) {
-      console.log(error)
-      throw new Error('Failed to listCompanies');
+      console.log(error);
+      throw new Error("Failed to listCompanies");
     }
   }
 
@@ -61,7 +114,6 @@ export class CompanyService {
       const company = await prisma.company.create({
         data: {
           name: companyModel.name,
-          active: companyModel.active,
           visible_name: companyModel.visible_name,
           country_id: companyModel.country_id,
           division: companyModel.division,
@@ -74,18 +126,36 @@ export class CompanyService {
           contact_name: companyModel.contact_name,
           contact_email: companyModel.contact_email,
           contact_phone: companyModel.contact_phone,
-          number_users_admin: companyModel.number_users_admin,
-          number_users_supervisor: companyModel.number_users_supervisor,
-          number_users_leader: companyModel.number_users_leader,
-          number_users_perforist: companyModel.number_users_perforist,
+          active: companyModel.active,
           created_At: new Date(),
-          updated_At: new Date()
-        }
+          updated_At: new Date(),
+        },
       });
+
+      for (const typeUser of companyModel.companyTypeUser) {
+        const companyUserTypes = await prisma.CompanyTypeUser.create({
+          data: {
+            company_id: company.id,
+            userType_id: typeUser.userType_id,
+            quantity: typeUser.quantity,
+          },
+        });
+      }
+
+      for (const permission of companyModel.companyModules) {
+        const companyUserTypes = await prisma.CompanyModules.create({
+          data: {
+            company_id: company.id,
+            module_id: permission.module_id,
+            active: permission.active,
+          },
+        });
+      }
+
       return company;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred while creating the company')
+      console.log(error);
+      throw new Error("An error occurred while creating the company");
     }
   }
   static async updateCompany(companyModel) {
@@ -107,30 +177,57 @@ export class CompanyService {
           contact_name: companyModel.contact_name,
           contact_email: companyModel.contact_email,
           contact_phone: companyModel.contact_phone,
-          number_users_admin: companyModel.number_users_admin,
-          number_users_supervisor: companyModel.number_users_supervisor,
-          number_users_leader: companyModel.number_users_leader,
-          number_users_perforist: companyModel.number_users_perforist,
-          updated_At: new Date()
-        }
+          updated_At: new Date(),
+        },
       });
+
+      for (const typeUser of companyModel.companyTypeUser) {
+        const companyUserTypes = await prisma.CompanyTypeUser.update({
+          data: {
+            quantity: typeUser.quantity,
+          },
+          where: {
+            id: typeUser.id,
+          },
+        });
+      }
+
+      for (const permission of companyModel.companyModules) {
+        const companyUserTypes = await prisma.CompanyModules.update({
+          data: {
+            active: permission.active,
+          },
+          where: {
+            id: permission.id,
+          },
+        });
+      }
+
       return company;
     } catch (error) {
-      console.error('Error updating company:', error);
-      console.log(error)
-      throw new Error('An error occurred while updating the company');
+      console.error("Error updating company:", error);
+      console.log(error);
+      throw new Error("An error occurred while updating the company");
     }
   }
   static async deleteCompany(companyID) {
     try {
+      const delCompanyModules = await prisma.CompanyModules.deleteMany({
+        where: { company_id: companyID },
+      });
+
+      const delCompanyTypeUser = await prisma.CompanyTypeUser.deleteMany({
+        where: { company_id: companyID },
+      });
+
       const company = await prisma.company.delete({
-        where: { id: companyID }
+        where: { id: companyID },
       });
       return company;
     } catch (error) {
-      console.error('Error deleting company:', error);
-      console.log(error)
-      throw new Error('An error occurred while deleting the company');
+      console.error("Error deleting company:", error);
+      console.log(error);
+      throw new Error("An error occurred while deleting the company");
     }
   }
   static async createCompanydayPart(companyId, dayPartId) {
@@ -143,10 +240,8 @@ export class CompanyService {
       });
       return companydayPart;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw new Error(`Error creating companydayPart`);
     }
   }
-
-
 }

@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class ClientService {
-  static async listClients(defaultCompanyID, companyID) {
+  static async listClients(companyID) {
     try {
       const clients = await prisma.client.findMany({
         where: {
@@ -10,7 +10,6 @@ export class ClientService {
             {
               OR: [
                 { company_id: companyID },
-                { company_id: defaultCompanyID },
               ],
             },
           ],

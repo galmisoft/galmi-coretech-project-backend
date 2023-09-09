@@ -2,14 +2,13 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class ItemsService { 
-  static async listItems(defaultCompanyID, companyID, productTypeID) {
+  static async listItems(companyID, productTypeID) {
     try {
       const Item = await prisma.Items.findMany({
         where: {
           AND: [
             {
               OR: [
-                { Product: { company_id: defaultCompanyID } },
                 { Product: { company_id: companyID } },
               ],
             },
@@ -19,18 +18,18 @@ export class ItemsService {
           ]
         },
         include: {
+          Line: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
           Product: {
             select: {
               id: true,
               description: true,
             },
-          },
-          DayPartProducts: {
-            select: {
-              id: true,
-              serial_number: true,
-            },
-          },
+          }
         },
       });
       return Item;
@@ -50,7 +49,7 @@ export class ItemsService {
           unit_price: ItemModel.unit_price,
           client_id: ItemModel.client_id,
           project_id: ItemModel.project_id,
-          dayPartProducts_id: ItemModel.dayPartProducts_id,
+          dayPartProduct_serial_number: ItemModel.dayPartProduct_serial_number,
           created_At: new Date(),
           updated_At: new Date(),
         },
@@ -74,7 +73,7 @@ export class ItemsService {
           unit_price: ItemModel.unit_price,
           client_id: ItemModel.client_id,
           project_id: ItemModel.project_id,
-          dayPartProducts_id: ItemModel.dayPartProducts_id,
+          dayPartProduct_serial_number: ItemModel.dayPartProduct_serial_number,
           updated_At: new Date(),
         },
       });

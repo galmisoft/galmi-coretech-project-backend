@@ -2,18 +2,22 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class ComboService {
-  static async listProbes() {
+  static async listProbes(companyID, defaultCompanyID) {
     try {
       const result = await prisma.probe.findMany({
         select: {
           id: true,
-          probe_number: true
+          probe_number: true,
         },
+        where: {
+          OR: [{ company_id: companyID }, { company_id: defaultCompanyID }],
+        },
+        distinct: ["probe_number"],
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listProbes')
+      console.log(error);
+      throw new Error("An error occurred in listProbes");
     }
   }
 
@@ -25,10 +29,10 @@ export class ComboService {
           terrain_name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listTerrainTypes')
+      console.log(error);
+      throw new Error("An error occurred in listTerrainTypes");
     }
   }
 
@@ -40,10 +44,10 @@ export class ComboService {
           name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listPositions')
+      console.log(error);
+      throw new Error("An error occurred in listPositions");
     }
   }
 
@@ -55,25 +59,28 @@ export class ComboService {
           visible_name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listCompanies')
+      console.log(error);
+      throw new Error("An error occurred in listCompanies");
     }
   }
 
-  static async listUsersEmails() {
+  static async listUsersEmails(companyID, defaultCompanyID) {
     try {
       const result = await prisma.user.findMany({
         select: {
           id: true,
           email: true,
         },
+        where: {
+          OR: [{ company_id: companyID }, { company_id: defaultCompanyID }],
+        },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listUsersEmails')
+      console.log(error);
+      throw new Error("An error occurred in listUsersEmails");
     }
   }
 
@@ -85,10 +92,10 @@ export class ComboService {
           name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listModules')
+      console.log(error);
+      throw new Error("An error occurred in listModules");
     }
   }
 
@@ -100,62 +107,95 @@ export class ComboService {
           name: true,
         },
         orderBy: {
-          name: 'asc'
+          name: "asc",
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listCountries')
+      console.log(error);
+      throw new Error("An error occurred in listCountries");
     }
   }
 
-  static async listClients() {
+  static async listClients(companyID, defaultCompanyID) {
     try {
       const result = await prisma.client.findMany({
         select: {
           id: true,
           name: true,
         },
+        where: {
+          OR: [{ company_id: companyID }, { company_id: defaultCompanyID }],
+        },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listClients')
+      console.log(error);
+      throw new Error("An error occurred in listClients");
     }
   }
 
-  static async listProjects() {
+  static async listProjects(companyID, defaultCompanyID) {
     try {
       const result = await prisma.project.findMany({
         select: {
           id: true,
           name: true,
         },
+        where: {
+          OR: [
+            { Client: { company_id: companyID } },
+            { Client: { company_id: defaultCompanyID } },
+          ],
+        },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listProjects')
+      console.log(error);
+      throw new Error("An error occurred in listProjects");
     }
   }
 
-  static async listEquipment() {
+  static async listEquipment(companyID, defaultCompanyID) {
     try {
       const result = await prisma.equipment.findMany({
         select: {
           id: true,
           internal_code: true,
         },
+        where: {
+          OR: [
+            { Client: { company_id: companyID } },
+            { Client: { company_id: defaultCompanyID } },
+          ],
+        },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listTeams')
+      console.log(error);
+      throw new Error("An error occurred in listTeams");
     }
   }
 
-  static async listUsers() {
+  static async listUsers(companyID, defaultCompanyID) {
+    try {
+      const result = await prisma.user.findMany({
+        select: {
+          id: true,
+          names: true,
+        },
+        where: {
+          OR: [{ company_id: companyID }, { company_id: defaultCompanyID }],
+        },
+      });
+      return result;
+    } catch (error) {
+      console.log(error);
+      throw new Error("An error occurred in listUsers");
+    }
+  }
+
+  static async listUsersCoretech() {
     try {
       const result = await prisma.user.findMany({
         select: {
@@ -163,10 +203,10 @@ export class ComboService {
           names: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listUsers')
+      console.log(error);
+      throw new Error("An error occurred in listUsers");
     }
   }
 
@@ -178,10 +218,10 @@ export class ComboService {
           category_name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listProductTypes')
+      console.log(error);
+      throw new Error("An error occurred in listProductTypes");
     }
   }
 
@@ -193,25 +233,28 @@ export class ComboService {
           name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listMeasures')
+      console.log(error);
+      throw new Error("An error occurred in listMeasures");
     }
   }
 
-  static async listProducts() {
+  static async listProducts(companyID, defaultCompanyID) {
     try {
       const result = await prisma.product.findMany({
         select: {
           id: true,
           description: true,
         },
+        where: {
+          OR: [{ company_id: companyID }, { company_id: defaultCompanyID }],
+        },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listProducts')
+      console.log(error);
+      throw new Error("An error occurred in listProducts");
     }
   }
 
@@ -223,30 +266,53 @@ export class ComboService {
           name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listLines')
+      console.log(error);
+      throw new Error("An error occurred in listLines");
     }
   }
 
-  static async listProductSerialNumbers() {
+  static async listProductSerialNumbers(companyID, defaultCompanyID) {
     try {
+      const items = await prisma.Items.findMany({
+        where: {
+          OR: [
+            { Client: { company_id: companyID } },
+            { Client: { company_id: defaultCompanyID } },
+          ],
+        },
+      });
+      const usedSerialNumbers = items.map(
+        (i) => i.dayPartProduct_serial_number
+      );
       const result = await prisma.DayPartProducts.findMany({
         select: {
-          id: true,
           serial_number: true,
         },
         where: {
-          Items: {
-            none: {}
-          }
-        }
+          AND: [
+            {
+              DayPart: {
+                is: { Probe: { company_id: companyID } },
+              },
+            },
+            {
+              DayPart: {
+                is: {
+                  Probe: { company_id: defaultCompanyID },
+                },
+              },
+            },
+            { NOT: { serial_number: { in: usedSerialNumbers } } },
+          ],
+        },
+        distinct: ["serial_number"],
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listProductSerialNumbers')
+      console.log(error);
+      throw new Error("An error occurred in listProductSerialNumbers");
     }
   }
 
@@ -258,10 +324,10 @@ export class ComboService {
           name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listActivityTypes')
+      console.log(error);
+      throw new Error("An error occurred in listActivityTypes");
     }
   }
 
@@ -273,10 +339,10 @@ export class ComboService {
           name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listDocumentTypes')
+      console.log(error);
+      throw new Error("An error occurred in listDocumentTypes");
     }
   }
 
@@ -288,10 +354,24 @@ export class ComboService {
           name: true,
         },
       });
-      return result
+      return result;
     } catch (error) {
-      console.log(error)
-      throw new Error('An error occurred in listMailTypes')
+      console.log(error);
+      throw new Error("An error occurred in listMailTypes");
+    }
+  }
+  static async listUserTypes() {
+    try {
+      const result = await prisma.userType.findMany({
+        select: {
+          id: true,
+          name: true,
+        },
+      });
+      return result;
+    } catch (error) {
+      console.log(error);
+      throw new Error("An error occurred in listUserTypes");
     }
   }
 }

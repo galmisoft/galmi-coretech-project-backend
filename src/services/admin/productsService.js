@@ -42,15 +42,12 @@ export class ProductsService {
     try {
       const newProduct = await prisma.Product.create({
         data: {
-          type: productModel.type,
-          name: productModel.description,
-          SKU: productModel.SKU,
+          type_id: productModel.type_id,
+          name: productModel.name,
           company_id: productModel.company_id,
           meassure_id: productModel.meassure_id,
           description: productModel.description,
           brand: productModel.brand,
-          line_id: productModel.line_id,
-          serial_number: productModel.serial_number,
           presentation: productModel.presentation,
           active: productModel.active,
           created_At: new Date(),
@@ -63,22 +60,19 @@ export class ProductsService {
       throw new Error('Failed to createProduct');
     }
   }
-  static async updateProduct(data) {
+  static async updateProduct(productModel) {
     try {
       const updatedProduct = await prisma.Product.update({
         where: {
-          id: data.id,
+          id: productModel.id,
         },
         data: {
-          type: productModel.type,
+          type_id: productModel.type_id,
           name: productModel.name,
-          SKU: productModel.SKU,
           company_id: productModel.company_id,
           meassure_id: productModel.meassure_id,
           description: productModel.description,
           brand: productModel.brand,
-          line_id: productModel.line_id,
-          serial_number: productModel.serial_number,
           presentation: productModel.presentation,
           active: productModel.active,
           updated_At: new Date(),

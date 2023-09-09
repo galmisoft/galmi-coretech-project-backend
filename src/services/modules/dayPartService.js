@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { transformJson, transformPrisma } from "../../model/dayPartModel.js";
 const prisma = new PrismaClient();
 
 export class DayPartService {
@@ -8,43 +9,89 @@ export class DayPartService {
         select: {
           id: true,
           date: date !== undefined ? Date(date) : true,
-          Team: { select: { name: team !== undefined ? team : true, }, },
           shift: shift !== undefined ? shift : true,
           status: status !== undefined ? Number(status) : true,
           Probe: {
             select: {
               id: true,
-              probe_number: true
-            }
-          }
-        }
+              probe_number: true,
+            },
+          },
+          User: {
+            select: {
+              Assignation: {
+                select: {
+                  Equipment: {
+                    select: {
+                      id: true,
+                      internal_code: true,
+                      mine_code: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       });
+
       const listDayPart = query.map((dayPart) => ({
         id: dayPart.id,
         date: dayPart.date,
-        name: dayPart.Team.name,
-        shift: dayPart.shift === true ? 'Día' : 'Noche',
+        name: dayPart.User?.Assignation[0]?.Equipment?.internal_code ?? "",
+        shift: dayPart.shift === true ? "Día" : "Noche",
         status: dayPart.status,
-        Probe: dayPart.Probe
+        Probe: dayPart.Probe,
       }));
-      console.log(listDayPart)
-      return listDayPart
+      return listDayPart;
     } catch (error) {
-      console.log(error)
-      throw new Error('Failed to list day parts');
+      console.log(error);
+      throw new Error("Failed to list day parts");
     }
   }
   static async getDayPart(dayPartID) {
     try {
-      console.log('getDayPart', dayPartID)
       const query = await prisma.DayPart.findUnique({
         where: {
-          id: dayPartID
+          id: dayPartID,
         },
         include: {
+          User: {
+            select: {
+              Assignation: {
+                select: {
+                  Client: {
+                    select: {
+                      id: true,
+                      name: true,
+                      comercial_name: true,
+                    },
+                  },
+                  Equipment: {
+                    select: {
+                      id: true,
+                      internal_code: true,
+                      mine_code: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           Probe: {
             select: {
               id: true,
+              Company: {
+                select: {
+                  name: true,
+                },
+              },
+              Project: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
               probe_number: true,
               date_ini: true,
               azimut_ini: true,
@@ -60,7 +107,49 @@ export class DayPartService {
               horometer_fin: true,
               finalized: true,
               date_fin: true,
-            }
+            },
+          },
+          DayPartRun: {
+            select: {
+              id: true,
+              run_id: true,
+              Run: {
+                select: {
+                  id: true,
+                  meters_from: true,
+                  meters_to: true,
+                  length: true,
+                  recuperation_percentage: true,
+                  terrain_type1: true,
+                  terrain_type2: true,
+                  terrain_type3: true,
+                  observation: true,
+                  picture: true,
+                },
+              },
+            },
+          },
+          DayPartProducts: {
+            select: {
+              id: true,
+              line: true,
+              serial_number: true,
+              type_id: true,
+              brand: true,
+              matrix: true,
+              condition: true,
+              meters_from: true,
+              meters_to: true,
+              drill_bit_change: true,
+              end_condition: true,
+              change_motive: true,
+              ProductType: {
+                select: {
+                  id: true,
+                  category_name: true,
+                },
+              },
+            },
           },
           DayPartActivities: {
             select: {
@@ -71,44 +160,45 @@ export class DayPartService {
                 select: {
                   id: true,
                   name: true,
-                }
-              }
-            }
+                  ActivityType: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
           },
-          DayPartRun: {
-              select: {
-                id: true,
-                run_id: true,
-                Run: {
-                  select: {
-                    id: true,
-                    meters_from: true,
-                    meters_to: true,
-                    length: true,
-                    recuperation_percentage: true,
-                    terrain_type1: true,
-                    terrain_type2: true,
-                    terrain_type3: true,
-                    observation: true,
-                    picture: true
-                  }
-                }
-              }
-          },
-          DayPartProducts: {
+          DayPartPerson: {
             select: {
               id: true,
-              line: true,
-              serial_number: true,
-              brand: true,
-              matrix: true,
-              condition: true,
-              meters_from: true,
-              meters_to: true,
-              drill_bit_change: true,
-              end_condition: true,
-              change_motive: true
-            }
+              person_id: true,
+              Person: {
+                select: {
+                  id: true,
+                  complete_name: true,
+                  lastname1: true,
+                  lastname2: true,
+                  dni_type: true,
+                  dni: true,
+                  position_id: true,
+                  picture: true,
+                  DniType: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                  Position: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
           },
           DayPartFluids: {
             select: {
@@ -122,41 +212,16 @@ export class DayPartService {
                   meassure_id: true,
                   description: true,
                   brand: true,
-                  serial_number: true,
                   presentation: true,
                   Meassure: {
                     select: {
                       id: true,
                       name: true,
-                    }
-                  }
-                }
-              }
-            }
-          },
-          DayPartPerson: {
-            select: {
-              id: true,
-              person_id: true,
-              Person:{
-                select: {
-                  id: true,
-                  complete_name: true,
-                  lastname1: true,
-                  lastname2: true,
-                  dni_type: true,
-                  dni: true,
-                  position_id: true,
-                  picture: true,
-                  Position: {
-                    select: {
-                      id: true,
-                      name: true
-                    }
-                  }
-                }
-              }
-            }
+                    },
+                  },
+                },
+              },
+            },
           },
           DayPartTest: {
             select: {
@@ -167,25 +232,29 @@ export class DayPartService {
               supervisor_name: true,
               company_name: true,
               magnetic_intensity: true,
-              efective: true
-            }
-          }
-        }
+              efective: true,
+            },
+          },
+        },
       });
-      return query
+      return transformPrisma(query);
     } catch (error) {
-      console.log(error)
-      throw new Error('Failed to list day parts');
+      console.log(error);
+      throw new Error("Failed to list day parts");
     }
   }
-  
-  static async createDayParts(dayPartModel) {
+
+  static async createDayParts(JsonBody, files) {
+    const dayPartModel = await transformJson(JsonBody, files);
+
     try {
-      if ( dayPartModel.probe_id === null ){
+      if (dayPartModel.probe_id === null) {
         const newProbe = await prisma.probe.create({
           data: {
-            probe_number: dayPartModel.probe_number,
-            date_ini: dayPartModel.probe.date_ini,
+            company_id: dayPartModel.probe.company_id,
+            project_id: dayPartModel.probe.project_id,
+            probe_number: dayPartModel.probe.probe_number,
+            date_ini: new Date(dayPartModel.probe.date_ini),
             azimut_ini: dayPartModel.probe.azimut_ini,
             incline_ini: dayPartModel.probe.incline_ini,
             job_type: dayPartModel.probe.job_type,
@@ -198,15 +267,15 @@ export class DayPartService {
             horometer_ini: dayPartModel.probe.horometer_ini,
             horometer_fin: dayPartModel.probe.horometer_fin,
             finalized: dayPartModel.probe.finalized,
-            date_fin: dayPartModel.probe.date_fin,
-          }
-        })
-        dayPartModel.probe_id = newProbe.id
+            date_fin: new Date(dayPartModel.probe.date_ini),
+          },
+        });
+        dayPartModel.probe_id = newProbe.id;
       }
 
-      
+      console.log("Creating Run");
       const newRuns = [];
-      dayPartModel.dayPartRun.forEach( async run => {
+      for (const run of dayPartModel.dayPartRun) {
         const createdRun = await prisma.Run.create({
           data: {
             meters_from: run.meters_from,
@@ -221,66 +290,69 @@ export class DayPartService {
           },
         });
         newRuns.push(createdRun);
-      })
+      }
 
+      console.log("Creating DayPart");
       const dayParts = await prisma.DayPart.create({
         data: {
-            date: new Date(dayPartModel.date),
-            shift: dayPartModel.shift,
-            status: dayPartModel.status,
-            probe_id: dayPartModel.probe_id,
-            team_id: dayPartModel.team_id,
-            meters_from: dayPartModel.meters_from,
-            meters_to: dayPartModel.meters_to,
-            surplus_meters: dayPartModel.surplus_meters,
-            constant_meters: dayPartModel.constant_meters,
-            M1: dayPartModel.m1,
-            M2: dayPartModel.m2,
-            M3: dayPartModel.m3,
-            M4: dayPartModel.m4,
-            PH: dayPartModel.ph,
-            PPM: dayPartModel.ppm,
-            fluid_return: dayPartModel.fluid_return,
-            created_At: new Date(),
-            updated_At: new Date(),
-          }
-        })
+          date: new Date(dayPartModel.date),
+          shift: dayPartModel.shift,
+          status: dayPartModel.status,
+          probe_id: dayPartModel.probe_id,
+          meters_from: dayPartModel.meters_from,
+          meters_to: dayPartModel.meters_to,
+          surplus_meters: dayPartModel.surplus_meters,
+          constant_meters: dayPartModel.constant_meters,
+          user_id: dayPartModel.user_id,
+          M1: dayPartModel.m1,
+          M2: dayPartModel.m2,
+          M3: dayPartModel.m3,
+          M4: dayPartModel.m4,
+          PH: dayPartModel.ph,
+          PPM: dayPartModel.ppm,
+          fluid_return: dayPartModel.fluid_return,
+          signature: dayPartModel.signature,
 
-      console.log('Creating Runs for ', dayParts.id)
-      newRuns.forEach( async run => {
-        const createdDayPartRun = await prisma.dayPartRun.create({
-          data: {
-            dayPart_id: dayParts.id,
-            run_id: run.id
-          }
-        });
+          created_At: new Date(),
+          updated_At: new Date(),
+        },
       });
 
-      console.log('Creating Activities for ', dayParts.id)
-      dayPartModel.DayPartActivities.forEach( async activity => {
-        const createdDayPartActivities = await prisma.dayPartActivities.create({
+      console.log("Creating Runs for ", dayParts.id);
+      for (const run of newRuns) {
+        await prisma.DayPartRun.create({
+          data: {
+            dayPart_id: dayParts.id,
+            run_id: run.id,
+          },
+        });
+      }
+
+      console.log("Creating Activities for ", dayParts.id);
+      for (const activity of dayPartModel.DayPartActivities) {
+        await prisma.DayPartActivities.create({
           data: {
             dayPart_id: dayParts.id,
             activity_id: activity.id,
-            hours: activity.hours
-          }
+            hours: activity.hours,
+          },
         });
-      });
+      }
 
-      console.log('Creating Fluids for ', dayParts.id)
-      dayPartModel.DayPartFluids.forEach( async fluid => {
-        const createddayPartFluids = await prisma.DayPartFluids.create({
+      console.log("Creating Fluids for ", dayParts.id);
+      for (const fluid of dayPartModel.DayPartFluids) {
+        await prisma.DayPartFluids.create({
           data: {
             dayPart_id: dayParts.id,
             fluid_id: fluid.id,
-            quantity: fluid.quantity
-          }
+            quantity: fluid.quantity,
+          },
         });
-      });
+      }
 
-      console.log('Creating DayPartTest for ', dayParts.id)
-      dayPartModel.DayPartTest.forEach( async test => {
-        const DayPartTest = await prisma.DayPartTest.create({
+      console.log("Creating DayPartTest for ", dayParts.id);
+      for (const test of dayPartModel.DayPartTest) {
+        await prisma.DayPartTest.create({
           data: {
             dayPart_id: dayParts.id,
             depth: test.depth,
@@ -289,19 +361,19 @@ export class DayPartService {
             supervisor_name: test.supervisor_name,
             company_name: test.company_name,
             magnetic_intensity: test.magnetic_intensity,
-            efective: test.active
-          }
+            efective: test.active ? test.active : true,
+          },
         });
-      });
+      }
 
-      console.log('Creating Products for ', dayParts.id)
-      dayPartModel.DayPartProducts.forEach( async product => {
+      console.log("Creating Products for ", dayParts.id);
+      for (const product of dayPartModel.DayPartProducts) {
         const createdDayPartProducts = await prisma.DayPartProducts.create({
           data: {
             dayPart_id: dayParts.id,
-            type_id: 1,
-            line_id: product.line_id,
             serial_number: product.serial_number,
+            type_id: 1,
+            line: product.line,
             brand: product.brand,
             matrix: product.matrix,
             condition: product.condition,
@@ -309,67 +381,36 @@ export class DayPartService {
             drill_bit_change: product.drill_bit_change,
             end_condition: product.end_condition,
             meters_to: product.meters_to,
-            change_motive: product.change_motive
-          }
+            change_motive: product.change_motive,
+          },
         });
-      });
+      }
 
-      console.log('Creating Persons for ', dayParts.id)
-      dayPartModel.DayPartPerson.forEach( async personData => {
-
-        const checkPerson = await prisma.person.findFirst({
-          where: {
-            dni: personData.dni
-          }
-        })
-        if (checkPerson) {
-
-          const dayPartPerson = await prisma.dayPartPerson.create({
-            data: {
-              dayPart_id: dayParts.id,
-              person_id: checkPerson.id,
-            },
-          });
-        } else {
-
-          const newPerson = await prisma.person.create({
-            data: {
-              complete_name: personData.complete_name,
-              lastname1: personData.lastname1,
-              lastname2: personData.lastname2,
-              dni_type: personData.dni_type,
-              dni: personData.dni,
-              position_id: personData.position_id,
-              picture: personData.picture,
-              active: personData.active,
-              company_id: personData.company_id
-            },
-          });
-          const dayPartPerson = await prisma.dayPartPerson.create({
-            data: {
-              dayPart_id: dayParts.id,
-              person_id: newPerson.id,
-            },
-          });
-        }
-      });
+      console.log("Creating Persons for ", dayParts.id);
+      for (const personData of dayPartModel.DayPartPerson) {
+        const dayPartPerson = await prisma.DayPartPerson.create({
+          data: {
+            dayPart_id: dayParts.id,
+            person_id: personData.person_id,
+          },
+        });
+      }
 
       const resultDayPart = await prisma.dayPart.findFirst({
         where: {
-          id: dayParts.id
+          id: dayParts.id,
         },
         include: {
           DayPartActivities: { select: { activity_id: true } },
           DayPartProducts: { select: { id: true } },
           DayPartRun: { select: { run_id: true } },
-          DayPartPerson: { select: { person_id: true, } }
-        }
-      })
+          DayPartPerson: { select: { person_id: true } },
+        },
+      });
 
       return dayParts;
-    }
-    catch (error) {
-      console.log(error)
+    } catch (error) {
+      console.log(error);
       throw new Error(`Failed to create dayPart`);
     }
   }

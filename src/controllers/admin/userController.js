@@ -2,8 +2,7 @@ import { UserService } from '../../services/admin/userService.js';
 export class UserController {
   static async listUser(req, res, next) {
     try {
-      const { defaultCompanyID, companyID } = req.body;
-      const Users = await UserService.listUsers(defaultCompanyID, companyID);
+      const Users = await UserService.listUsers();
       return res.status(200).json({ Users });
     } catch (error) {
       console.error(error);
@@ -12,8 +11,8 @@ export class UserController {
   }
   static async listUserContratos(req, res, next) {
     try {
-      const { defaultCompanyID, companyID } = req.body;
-      const Users = await UserService.listUsersContratos(defaultCompanyID, companyID);
+      const { companyID } = req.body;
+      const Users = await UserService.listUsersContratos(companyID);
       return res.status(200).json({ Users });
     } catch (error) {
       console.error(error);
@@ -64,6 +63,17 @@ export class UserController {
     try {
       const { id } = req.body;
       const Users = await UserService.deleteUser(id);
+      return res.status(200).json({ Users });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error', details: error.message });
+    }
+  }
+
+  static async getUserPermissions(req, res, next) {
+    try {
+      const { id } = req.body;
+      const Users = await UserService.getUserPermissions(id);
       return res.status(200).json({ Users });
     } catch (error) {
       console.error(error);
