@@ -11,7 +11,7 @@ export class AuthController {
       }
       const token = await UserService.validateUser(username, password);
       if (!token) {
-        return res.status(401).json({ message: "Invalid credentials" });
+        return res.status(401).json({ message: "Credenciales invalidas" });
       }
       return res.status(200).json({ access_token: token });
     } catch (error) {
