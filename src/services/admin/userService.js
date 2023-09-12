@@ -5,73 +5,65 @@ const prisma = new PrismaClient();
 
 export class UserService {
   static async validateUser(username, password) {
-    try {
-      const hashedPassword = md5(password);
-      const result = await prisma.user.findMany({
-        where: {
-          AND: [
-            // { password: hashedPassword },
-            { OR: [{ username: username }, { email: username }] },
-          ],
+    const hashedPassword = md5(password);
+    const result = await prisma.user.findMany({
+      where: {
+        AND: [{ password: hashedPassword }, { username: username }],
+      },
+      include: {
+        Assignation: {
+          select: {
+            Client: {
+              select: {
+                id: true,
+                name: true,
+                comercial_name: true,
+              },
+            },
+            Project: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            Equipment: {
+              select: {
+                id: true,
+                name: true,
+                internal_code: true,
+                mine_code: true,
+              },
+            },
+          },
         },
-        include: {
-          Assignation: {
-            select: {
-              Client: {
-                select: {
-                  id: true,
-                  name: true,
-                  comercial_name: true,
-                },
-              },
-              Project: {
-                select: {
-                  id: true,
-                  name: true,
-                },
-              },
-              Equipment: {
-                select: {
-                  id: true,
-                  name: true,
-                  internal_code: true,
-                  mine_code: true,
-                },
+        UserPermission: {
+          select: {
+            active: true,
+            module_id: true,
+            Modules: {
+              select: {
+                id: true,
+                name: true,
               },
             },
           },
-          UserPermission: {
-            select: {
-              active: true,
-              module_id: true,
-              Modules: {
-                select: {
-                  id: true,
-                  name: true,
-                },
-              },
-            },
-          },
+        },
+      },
+    });
+    if (result.length > 0) {
+      const defaultCompany = await prisma.company.findUnique({
+        where: { id: process.env.CORETECH_CODE },
+        select: {
+          id: true,
+          name: true,
+          visible_name: true,
         },
       });
-      if (result.length > 0) {
-        const defaultCompany = await prisma.company.findUnique({
-          where: { id: process.env.CORETECH_CODE },
-          select: {
-            id: true,
-            name: true,
-            visible_name: true,
-          },
-        });
 
-        result[0].DefaultCompany = defaultCompany;
-        return JwtAuth.sign(JSON.stringify({ result }));
-      }
-      throw new Error("Usuario y/o Contraseña invalido");
-    } catch (error) {
-      console.log(error);
-      throw new Error("An error occurred while login");
+      result[0].DefaultCompany = defaultCompany;
+      return JwtAuth.sign(JSON.stringify({ result }));
     }
+    return null;
   }
 
   static validateToken(req) {
@@ -186,15 +178,14 @@ export class UserService {
 
   static async createUser(userData) {
     try {
-      const checkUsedUsernameOrMail = await prisma.user.findMany({
+      const checkUsedUsername = await prisma.user.findMany({
         where: {
-          OR: [{ username: userData.username }, { email: userData.email }],
+          username: userData.username,
         },
       });
-      if (checkUsedUsernameOrMail) {
-        throw new Error("Username o Mail en uso");
+      if (checkUsedUsername.length > 0) {
+        throw new Error("Username en uso");
       }
-
       const hashedPassword = md5(userData.password);
       const result = await prisma.user.create({
         data: {
@@ -273,7 +264,11 @@ export class UserService {
 
   static async updateUser(userData) {
     try {
-      if (userData.password == undefined || userData.password == null) {
+      if (
+        userData.password == undefined ||
+        userData.password == null ||
+        userData.password.trim().length == 0
+      ) {
         const result = await prisma.user.update({
           where: { id: userData.id },
           data: {
@@ -338,12 +333,15 @@ export class UserService {
 
   static async updateUserContratos(userData) {
     try {
-      if (userData.password == undefined || userData.password == null) {
+      if (
+        userData.password == undefined ||
+        userData.password == null ||
+        userData.password.trim().length == 0
+      ) {
         const result = await prisma.user.update({
           where: { id: userData.id },
           data: {
             username: userData.username,
-            password: hashedPassword,
             user_type: Number(userData.user_type),
             reports_to: userData.reports_to,
             names: userData.names,

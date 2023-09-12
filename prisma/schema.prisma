@@ -217,6 +217,7 @@ model User {
   lastname   String?
   email      String?
   status     String?
+  isAdmin    Boolean  @default(false)
   created_At DateTime @default(now())
   updated_At DateTime @updatedAt
 
